@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emojicon • Figma Plugin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        .figma-header { background: #2C2C2C; }
+        .figma-panel { background: #1E1E1E; color: #E6E6E6; }
+        .figma-input { background: #2C2C2C; border: 1px solid #3D3D3D; }
+        .figma-input:focus { border-color: #0D99FF; outline: none; }
+        .icon-grid { scrollbar-width: thin; scrollbar-color: #3D3D3D #1E1E1E; }
+        .plugin-icon { transition: transform 0.1s ease; }
+        .plugin-icon:hover { transform: scale(1.15); }
+        .pro-badge { background: linear-gradient(90deg, #FF5C5C, #FF8A00); }
+    </style>
+</head>
+<body class="bg-[#1E1E1E] text-[#E6E6E6]">
+    <!-- Figma Plugin Header -->
+    <div class="figma-header px-4 py-3 flex items-center justify-between border-b border-[#3D3D3D]">
+        <div class="flex items-center gap-x-2.5">
+            <div class="w-7 h-7 bg-gradient-to-br from-violet-500 to-fuchsia-500 rounded flex items-center justify-center">
+                <i class="fa-solid fa-icons text-white text-sm"></i>
+            </div>
+            <div>
+                <div class="font-semibold text-sm">Emojicon</div>
+                <div class="text-[10px] text-[#8A8A8A]">v4.0 • Pro</div>
+            </div>
+        </div>
+        
+        <div class="flex items-center gap-x-1">
+            <div class="pro-badge text-white text-[9px] px-2 py-0.5 rounded font-medium">PRO</div>
+            <button onclick="showUpgradeModal()" class="text-[#8A8A8A] hover:text-white px-2">
+                <i class="fa-solid fa-ellipsis-h text-sm"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Search -->
+    <div class="px-3 pt-3 pb-2">
+        <div class="relative">
+            <input type="text" id="figma-search" placeholder="Search icons & emojis..." 
+                   class="figma-input w-full text-sm rounded-lg pl-9 py-2 text-[#E6E6E6] placeholder-[#8A8A8A]">
+            <i class="fa-solid fa-search absolute left-3 top-3 text-[#8A8A8A]"></i>
+        </div>
+    </div>
+
+    <!-- Quick Filters -->
+    <div class="px-3 flex gap-x-1.5 overflow-x-auto pb-2">
+        <div onclick="filterFigmaCategory('all')" class="cursor-pointer text-xs px-3 py-1 bg-[#0D99FF] text-white rounded-full whitespace-nowrap">All</div>
+        <div onclick="filterFigmaCategory('faces')" class="cursor-pointer text-xs px-3 py-1 bg-[#2C2C2C] hover:bg-[#3D3D3D] rounded-full whitespace-nowrap">Smileys</div>
+        <div onclick="filterFigmaCategory('icons')" class="cursor-pointer text-xs px-3 py-1 bg-[#2C2C2C] hover:bg-[#3D3D3D] rounded-full whitespace-nowrap">Icons</div>
+        <div onclick="filterFigmaCategory('brands')" class="cursor-pointer text-xs px-3 py-1 bg-[#2C2C2C] hover:bg-[#3D3D3D] rounded-full whitespace-nowrap">Brands</div>
+        <div onclick="filterFigmaCategory('pro-packs')" class="cursor-pointer text-xs px-3 py-1 bg-gradient-to-r from-violet-600 to-fuchsia-600 rounded-full whitespace-nowrap">Pro Packs</div>
+    </div>
+
+    <!-- Results -->
+    <div class="px-3">
+        <div class="flex items-center justify-between text-xs mb-2 px-1">
+            <div class="text-[#8A8A8A]">1,284 results</div>
+            <div onclick="showProPacksModal()" class="cursor-pointer text-violet-400 hover:text-violet-300 flex items-center gap-x-1">
+                <span class="text-xs">Browse Pro Packs</span>
+                <i class="fa-solid fa-arrow-right text-xs"></i>
+            </div>
+        </div>
+        
+        <!-- Icon Grid -->
+        <div id="figma-icon-grid" class="icon-grid grid grid-cols-6 gap-2 max-h-[420px] overflow-y-auto pb-4">
+            <!-- Populated by JS -->
+        </div>
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="absolute bottom-0 left-0 right-0 bg-[#2C2C2C] border-t border-[#3D3D3D] px-3 py-2 flex items-center justify-between text-xs">
+        <div class="flex items-center gap-x-2">
+            <div class="flex items-center gap-x-1 text-[#8A8A8A]">
+                <i class="fa-solid fa-globe text-xs"></i>
+                <span>12.4k</span>
+            </div>
+            <div class="text-emerald-400 text-xs">• Online</div>
+        </div>
+        
+        <button onclick="insertSelectedIcons()" 
+                class="px-4 py-1 bg-[#0D99FF] hover:bg-[#0A80D9] text-white text-xs rounded font-medium flex items-center gap-x-1.5">
+            <i class="fa-solid fa-download text-xs"></i>
+            <span>Insert 12</span>
+        </button>
+    </div>
+
+    <!-- Upgrade Modal -->
+    <div id="upgrade-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[100]">
+        <div class="bg-[#1E1E1E] border border-[#3D3D3D] rounded-2xl w-[320px] overflow-hidden">
+            <div class="p-5">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <div class="pro-badge inline-block text-white text-xs px-2.5 py-0.5 rounded mb-2">PRO</div>
+                        <div class="text-lg font-semibold">Unlock Emojicon Pro</div>
+                    </div>
+                    <button onclick="hideUpgradeModal()" class="text-[#8A8A8A] hover:text-white">✕</button>
+                </div>
+                
+                <div class="text-sm text-[#B0B0B0] mb-6">Get unlimited access, brand kits, team features, and 50+ curated packs.</div>
+                
+                <div class="space-y-3">
+                    <div class="flex items-center gap-x-3 text-sm">
+                        <i class="fa-solid fa-check text-emerald-400 w-4"></i>
+                        <span>Unlimited high-res exports</span>
+                    </div>
+                    <div class="flex items-center gap-x-3 text-sm">
+                        <i class="fa-solid fa-check text-emerald-400 w-4"></i>
+                        <span>Brand Kit Generator</span>
+                    </div>
+                    <div class="flex items-center gap-x-3 text-sm">
+                        <i class="fa-solid fa-check text-emerald-400 w-4"></i>
+                        <span>AI Smart Search</span>
+                    </div>
+                    <div class="flex items-center gap-x-3 text-sm">
+                        <i class="fa-solid fa-check text-emerald-400 w-4"></i>
+                        <span>Team collaboration</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-[#2C2C2C] px-5 py-4 flex gap-x-3">
+                <button onclick="hideUpgradeModal()" class="flex-1 py-2.5 text-sm border border-[#3D3D3D] rounded-xl">Maybe later</button>
+                <button onclick="upgradeToPro()" class="flex-1 py-2.5 bg-[#0D99FF] text-white text-sm rounded-xl font-medium">Upgrade for $7/mo</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data
+        const figmaIcons = [
+            { id: 1, emoji: "😀", name: "Grinning", category: "faces", isPro: false },
+            { id: 2, emoji: "🚀", name: "Rocket", category: "icons", isPro: false },
+            { id: 3, emoji: "💎", name: "Diamond", category: "icons", isPro: true },
+            { id: 4, emoji: "🔥", name: "Fire", category: "icons", isPro: false },
+            { id: 5, emoji: "📱", name: "Phone", category: "icons", isPro: false },
+            { id: 6, emoji: "🎨", name: "Palette", category: "icons", isPro: true },
+            { id: 7, emoji: "⚡", name: "Lightning", category: "icons", isPro: false },
+            { id: 8, emoji: "🌟", name: "Star", category: "icons", isPro: false },
+            { id: 9, emoji: "🏆", name: "Trophy", category: "icons", isPro: true },
+            { id: 10, emoji: "💻", name: "Laptop", category: "icons", isPro: false },
+            { id: 11, emoji: "📊", name: "Chart", category: "icons", isPro: false },
+            { id: 12, emoji: "🎯", name: "Target", category: "icons", isPro: true },
+            { id: 13, emoji: "😍", name: "Heart Eyes", category: "faces", isPro: false },
+            { id: 14, emoji: "🤩", name: "Star Struck", category: "faces", isPro: false },
+            { id: 15, emoji: "💼", name: "Briefcase", category: "icons", isPro: false },
+            { id: 16, emoji: "📈", name: "Trending", category: "icons", isPro: true },
+            { id: 17, emoji: "🌍", name: "Globe", category: "icons", isPro: false },
+            { id: 18, emoji: "🔒", name: "Lock", category: "icons", isPro: false },
+            { id: 19, emoji: "✅", name: "Check", category: "icons", isPro: false },
+            { id: 20, emoji: "❤️", name: "Heart", category: "icons", isPro: false },
+            { id: 21, emoji: "🐦", name: "Twitter", category: "brands", isPro: false },
+            { id: 22, emoji: "📘", name: "Facebook", category: "brands", isPro: false },
+            { id: 23, emoji: "📸", name: "Instagram", category: "brands", isPro: true },
+            { id: 24, emoji: "💼", name: "LinkedIn", category: "brands", isPro: false },
+            { id: 25, emoji: "🎵", name: "Spotify", category: "brands", isPro: true },
+        ];
+        
+        let selectedIcons = [];
+        
+        function renderFigmaIcons(filteredIcons = null) {
+            const grid = document.getElementById('figma-icon-grid');
+            grid.innerHTML = '';
+            
+            const toShow = filteredIcons || figmaIcons;
+            
+            toShow.forEach(icon => {
+                const div = document.createElement('div');
+                div.className = `plugin-icon cursor-pointer relative flex flex-col items-center justify-center p-2 rounded-xl hover:bg-[#2C2C2C] ${icon.isPro ? 'ring-1 ring-violet-500/50' : ''}`;
+                div.innerHTML = `
+                    <div class="text-3xl mb-1">${icon.emoji}</div>
+                    <div class="text-[9px] text-center text-[#8A8A8A] truncate w-full px-1">${icon.name}</div>
+                    ${icon.isPro ? `<div class="absolute top-1 right-1 text-[8px] px-1 py-px bg-violet-600 rounded text-white">PRO</div>` : ''}
+                `;
+                
+                div.onclick = () => toggleIconSelection(div, icon);
+                grid.appendChild(div);
+            });
+        }
+        
+        function toggleIconSelection(element, icon) {
+            if (selectedIcons.find(i => i.id === icon.id)) {
+                selectedIcons = selectedIcons.filter(i => i.id !== icon.id);
+                element.classList.remove('!bg-[#0D99FF]', '!ring-2', '!ring-[#0D99FF]');
+            } else {
+                if (icon.isPro && !localStorage.getItem('emojiconPro')) {
+                    showUpgradeModal();
+                    return;
+                }
+                selectedIcons.push(icon);
+                element.classList.add('!bg-[#0D99FF]', '!ring-2', '!ring-[#0D99FF]');
+            }
+            
+            // Update insert button
+            const btn = document.querySelector('button[onclick*="insertSelectedIcons"]');
+            if (btn) btn.innerHTML = `<i class="fa-solid fa-download text-xs"></i> <span>Insert ${selectedIcons.length}</span>`;
+        }
+        
+        function filterFigmaCategory(category) {
+            const grid = document.getElementById('figma-icon-grid');
+            const icons = grid.children;
+            
+            for (let icon of icons) {
+                const name = icon.querySelector('.text-\\[9px\\]').textContent.toLowerCase();
+                
+                let show = true;
+                
+                if (category === 'faces') show = ['grinning', 'heart eyes', 'star struck'].some(w => name.includes(w));
+                else if (category === 'icons') show = !['twitter', 'facebook', 'instagram', 'linkedin', 'spotify'].some(w => name.includes(w));
+                else if (category === 'brands') show = ['twitter', 'facebook', 'instagram', 'linkedin', 'spotify'].some(w => name.includes(w));
+                else if (category === 'pro-packs') show = icon.querySelector('.bg-violet-600') !== null;
+                
+                icon.style.display = show ? 'flex' : 'none';
+            }
+        }
+        
+        function insertSelectedIcons() {
+            if (selectedIcons.length === 0) {
+                alert("Select some icons first!");
+                return;
+            }
+            
+            const isPro = localStorage.getItem('emojiconPro') === 'true';
+            
+            if (!isPro && selectedIcons.length > 3) {
+                showUpgradeModal();
+                return;
+            }
+            
+            // Simulate Figma insertion
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-4 left-1/2 -translate-x-1/2 bg-[#0D99FF] text-white px-5 py-2.5 rounded-xl text-sm flex items-center gap-x-2 shadow-xl';
+            toast.innerHTML = `
+                <i class="fa-solid fa-check"></i>
+                <span>Inserted ${selectedIcons.length} icons into Figma!</span>
+            `;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.transition = 'all 0.3s ease';
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 2200);
+            
+            // Clear selection
+            selectedIcons = [];
+            document.querySelectorAll('#figma-icon-grid > div').forEach(el => 
+                el.classList.remove('!bg-[#0D99FF]', '!ring-2', '!ring-[#0D99FF]')
+            );
+            
+            // Update button text
+            const btn = document.querySelector('button[onclick*="insertSelectedIcons"]');
+            if (btn) btn.innerHTML = `<i class="fa-solid fa-download text-xs"></i> <span>Insert</span>`;
+        }
+        
+        function showUpgradeModal() {
+            document.getElementById('upgrade-modal').classList.remove('hidden');
+            document.getElementById('upgrade-modal').classList.add('flex');
+        }
+        
+        function hideUpgradeModal() {
+            const modal = document.getElementById('upgrade-modal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+        }
+        
+        function upgradeToPro() {
+            hideUpgradeModal();
+            localStorage.setItem('emojiconPro', 'true');
+            
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-4 left-1/2 -translate-x-1/2 bg-emerald-600 text-white px-6 py-3 rounded-xl flex items-center gap-x-3 shadow-2xl';
+            toast.innerHTML = `
+                <i class="fa-solid fa-check-circle"></i>
+                <div>
+                    <div class="font-semibold">Pro activated in Figma!</div>
+                    <div class="text-xs opacity-90">All premium icons unlocked</div>
+                </div>
+            `;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.transition = 'all 0.4s ease';
+                toast.style.opacity = '0';
+                setTimeout(() => {
+                    toast.remove();
+                    location.reload();
+                }, 400);
+            }, 2800);
+        }
+        
+        function showProPacksModal() {
+            const packs = [
+                { name: "Startup Essentials", count: 48, price: "Included" },
+                { name: "Marketing & Growth", count: 62, price: "Included" },
+                { name: "Dark Mode UI Kit", count: 35, price: "Included" },
+                { name: "Social Media Pack", count: 41, price: "Pro" },
+            ];
+            
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black/70 flex items-end justify-center z-[100]';
+            modal.innerHTML = `
+                <div class="bg-[#1E1E1E] border-t border-[#3D3D3D] rounded-t-3xl w-full max-w-[380px] p-5">
+                    <div class="flex justify-between items-center mb-5 px-1">
+                        <div class="font-semibold">Pro Packs</div>
+                        <button onclick="this.closest('.fixed').remove()" class="text-[#8A8A8A]">✕</button>
+                    </div>
+                    
+                    <div class="space-y-2.5">
+                        ${packs.map(pack => `
+                            <div class="flex items-center justify-between bg-[#2C2C2C] px-4 py-3 rounded-2xl">
+                                <div>
+                                    <div class="font-medium">${pack.name}</div>
+                                    <div class="text-xs text-[#8A8A8A]">${pack.count} icons</div>
+                                </div>
+                                <div>
+                                    ${pack.price === 'Included' 
+                                        ? `<div class="text-emerald-400 text-xs px-3 py-1 bg-emerald-900/30 rounded-full">Included</div>` 
+                                        : `<button onclick="upgradeToPro(); this.closest('.fixed').remove()" class="text-xs px-3 py-1 bg-violet-600 rounded-full">Get Pro</button>`
+                                    }
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <div class="text-center text-[10px] text-[#8A8A8A] mt-5">Pro packs are updated monthly</div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+        
+        // Initialize
+        function initFigmaPlugin() {
+            renderFigmaIcons();
+            
+            // Search functionality
+            const searchInput = document.getElementById('figma-search');
+            searchInput.addEventListener('input', () => {
+                const query = searchInput.value.toLowerCase().trim();
+                const filtered = figmaIcons.filter(icon => 
+                    icon.name.toLowerCase().includes(query) || 
+                    icon.emoji.includes(query)
+                );
+                renderFigmaIcons(filtered);
+            });
+            
+            // Keyboard shortcut hint
+            console.log('%c[Figma Plugin] Press "/" to focus search', 'color:#666');
+        }
+        
+        window.onload = initFigmaPlugin;
+    </script>
+</body>
+</html>

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emojicon Pro — The Ultimate Icon & Emoji Toolkit</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+        
+        body { font-family: 'Inter', system_ui, sans-serif; }
+        .font-display { font-family: 'Space Grotesk', 'Inter', sans-serif; }
+        
+        .pro-gradient {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .feature-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+        
+        .pricing-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .pricing-card.popular {
+            border-color: #a855f7;
+            box-shadow: 0 0 0 1px #a855f7;
+        }
+    </style>
+</head>
+<body class="bg-zinc-950 text-white">
+    <!-- Navbar -->
+    <nav class="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-lg sticky top-0 z-50">
+        <div class="max-w-screen-2xl mx-auto px-8 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-x-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-violet-600 to-fuchsia-600 rounded-2xl flex items-center justify-center">
+                    <i class="fa-solid fa-icons text-white text-2xl"></i>
+                </div>
+                <span class="font-display text-3xl font-semibold tracking-tighter">emojicon</span>
+            </div>
+            
+            <div class="flex items-center gap-x-4">
+                <a href="web-icons-emoticons.html" class="px-6 py-2.5 text-sm hover:text-zinc-300 transition-colors">Back to Free Version</a>
+                <button onclick="document.getElementById('pricing').scrollIntoView({ behavior: 'smooth' })" 
+                        class="px-6 py-2.5 bg-white text-zinc-950 rounded-2xl text-sm font-semibold hover:bg-zinc-100 transition-all">
+                    Get Pro
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <div class="max-w-screen-2xl mx-auto px-8 pt-20 pb-16 text-center">
+        <div class="inline-flex items-center gap-x-2 px-5 py-2 bg-zinc-900 rounded-3xl border border-zinc-800 mb-8">
+            <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+            <span class="text-sm text-emerald-400 font-medium">Trusted by 12,400+ creators</span>
+        </div>
+        
+        <h1 class="font-display text-7xl leading-none tracking-tighter font-semibold max-w-4xl mx-auto">
+            The only icon &amp; emoji tool<br>you'll ever need.
+        </h1>
+        
+        <p class="mt-6 text-2xl text-zinc-400 max-w-2xl mx-auto">
+            Unlimited exports. Brand kits. AI search.<br>
+            Everything in one beautiful workspace.
+        </p>
+        
+        <div class="flex items-center justify-center gap-x-4 mt-10">
+            <button onclick="document.getElementById('pricing').scrollIntoView({ behavior: 'smooth' })" 
+                    class="px-10 py-4 bg-white text-zinc-950 rounded-3xl font-semibold text-lg hover:bg-zinc-100 transition-all flex items-center gap-x-3">
+                Start 7-day free trial
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+            
+            <a href="web-icons-emoticons.html" 
+               class="px-8 py-4 border border-zinc-700 hover:bg-zinc-900 rounded-3xl font-semibold text-lg transition-all">
+                Try Free Version
+            </a>
+        </div>
+        
+        <div class="mt-8 text-sm text-zinc-500">No credit card required • Cancel anytime</div>
+    </div>
+
+    <!-- Features -->
+    <div class="max-w-screen-2xl mx-auto px-8 py-16">
+        <div class="text-center mb-16">
+            <div class="inline-block px-4 py-1.5 bg-zinc-900 rounded-2xl text-sm mb-4">Everything you need</div>
+            <h2 class="font-display text-5xl font-semibold tracking-tight">Pro Features</h2>
+        </div>
+        
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Feature 1 -->
+            <div class="feature-card bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                <div class="w-14 h-14 bg-violet-600/20 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-palette text-3xl text-violet-400"></i>
+                </div>
+                <h3 class="text-2xl font-semibold mb-3">Brand Kit Generator</h3>
+                <p class="text-zinc-400">Instantly recolor every icon in your collection to match your brand. One click. Perfect consistency.</p>
+            </div>
+            
+            <div class="feature-card bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                <div class="w-14 h-14 bg-emerald-600/20 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-download text-3xl text-emerald-400"></i>
+                </div>
+                <h3 class="text-2xl font-semibold mb-3">Unlimited High-Res Exports</h3>
+                <p class="text-zinc-400">Export PNGs up to 2048×2048px and full SVG files. No watermarks. No limits.</p>
+            </div>
+            
+            <div class="feature-card bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                <div class="w-14 h-14 bg-amber-600/20 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-magic text-3xl text-amber-400"></i>
+                </div>
+                <h3 class="text-2xl font-semibold mb-3">AI Smart Search</h3>
+                <p class="text-zinc-400">"Show me professional food emojis for a dark UI" — natural language search across everything.</p>
+            </div>
+            
+            <div class="feature-card bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                <div class="w-14 h-14 bg-rose-600/20 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-layer-group text-3xl text-rose-400"></i>
+                </div>
+                <h3 class="text-2xl font-semibold mb-3">50+ Curated Pro Packs</h3>
+                <p class="text-zinc-400">Professionally designed collections: Startup, Marketing, Dark Mode, SaaS, Social Media, and more.</p>
+            </div>
+            
+            <div class="feature-card bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                <div class="w-14 h-14 bg-blue-600/20 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-users text-3xl text-blue-400"></i>
+                </div>
+                <h3 class="text-2xl font-semibold mb-3">Team Collections</h3>
+                <p class="text-zinc-400">Share favorites with your team. Real-time collaboration. Perfect for design systems.</p>
+            </div>
+            
+            <div class="feature-card bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                <div class="w-14 h-14 bg-purple-600/20 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-rocket text-3xl text-purple-400"></i>
+                </div>
+                <h3 class="text-2xl font-semibold mb-3">API Access</h3>
+                <p class="text-zinc-400">Pull icons and emojis programmatically. Build your own tools and integrations.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Social Proof -->
+    <div class="max-w-screen-2xl mx-auto px-8 py-12 border-y border-zinc-800">
+        <div class="flex flex-wrap justify-center items-center gap-x-16 gap-y-8 opacity-70">
+            <div class="text-xl font-medium">Vercel</div>
+            <div class="text-xl font-medium">Framer</div>
+            <div class="text-xl font-medium">Linear</div>
+            <div class="text-xl font-medium">Webflow</div>
+            <div class="text-xl font-medium">Notion</div>
+            <div class="text-xl font-medium">Figma</div>
+        </div>
+    </div>
+
+    <!-- Pricing -->
+    <div id="pricing" class="max-w-screen-2xl mx-auto px-8 py-20">
+        <div class="text-center mb-16">
+            <h2 class="font-display text-6xl font-semibold tracking-tight">Simple, transparent pricing</h2>
+            <p class="mt-4 text-xl text-zinc-400">Choose the plan that works for you</p>
+        </div>
+        
+        <div class="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            
+            <!-- Free -->
+            <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
+                <div class="font-semibold text-2xl mb-4">Free</div>
+                <div class="text-7xl font-semibold mb-8">$0</div>
+                
+                <ul class="space-y-4 mb-10">
+                    <li class="flex gap-x-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> <span>Browse 1,250+ emojis &amp; icons</span></li>
+                    <li class="flex gap-x-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> <span>Basic PNG exports</span></li>
+                    <li class="flex gap-x-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> <span>Favorites + search history</span></li>
+                    <li class="flex gap-x-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> <span>PWA install</span></li>
+                </ul>
+                
+                <a href="web-icons-emoticons.html" class="block text-center py-4 border border-zinc-700 rounded-2xl font-medium hover:bg-zinc-800 transition-colors">
+                    Use Free Forever
+                </a>
+            </div>
+            
+            <!-- Pro -->
+            <div class="bg-zinc-900 border-2 border-violet-500 rounded-3xl p-8 relative">
+                <div class="absolute -top-4 right-8 bg-violet-600 px-5 py-1 rounded-full text-sm font-semibold">MOST POPULAR</div>
+                
+                <div class="font-semibold text-2xl mb-1">Pro</div>
+                <div class="flex items-baseline mb-8">
+                    <span class="text-7xl font-semibold">$7</span>
+                    <span class="text-zinc-400 ml-1">/month</span>
+                </div>
+                
+                <ul class="space-y-4 mb-10">
+                    <li class="flex gap-x-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> <span>Everything in Free</span></li>
+                    <li class="flex gap-x-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> <span>Unlimited 2048px exports</span></li>
+                    <li class="flex gap-x-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> <span>Full SVG downloads</span></li>
+                    <li class="flex gap-x-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> <span>Brand Kit Generator</span></li>
+                    <li class="flex gap-x-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> <span>50+ Curated Pro Packs</span></li>
+                    <li class="flex gap-x-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> <span>AI Smart Search</span></li>
+                    <li class="flex gap-x-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> <span>Team Collections</span></li>
+                </ul>
+                
+                <button onclick="startTrial()" class="w-full py-4 bg-violet-600 hover:bg-violet-500 rounded-2xl font-semibold text-lg transition-all">
+                    Start 7-day free trial
+                </button>
+                <div class="text-center text-xs text-zinc-500 mt-3">Cancel anytime • 30-day money-back guarantee</div>
+            </div>
+            
+            <!-- Lifetime -->
+            <div class="bg-zinc-900 border border-zinc-700 rounded-3xl p-8">
+                <div class="font-semibold text-2xl mb-1">Lifetime</div>
+                <div class="text-7xl font-semibold mb-1">$149</div>
+                <div class="text-emerald-400 text-sm mb-8">One-time payment • Best value</div>
+                
+                <ul class="space-y-4 mb-10">
+                    <li class="flex gap-x-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> <span>Everything in Pro</span></li>
+                    <li class="flex gap-x-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> <span>Lifetime updates</span></li>
+                    <li class="flex gap-x-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> <span>Priority feature requests</span></li>
+                    <li class="flex gap-x-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> <span>Early access to new packs</span></li>
+                </ul>
+                
+                <button onclick="startTrial(true)" class="w-full py-4 bg-white text-zinc-950 hover:bg-zinc-100 rounded-2xl font-semibold text-lg transition-all">
+                    Get Lifetime Access
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="max-w-screen-2xl mx-auto px-8 pb-24">
+        <div class="max-w-2xl mx-auto">
+            <h3 class="font-display text-4xl font-semibold text-center mb-12">Frequently asked questions</h3>
+            
+            <div class="space-y-6">
+                <div class="border border-zinc-800 rounded-3xl p-6">
+                    <div class="font-medium mb-2">Can I cancel anytime?</div>
+                    <div class="text-zinc-400">Yes. Cancel your subscription at any time from your account settings. No questions asked.</div>
+                </div>
+                <div class="border border-zinc-800 rounded-3xl p-6">
+                    <div class="font-medium mb-2">What's included in the free version?</div>
+                    <div class="text-zinc-400">Full access to browse, favorite, and basic exports. Pro is only needed for unlimited high-res exports, brand tools, and team features.</div>
+                </div>
+                <div class="border border-zinc-800 rounded-3xl p-6">
+                    <div class="font-medium mb-2">Do you offer refunds?</div>
+                    <div class="text-zinc-400">Yes. 30-day money-back guarantee on all plans. No questions asked.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-zinc-800 bg-zinc-950">
+        <div class="max-w-screen-2xl mx-auto px-8 py-12 text-center text-sm text-zinc-500">
+            © 2026 Emojicon. Built with ❤️ for creators who move fast.
+        </div>
+    </footer>
+
+    <script>
+        function startTrial(isLifetime = false) {
+            const btns = document.querySelectorAll('button');
+            btns.forEach(b => b.disabled = true);
+            
+            setTimeout(() => {
+                if (isLifetime) {
+                    alert("🎉 Thank you! Lifetime access activated. Check your email for confirmation.");
+                } else {
+                    alert("🎉 Welcome to Pro! Your 7-day free trial has started. Enjoy unlimited access!");
+                }
+                
+                // Redirect to main app
+                window.location.href = 'web-icons-emoticons.html';
+            }, 1200);
+        }
+        
+        // Tailwind script
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'display': ['Space Grotesk', 'Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        };
+    </script>
+</body>
+</html>
