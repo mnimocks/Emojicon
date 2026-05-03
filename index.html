@@ -2471,15 +2471,6 @@ async function loadFavorites() {
         };
         // ==================== AUTH FUNCTIONS ====================
 
-function showAuthModal() {
-    const modal = document.getElementById('auth-modal');
-    if (modal) {
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-        switchAuthTab('login');
-    }
-}
-
 function hideAuthModal() {
     const modal = document.getElementById('auth-modal');
     if (modal) {
