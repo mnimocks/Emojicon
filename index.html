@@ -2523,7 +2523,10 @@ function initializeTailwind() {
         }
 
         // Boot the website
-        window.onload = initializeWebsite;
+window.onload = function() {
+    initSupabase();
+    initializeWebsite();
+};
         
         // Expose some functions globally for debugging
         window.Emojicon = {
