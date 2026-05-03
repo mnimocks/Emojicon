@@ -809,8 +809,6 @@ async function loadFavoritesFromCloud() {
             return favorites.has(key);
         }
         
-        }
-        
         function bulkExportVisible() {
             const visibleCards = document.querySelectorAll('#emojis-grid .icon-card, #icons-grid .icon-card');
             if (visibleCards.length === 0) {
