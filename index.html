@@ -679,23 +679,25 @@ function initializeTailwind() {
         }
         
         function toggleFavorite(key) {
-            if (favorites.has(key)) {
-                favorites.delete(key);
-            } else {
-                favorites.add(key);
-            }
-            saveFavorites();
-            
-            // Re-render current view to update heart states
-            const activeTab = document.querySelector('#emojis-section .category-tab.active');
-            if (activeTab) {
-                const cat = activeTab.getAttribute('data-category');
-                if (cat === 'all') renderEmojis();
-                else filterEmojis(cat);
-            } else {
-                renderIcons();
-            }
-        }
+    if (favorites.has(key)) {
+        favorites.delete(key);
+        removeFavoriteFromCloud(key); // Cloud sync
+    } else {
+        favorites.add(key);
+        saveFavoriteToCloud(key); // Cloud sync
+    }
+    saveFavorites(); // localStorage
+    
+    // Re-render current view
+    const activeTab = document.querySelector('#emojis-section .category-tab.active');
+    if (activeTab) {
+        const cat = activeTab.getAttribute('data-category');
+        if (cat === 'all') renderEmojis();
+        else filterEmojis(cat);
+    } else {
+        renderIcons();
+    }
+}
         
         function isFavorited(key) {
             return favorites.has(key);
@@ -2403,7 +2405,58 @@ function initializeTailwind() {
 window.onload = function() {
     initSupabase();
     initializeWebsite();
-    checkUserSession();
+    checkUserSession()
+        // ==================== CLOUD FAVORITES SYNC ====================
+
+async function saveFavoriteToCloud(key) {
+    if (!supabaseClient) return;
+    
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    if (!user) return; // Not logged in
+
+    const { error } = await supabaseClient
+        .from('favorites')
+        .insert({ 
+            user_id: user.id, 
+            item_key: key 
+        });
+
+    if (error) {
+        console.error('Error saving favorite to cloud:', error);
+    }
+}
+
+async function removeFavoriteFromCloud(key) {
+    if (!supabaseClient) return;
+    
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    if (!user) return;
+
+    const { error } = await supabaseClient
+        .from('favorites')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('item_key', key);
+
+    if (error) {
+        console.error('Error removing favorite from cloud:', error);
+    }
+}
+
+async function loadFavorites() {
+    const saved = localStorage.getItem('iconlyFavorites');
+    if (saved) {
+        favorites = new Set(JSON.parse(saved));
+    }
+
+    // Load from cloud if user is logged in
+    const cloudFavorites = await loadFavoritesFromCloud();
+    if (cloudFavorites.length > 0) {
+        cloudFavorites.forEach(key => favorites.add(key));
+        // Save merged favorites back to localStorage
+        saveFavorites();
+    }
+}
 };
         
         // Expose some functions globally for debugging
