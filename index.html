@@ -2469,6 +2469,16 @@ async function loadFavorites() {
             filterIcons,
             launchConfetti
         };
+        function showAuthModal() {
+    const modal = document.getElementById('auth-modal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        switchAuthTab('login'); // Show login tab by default
+    } else {
+        console.error('Auth modal not found!');
+    }
+}
 function showProModal() {
     const modal = document.createElement('div');
     modal.className = 'fixed inset-0 bg-black/70 flex items-center justify-center z-[200] p-4';
@@ -2702,7 +2712,7 @@ async function checkUserSession() {
             <!-- Header -->
             <div class="flex justify-between items-center mb-6">
                 <div>
-                    <div class="text-2xl font-semibold">Welcome to Emojicon</div>
+                    <div class="text-2xl font-semibold">Welcome to GetEmojicon</div>
                     <div class="text-sm text-zinc-400">Sign in or create an account</div>
                 </div>
                 <button onclick="hideAuthModal()" class="text-2xl text-zinc-400 hover:text-white">&times;</button>
