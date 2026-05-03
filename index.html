@@ -2469,14 +2469,96 @@ async function loadFavorites() {
             filterIcons,
             launchConfetti
         };
-        function showAuthModal() {
+        // ==================== AUTH FUNCTIONS ====================
+
+function showAuthModal() {
     const modal = document.getElementById('auth-modal');
     if (modal) {
         modal.classList.remove('hidden');
         modal.classList.add('flex');
-        switchAuthTab('login'); // Show login tab by default
+        switchAuthTab('login');
+    }
+}
+
+function hideAuthModal() {
+    const modal = document.getElementById('auth-modal');
+    if (modal) {
+        modal.classList.remove('flex');
+        modal.classList.add('hidden');
+    }
+}
+
+function switchAuthTab(tab) {
+    const loginForm = document.getElementById('login-form');
+    const signupForm = document.getElementById('signup-form');
+    const loginTab = document.getElementById('login-tab');
+    const signupTab = document.getElementById('signup-tab');
+
+    if (!loginForm || !signupForm) return;
+
+    if (tab === 'login') {
+        loginForm.classList.remove('hidden');
+        signupForm.classList.add('hidden');
+        if (loginTab) loginTab.classList.add('border-b-2', 'border-indigo-500', 'text-white');
+        if (signupTab) signupTab.classList.remove('border-b-2', 'border-indigo-500', 'text-white');
     } else {
-        console.error('Auth modal not found!');
+        loginForm.classList.add('hidden');
+        signupForm.classList.remove('hidden');
+        if (signupTab) signupTab.classList.add('border-b-2', 'border-indigo-500', 'text-white');
+        if (loginTab) loginTab.classList.remove('border-b-2', 'border-indigo-500', 'text-white');
+    }
+}
+
+async function loginUser() {
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+
+    if (!email || !password) {
+        showToast("Please enter email and password");
+        return;
+    }
+
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
+        email: email,
+        password: password
+    });
+
+    if (error) {
+        showToast("Login failed: " + error.message);
+    } else {
+        showToast("Logged in successfully!");
+        hideAuthModal();
+        await loadFavorites(); // Load cloud favorites
+    }
+}
+
+async function signupUser() {
+    const email = document.getElementById('signup-email').value;
+    const password = document.getElementById('signup-password').value;
+    const confirm = document.getElementById('signup-password-confirm').value;
+
+    if (password !== confirm) {
+        showToast("Passwords don't match");
+        return;
+    }
+
+    const { data, error } = await supabaseClient.auth.signUp({
+        email: email,
+        password: password
+    });
+
+    if (error) {
+        showToast("Error: " + error.message);
+    } else {
+        showVerificationSentScreen(email);
+    }
+}
+
+async function checkUserSession() {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (session) {
+        console.log('%c[Auth] User is logged in', 'color: #10b981');
+        await loadFavorites();
     }
 }
 function showProModal() {
