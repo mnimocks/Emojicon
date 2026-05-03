@@ -2562,6 +2562,42 @@ function showAuthModal() {
     document.getElementById('auth-modal').classList.add('flex');
     switchAuthTab('login');
 }
+        function showVerificationSentScreen(email) {
+    const modal = document.getElementById('auth-modal');
+    modal.innerHTML = `
+        <div class="bg-zinc-900 border border-zinc-700 rounded-3xl w-full max-w-md p-8 text-center">
+            <div class="mx-auto w-16 h-16 bg-emerald-500/10 rounded-full flex items-center justify-center mb-6">
+                <i class="fa-solid fa-envelope text-4xl text-emerald-400"></i>
+            </div>
+            
+            <h2 class="text-2xl font-semibold mb-2">Check your email</h2>
+            <p class="text-zinc-400 mb-6">We sent a verification link to <span class="font-medium text-white">${email}</span></p>
+            
+            <div class="bg-zinc-950 border border-zinc-700 rounded-2xl p-4 text-left text-sm mb-6">
+                <div class="flex items-start gap-x-3">
+                    <i class="fa-solid fa-info-circle text-indigo-400 mt-0.5"></i>
+                    <div>
+                        <div class="font-medium">Next steps:</div>
+                        <ul class="text-zinc-400 mt-2 space-y-1 text-xs">
+                            <li>• Open the email from GetEmojicon</li>
+                            <li>• Click the verification link</li>
+                            <li>• Return here and log in</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <button onclick="document.getElementById('auth-modal').remove()" 
+                    class="w-full py-3 bg-white text-zinc-950 rounded-2xl font-semibold hover:bg-zinc-200">
+                Got it
+            </button>
+            
+            <div class="mt-4 text-xs text-zinc-500">
+                Didn't receive the email? Check your spam folder
+            </div>
+        </div>
+    `;
+}
 
 function hideAuthModal() {
     document.getElementById('auth-modal').classList.remove('flex');
