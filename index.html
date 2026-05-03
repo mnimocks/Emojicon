@@ -703,28 +703,6 @@ function switchAuthTab(tab) {
         if (loginTab) loginTab.classList.remove('border-b-2', 'border-indigo-500', 'text-white');
     }
 }
-async function loginUser() {
-    const email = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
-
-    if (!email || !password) {
-        showToast("Please enter email and password");
-        return;
-    }
-
-    const { data, error } = await supabaseClient.auth.signInWithPassword({
-        email: email,
-        password: password
-    });
-
-    if (error) {
-        showToast("Login failed: " + error.message);
-    } else {
-        showToast("Logged in successfully!");
-        hideAuthModal();
-        await loadFavorites();
-    }
-}
 
 async function signupUser() {
     const email = document.getElementById('signup-email').value;
@@ -2495,29 +2473,6 @@ function hideAuthModal() {
     }
 }
 
-async function loginUser() {
-    const email = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
-
-    if (!email || !password) {
-        showToast("Please enter email and password");
-        return;
-    }
-
-    const { data, error } = await supabaseClient.auth.signInWithPassword({
-        email: email,
-        password: password
-    });
-
-    if (error) {
-        showToast("Login failed: " + error.message);
-    } else {
-        showToast("Logged in successfully!");
-        hideAuthModal();
-        await loadFavorites(); // Load cloud favorites
-    }
-}
-
 async function signupUser() {
     const email = document.getElementById('signup-email').value;
     const password = document.getElementById('signup-password').value;
@@ -2689,7 +2644,28 @@ function simulateStripeCheckout() {
         </div>
     `;
 }
+function updateNavbarForUser(isLoggedIn) {
+    const loginBtn = document.querySelector('button[onclick="showAuthModal()"]');
+    
+    if (!loginBtn) return;
 
+    if (isLoggedIn) {
+        loginBtn.innerHTML = `
+            <i class="fa-solid fa-user-circle text-lg"></i>
+            <span class="hidden md:inline ml-2">Account</span>
+        `;
+        loginBtn.onclick = () => {
+            // You can expand this later to show a dropdown
+            showToast("Account menu coming soon!");
+        };
+    } else {
+        loginBtn.innerHTML = `
+            <i class="fa-solid fa-user"></i>
+            <span>Login</span>
+        `;
+        loginBtn.onclick = showAuthModal;
+    }
+}
 function hideAuthModal() {
     document.getElementById('auth-modal').classList.remove('flex');
     document.getElementById('auth-modal').classList.add('hidden');
@@ -2730,10 +2706,11 @@ async function loginUser() {
     if (error) {
         showToast("Login failed: " + error.message);
     } else {
-        showToast("Logged in successfully!");
-        hideAuthModal();
-        // TODO: Load user's favorites from database
-    }
+    showToast("Logged in successfully!");
+    hideAuthModal();
+    updateNavbarForUser(true);     // ← This line must be here
+    await loadFavorites();
+}
 }
 
 // Check if user is already logged in when page loads
@@ -2781,9 +2758,10 @@ async function checkUserSession() {
                     </div>
                 </div>
                 <button onclick="loginUser()" 
-                        class="mt-6 w-full py-3 bg-white text-zinc-950 rounded-2xl font-semibold hover:bg-zinc-200">
-                    Login
-                </button>
+        onkeydown="if (event.key === 'Enter') loginUser()"
+        class="mt-6 w-full py-3 bg-white text-zinc-950 rounded-2xl font-semibold hover:bg-zinc-200">
+    Login
+</button>
             </div>
 
             <!-- Signup Form -->
