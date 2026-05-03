@@ -666,7 +666,104 @@ function initializeTailwind() {
                 }, 250);
             }, 1800);
         }
+// ==================== AUTH + FAVORITES (CLEAN VERSION) ====================
 
+function showAuthModal() {
+    const modal = document.getElementById('auth-modal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        switchAuthTab('login');
+    }
+}
+
+function hideAuthModal() {
+    const modal = document.getElementById('auth-modal');
+    if (modal) {
+        modal.classList.remove('flex');
+        modal.classList.add('hidden');
+    }
+}
+
+function switchAuthTab(tab) {
+    const loginForm = document.getElementById('login-form');
+    const signupForm = document.getElementById('signup-form');
+    const loginTab = document.getElementById('login-tab');
+    const signupTab = document.getElementById('signup-tab');
+
+    if (!loginForm || !signupForm) return;
+
+    if (tab === 'login') {
+        loginForm.classList.remove('hidden');
+        signupForm.classList.add('hidden');
+        if (loginTab) loginTab.classList.add('border-b-2', 'border-indigo-500', 'text-white');
+        if (signupTab) signupTab.classList.remove('border-b-2', 'border-indigo-500', 'text-white');
+    } else {
+        loginForm.classList.add('hidden');
+        signupForm.classList.remove('hidden');
+        if (signupTab) signupTab.classList.add('border-b-2', 'border-indigo-500', 'text-white');
+        if (loginTab) loginTab.classList.remove('border-b-2', 'border-indigo-500', 'text-white');
+    }
+}
+
+async function loginUser() {
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+
+    if (!email || !password) {
+        showToast("Please enter email and password");
+        return;
+    }
+
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
+        email: email,
+        password: password
+    });
+
+    if (error) {
+        showToast("Login failed: " + error.message);
+    } else {
+        showToast("Logged in successfully!");
+        hideAuthModal();
+        await loadFavorites();
+    }
+}
+
+async function signupUser() {
+    const email = document.getElementById('signup-email').value;
+    const password = document.getElementById('signup-password').value;
+    const confirm = document.getElementById('signup-password-confirm').value;
+
+    if (password !== confirm) {
+        showToast("Passwords don't match");
+        return;
+    }
+
+    const { data, error } = await supabaseClient.auth.signUp({
+        email: email,
+        password: password
+    });
+
+    if (error) {
+        showToast("Error: " + error.message);
+    } else {
+        showVerificationSentScreen(email);
+    }
+}
+
+async function loadFavoritesFromCloud() {
+    if (!supabaseClient) return [];
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    if (!user) return [];
+
+    const { data, error } = await supabaseClient
+        .from('favorites')
+        .select('item_key')
+        .eq('user_id', user.id);
+
+    if (error) return [];
+    return data.map(row => row.item_key);
+}
         function exportIconAsSVG(iconClass, name) {
             const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><text x="12" y="18" font-size="20" text-anchor="middle" font-family="Font Awesome 6 Free">${iconClass}</text></svg>`;
             // Better: provide a ready-to-use snippet
@@ -715,83 +812,7 @@ function initializeTailwind() {
             return favorites.has(key);
         }
         
-        async function showFavorites() {
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    
-    if (!session) {
-        const toast = document.getElementById('toast');
-        document.getElementById('toast-text').innerHTML = 'Please login to view your favorites';
-        toast.style.display = 'flex';
-        setTimeout(() => {
-            toast.style.transition = 'all 0.3s ease';
-            toast.style.opacity = '0';
-            setTimeout(() => {
-                toast.style.opacity = '1';
-                toast.style.transition = '';
-                toast.style.display = 'none';
-            }, 250);
-        }, 2500);
-        return;
-    }
-
-    const container = document.getElementById('emojis-grid');
-    container.innerHTML = '';
-    
-    const cloudKeys = await loadFavoritesFromCloud();
-    const localKeys = JSON.parse(localStorage.getItem('iconlyFavorites') || '[]');
-    const allKeys = [...new Set([...cloudKeys, ...localKeys])];
-    
-    const favoritedItems = emojiData.filter(item => 
-        allKeys.includes(item.emoji || item.name)
-    );
-
-    if (favoritedItems.length === 0) {
-        container.innerHTML = `
-            <div class="col-span-full text-center py-16">
-                <i class="fa-solid fa-heart text-6xl text-rose-400 mb-4"></i>
-                <h3 class="text-2xl font-semibold mb-2">No favorites yet</h3>
-                <p class="text-zinc-500">Click the heart on any emoji or icon to save it here</p>
-            </div>
-        `;
-        return;
-    }
-
-    favoritedItems.forEach(item => {
-        const card = document.createElement('div');
-        card.className = `icon-card bg-zinc-900 border border-zinc-800 hover:border-rose-500/50 rounded-3xl p-4 flex flex-col items-center justify-start cursor-pointer group min-h-[168px] relative`;
-        
-        let content = item.isCustom ? 
-            `<svg class="texas-flag" viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg"><rect width="120" height="80" fill="#002868"/><rect x="40" width="80" height="80" fill="#ffffff"/><rect x="40" y="40" width="80" height="40" fill="#bf0a30"/><polygon points="20,40 25,28 30,40 25,52" fill="#ffffff"/></svg>` : 
-            (item.emoji ? `<div class="emoji mb-2.5">${item.emoji}</div>` : `<i class="${item.class} text-4xl text-indigo-400 mb-3"></i>`);
-        
-        card.innerHTML = `
-            ${content}
-            <div class="text-center w-full px-2">
-                <div class="font-medium text-xs text-zinc-200 leading-tight line-clamp-2">${item.name}</div>
-            </div>
-            <div class="mt-2 flex gap-x-1">
-                <div onclick="event.stopImmediatePropagation(); copyToClipboard('${item.emoji || item.code || 'Item'}', '${item.name}')" class="export-btn bg-zinc-800 text-indigo-400 px-2 py-0.5 rounded-xl text-[9px]">
-                    <i class="fa-solid fa-copy mr-1"></i> Copy
-                </div>
-                <div onclick="event.stopImmediatePropagation(); exportToPNG(this.closest('.icon-card'), '${item.name}', '${item.isCustom ? 'texas' : (item.emoji ? 'emoji' : 'icon')}')" class="export-btn bg-zinc-800 text-emerald-400 px-2 py-0.5 rounded-xl text-[9px]">
-                    <i class="fa-solid fa-download mr-1"></i> PNG
-                </div>
-            </div>
-        `;
-        
-        const heart = document.createElement('div');
-        heart.className = `heart-btn favorited`;
-        heart.innerHTML = `<i class="fa-solid fa-heart"></i>`;
-        heart.onclick = (e) => {
-            e.stopImmediatePropagation();
-            toggleFavorite(item.emoji || item.name || item.class);
-        };
-        card.appendChild(heart);
-        
-        container.appendChild(card);
-    });
-}
-}
+        }
         
         function bulkExportVisible() {
             const visibleCards = document.querySelectorAll('#emojis-grid .icon-card, #icons-grid .icon-card');
@@ -2658,11 +2679,6 @@ function simulateStripeCheckout() {
 }
     // ==================== AUTHENTICATION ====================
 
-function showAuthModal() {
-    document.getElementById('auth-modal').classList.remove('hidden');
-    document.getElementById('auth-modal').classList.add('flex');
-    switchAuthTab('login');
-}
         function showVerificationSentScreen(email) {
     const modal = document.getElementById('auth-modal');
     modal.innerHTML = `
