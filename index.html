@@ -2590,6 +2590,91 @@ function simulateStripeCheckout() {
         success.style.opacity = '0';
         setTimeout(() => success.remove(), 400);
     }, 3000);
+}
+    // ==================== AUTHENTICATION ====================
+
+function showAuthModal() {
+    document.getElementById('auth-modal').classList.remove('hidden');
+    document.getElementById('auth-modal').classList.add('flex');
+    switchAuthTab('login');
+}
+
+function hideAuthModal() {
+    document.getElementById('auth-modal').classList.remove('flex');
+    document.getElementById('auth-modal').classList.add('hidden');
+}
+
+function switchAuthTab(tab) {
+    const loginForm = document.getElementById('login-form');
+    const signupForm = document.getElementById('signup-form');
+    const loginTab = document.getElementById('login-tab');
+    const signupTab = document.getElementById('signup-tab');
+
+    if (tab === 'login') {
+        loginForm.classList.remove('hidden');
+        signupForm.classList.add('hidden');
+        loginTab.classList.add('border-b-2', 'border-indigo-500', 'text-white');
+        loginTab.classList.remove('text-zinc-400');
+        signupTab.classList.remove('border-b-2', 'border-indigo-500', 'text-white');
+        signupTab.classList.add('text-zinc-400');
+    } else {
+        loginForm.classList.add('hidden');
+        signupForm.classList.remove('hidden');
+        signupTab.classList.add('border-b-2', 'border-indigo-500', 'text-white');
+        signupTab.classList.remove('text-zinc-400');
+        loginTab.classList.remove('border-b-2', 'border-indigo-500', 'text-white');
+        loginTab.classList.add('text-zinc-400');
+    }
+}
+
+async function signupUser() {
+    const email = document.getElementById('signup-email').value;
+    const password = document.getElementById('signup-password').value;
+    const confirm = document.getElementById('signup-password-confirm').value;
+
+    if (password !== confirm) {
+        showToast("Passwords don't match");
+        return;
+    }
+
+    const { data, error } = await supabaseClient.auth.signUp({
+        email: email,
+        password: password
+    });
+
+    if (error) {
+        showToast("Error: " + error.message);
+    } else {
+        showToast("Account created! Please check your email to confirm.");
+        hideAuthModal();
+    }
+}
+
+async function loginUser() {
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
+        email: email,
+        password: password
+    });
+
+    if (error) {
+        showToast("Login failed: " + error.message);
+    } else {
+        showToast("Logged in successfully!");
+        hideAuthModal();
+        // TODO: Load user's favorites from database
+    }
+}
+
+// Check if user is already logged in when page loads
+async function checkUserSession() {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (session) {
+        console.log('%c[Auth] User is logged in', 'color: #10b981');
+        // TODO: Load cloud favorites here later
+    }
 }</script>
     
 <!-- Auth Modal -->
