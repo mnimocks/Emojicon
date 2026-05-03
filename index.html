@@ -457,7 +457,17 @@
 
     <script>
         // Tailwind script
-        function initializeTailwind() {
+const SUPABASE_URL = 'https://xljsrkreacyfdhdnsfix.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_UjLxFDvKSWf1ahkKtiQgGA_x4FP5MJr';
+
+let supabaseClient = null;
+
+function initSupabase() {
+    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    console.log('%c[Supabase] Connected successfully', 'color: #10b981');
+}
+
+function initializeTailwind() {
             document.documentElement.style.setProperty('--accent', '#6366f1');
             
             // Tailwind config
