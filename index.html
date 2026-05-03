@@ -2520,7 +2520,62 @@
             filterIcons,
             launchConfetti
         };
-    </script>
+    function showProModal() {
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black/70 flex items-center justify-center z-[200] p-4';
+    modal.innerHTML = `
+        <div class="bg-zinc-900 border border-zinc-700 rounded-3xl w-full max-w-md">
+            <div class="p-8">
+                <div class="flex items-center gap-x-3 mb-6">
+                    <i class="fa-solid fa-crown text-3xl text-amber-400"></i>
+                    <div>
+                        <div class="text-2xl font-semibold">Emojicon Pro</div>
+                        <div class="text-sm text-zinc-400">Unlock premium features</div>
+                    </div>
+                </div>
+                
+                <div class="space-y-4">
+                    <div class="bg-zinc-950 p-4 rounded-2xl">
+                        <div class="font-semibold">Pro Monthly — $7/month</div>
+                        <div class="text-xs text-zinc-400">Unlimited exports • Brand kits • Team features</div>
+                    </div>
+                    
+                    <div class="bg-zinc-950 p-4 rounded-2xl">
+                        <div class="font-semibold">Lifetime — $149 one-time</div>
+                        <div class="text-xs text-zinc-400">Everything in Pro + lifetime updates</div>
+                    </div>
+                </div>
+                
+                <button onclick="simulateStripeCheckout()" 
+                        class="mt-6 w-full py-3 bg-white text-zinc-950 rounded-2xl font-semibold">
+                    Start 7-day free trial
+                </button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+function simulateStripeCheckout() {
+    document.querySelectorAll('.fixed.inset-0').forEach(el => el.remove());
+    
+    const success = document.createElement('div');
+    success.className = 'fixed bottom-8 left-1/2 -translate-x-1/2 bg-emerald-600 text-white px-8 py-4 rounded-3xl flex items-center gap-x-3 z-[300]';
+    success.innerHTML = `
+        <i class="fa-solid fa-check-circle text-xl"></i>
+        <div>
+            <div class="font-semibold">Welcome to Pro!</div>
+            <div class="text-xs opacity-90">All premium features unlocked (demo mode)</div>
+        </div>
+    `;
+    document.body.appendChild(success);
+    
+    setTimeout(() => {
+        success.style.transition = 'all 0.4s ease';
+        success.style.opacity = '0';
+        setTimeout(() => success.remove(), 400);
+    }, 3000);
+}</script>
     
 </body>
 </html>
