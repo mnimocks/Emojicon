@@ -2645,9 +2645,9 @@ async function signupUser() {
     if (error) {
         showToast("Error: " + error.message);
     } else {
-        showToast("Account created! Please check your email to confirm.");
-        hideAuthModal();
-    }
+    const email = document.getElementById('signup-email').value;
+    showVerificationSentScreen(email);
+}
 }
 
 async function loginUser() {
