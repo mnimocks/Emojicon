@@ -714,11 +714,9 @@ function initializeTailwind() {
     const { data: { session } } = await supabaseClient.auth.getSession();
     
     if (!session) {
-        // Not logged in - show friendly message
         const toast = document.getElementById('toast');
         document.getElementById('toast-text').innerHTML = 'Please login to view your favorites';
         toast.style.display = 'flex';
-        
         setTimeout(() => {
             toast.style.transition = 'all 0.3s ease';
             toast.style.opacity = '0';
@@ -731,11 +729,63 @@ function initializeTailwind() {
         return;
     }
 
-    // User is logged in - show favorites (your existing code)
     const container = document.getElementById('emojis-grid');
     container.innerHTML = '';
     
-    // ... rest of your favorites rendering code stays the same ...
+    const cloudKeys = await loadFavoritesFromCloud();
+    const localKeys = JSON.parse(localStorage.getItem('iconlyFavorites') || '[]');
+    const allKeys = [...new Set([...cloudKeys, ...localKeys])];
+    
+    const favoritedItems = emojiData.filter(item => 
+        allKeys.includes(item.emoji || item.name)
+    );
+
+    if (favoritedItems.length === 0) {
+        container.innerHTML = `
+            <div class="col-span-full text-center py-16">
+                <i class="fa-solid fa-heart text-6xl text-rose-400 mb-4"></i>
+                <h3 class="text-2xl font-semibold mb-2">No favorites yet</h3>
+                <p class="text-zinc-500">Click the heart on any emoji or icon to save it here</p>
+            </div>
+        `;
+        return;
+    }
+
+    favoritedItems.forEach(item => {
+        const card = document.createElement('div');
+        card.className = `icon-card bg-zinc-900 border border-zinc-800 hover:border-rose-500/50 rounded-3xl p-4 flex flex-col items-center justify-start cursor-pointer group min-h-[168px] relative`;
+        
+        let content = item.isCustom ? 
+            `<svg class="texas-flag" viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg"><rect width="120" height="80" fill="#002868"/><rect x="40" width="80" height="80" fill="#ffffff"/><rect x="40" y="40" width="80" height="40" fill="#bf0a30"/><polygon points="20,40 25,28 30,40 25,52" fill="#ffffff"/></svg>` : 
+            (item.emoji ? `<div class="emoji mb-2.5">${item.emoji}</div>` : `<i class="${item.class} text-4xl text-indigo-400 mb-3"></i>`);
+        
+        card.innerHTML = `
+            ${content}
+            <div class="text-center w-full px-2">
+                <div class="font-medium text-xs text-zinc-200 leading-tight line-clamp-2">${item.name}</div>
+            </div>
+            <div class="mt-2 flex gap-x-1">
+                <div onclick="event.stopImmediatePropagation(); copyToClipboard('${item.emoji || item.code || 'Item'}', '${item.name}')" class="export-btn bg-zinc-800 text-indigo-400 px-2 py-0.5 rounded-xl text-[9px]">
+                    <i class="fa-solid fa-copy mr-1"></i> Copy
+                </div>
+                <div onclick="event.stopImmediatePropagation(); exportToPNG(this.closest('.icon-card'), '${item.name}', '${item.isCustom ? 'texas' : (item.emoji ? 'emoji' : 'icon')}')" class="export-btn bg-zinc-800 text-emerald-400 px-2 py-0.5 rounded-xl text-[9px]">
+                    <i class="fa-solid fa-download mr-1"></i> PNG
+                </div>
+            </div>
+        `;
+        
+        const heart = document.createElement('div');
+        heart.className = `heart-btn favorited`;
+        heart.innerHTML = `<i class="fa-solid fa-heart"></i>`;
+        heart.onclick = (e) => {
+            e.stopImmediatePropagation();
+            toggleFavorite(item.emoji || item.name || item.class);
+        };
+        card.appendChild(heart);
+        
+        container.appendChild(card);
+    });
+}
 }
         
         function bulkExportVisible() {
