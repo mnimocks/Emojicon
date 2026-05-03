@@ -2651,7 +2651,7 @@ async function checkUserSession() {
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (session) {
         console.log('%c[Auth] User is logged in', 'color: #10b981');
-        // TODO: Load cloud favorites here later
+        await loadFavorites(); // Load cloud favorites
     }
 }</script>
     
