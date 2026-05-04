@@ -751,14 +751,14 @@ async function loadFavoritesFromCloud() {
         // Favorites system
         let favorites = new Set();
         
-      async function loadFavorites() {
+        function loadFavorites() {
             const saved = localStorage.getItem('iconlyFavorites');
             if (saved) {
                 favorites = new Set(JSON.parse(saved));
             }
         }
         
-       async function saveFavorites() {
+        function saveFavorites() {
             localStorage.setItem('iconlyFavorites', JSON.stringify([...favorites]));
         }
         
@@ -2299,7 +2299,7 @@ card.appendChild(heart);
         }
 
         // Initialize everything
-       async function initializeWebsite() {
+        function initializeWebsite() {
             initializeTailwind();
             setupDarkMode();
             loadFavorites(); // Load favorites from localStorage
@@ -2367,41 +2367,41 @@ card.appendChild(heart);
         }
 
         function launchConfetti() {
-            const colors = ['#6366f1', '#a855f7', '#ec4899', '#f43f5e'];
-            for (let i = 0; i < 80; i++) {
-                setTimeout(() => {
-                    const confetto = document.createElement('div');
-                    confetto.style.position = 'fixed';
-                    confetto.style.left = Math.random() * 100 + 'vw';
-                    confetto.style.top = '-20px';
-                    confetto.style.width = '12px';
-                    confetto.style.height = '12px';
-                    confetto.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                    confetto.style.borderRadius = Math.random() > 0.5 ? '50%' : '3px';
-                    confetto.style.zIndex = '99999';
-                    confetto.style.opacity = Math.random() + 0.4;
-                    confetto.style.pointerEvents = 'none';
-                    document.body.appendChild(confetto);
-                    
-                    const duration = Math.random() * 3 + 2.5;
-                    const angle = Math.random() * 60 - 30;
-                    
-                    confetto.animate([
-                        { 
-                            transform: `translateY(0) rotate(0deg)`,
-                            opacity: confetto.style.opacity 
-                        },
-                        { 
-                            transform: `translateY(${window.innerHeight + 100}px) rotate(${angle * 8}deg)`,
-                            opacity: 0 
-                        }
-                    ], {
-                        duration: duration * 1000,
-                        easing: 'cubic-bezier(0.22, 1, 0.36, 1)'
-                    }).onfinish = () => confetto.remove();
-                }, i * 1.2);
-            }
-        }
+    const colors = ['#6366f1', '#a855f7', '#ec4899', '#f43f5e'];
+    for (let i = 0; i < 80; i++) {
+        setTimeout(() => {
+            const confetto = document.createElement('div');
+            confetto.style.position = 'fixed';
+            confetto.style.left = Math.random() * 100 + 'vw';
+            confetto.style.top = '-20px';
+            confetto.style.width = '12px';
+            confetto.style.height = '12px';
+            confetto.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            confetto.style.borderRadius = Math.random() > 0.5 ? '50%' : '3px';
+            confetto.style.zIndex = '99999';
+            confetto.style.opacity = Math.random() + 0.4;
+            confetto.style.pointerEvents = 'none';
+            document.body.appendChild(confetto);
+            
+            const duration = Math.random() * 3 + 2.5;
+            const angle = Math.random() * 60 - 30;
+            
+            confetto.animate([
+                { 
+                    transform: `translateY(0) rotate(0deg)`,
+                    opacity: confetto.style.opacity 
+                },
+                { 
+                    transform: `translateY(${window.innerHeight + 100}px) rotate(${angle * 8}deg)`,
+                    opacity: 0 
+                }
+            ], {
+                duration: duration * 1000,
+                easing: 'cubic-bezier(0.22, 1, 0.36, 1)'
+            }).onfinish = () => confetto.remove();
+        }, i * 1.2);
+    }
+}
 
         // Boot the website
     if (!supabaseClient) return;
