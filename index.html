@@ -729,7 +729,52 @@
                 await loadFavorites();
             }
         }
+// ==================== SEARCH HISTORY ====================
+let searchHistory = [];
 
+function loadSearchHistory() {
+    const saved = localStorage.getItem('iconlySearchHistory');
+    if (saved) searchHistory = JSON.parse(saved);
+}
+
+function saveSearchHistory(query) {
+    if (!query || query.length < 2) return;
+    searchHistory = searchHistory.filter(q => q !== query);
+    searchHistory.unshift(query);
+    searchHistory = searchHistory.slice(0, 8);
+    localStorage.setItem('iconlySearchHistory', JSON.stringify(searchHistory));
+}
+
+function showSearchHistory() {
+    const dropdown = document.getElementById('search-history');
+    if (!dropdown || searchHistory.length === 0) return;
+
+    dropdown.innerHTML = searchHistory.map((query, i) => `
+        <div onclick="useSearchHistory('${query}'); event.target.closest('#search-history').classList.add('hidden')" 
+             class="px-4 py-2 hover:bg-zinc-800 cursor-pointer flex items-center gap-x-2 text-sm">
+            <i class="fa-solid fa-history text-zinc-500 w-4"></i>
+            <span>${query}</span>
+        </div>
+    `).join('');
+    dropdown.classList.remove('hidden');
+
+    setTimeout(() => {
+        document.addEventListener('click', function handler(e) {
+            if (!dropdown.contains(e.target)) {
+                dropdown.classList.add('hidden');
+                document.removeEventListener('click', handler);
+            }
+        }, { once: true });
+    }, 100);
+}
+
+function useSearchHistory(query) {
+    const input = document.getElementById('global-search');
+    input.value = query;
+    const event = new Event('input');
+    input.dispatchEvent(event);
+    document.getElementById('search-history').classList.add('hidden');
+}
         // ==================== INITIALIZE WEBSITE ====================
         function initializeWebsite() {
             initializeTailwind();
