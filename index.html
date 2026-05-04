@@ -2790,7 +2790,14 @@ async function checkUserSession() {
         await loadFavorites();
     }
 }
-                </script>
+
+// ==================== FINAL INITIALIZATION ====================
+window.onload = function() {
+    initSupabase();
+    initializeWebsite();
+    checkUserSession();
+};
+</script>
     
 <!-- Auth Modal -->
 <div id="auth-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[300] p-4">
