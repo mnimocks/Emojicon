@@ -2404,13 +2404,13 @@ card.appendChild(heart);
         }
 
         // Boot the website
+// ==================== FINAL INITIALIZATION ====================
 window.onload = function() {
     initSupabase();
     initializeWebsite();
-    checkUserSession()
-        // ==================== CLOUD FAVORITES SYNC ====================
-
-async function saveFavoriteToCloud(key) {
+    checkUserSession();
+};
+</script>
     if (!supabaseClient) return;
     
     const { data: { user } } = await supabaseClient.auth.getUser();
