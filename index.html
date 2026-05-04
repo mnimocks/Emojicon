@@ -751,14 +751,14 @@ async function loadFavoritesFromCloud() {
         // Favorites system
         let favorites = new Set();
         
-        function loadFavorites() {
+      async function loadFavorites() {
             const saved = localStorage.getItem('iconlyFavorites');
             if (saved) {
                 favorites = new Set(JSON.parse(saved));
             }
         }
         
-        function saveFavorites() {
+       async function saveFavorites() {
             localStorage.setItem('iconlyFavorites', JSON.stringify([...favorites]));
         }
         
@@ -2299,7 +2299,7 @@ card.appendChild(heart);
         }
 
         // Initialize everything
-        function initializeWebsite() {
+       async function initializeWebsite() {
             initializeTailwind();
             setupDarkMode();
             loadFavorites(); // Load favorites from localStorage
