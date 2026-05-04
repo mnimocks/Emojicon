@@ -2787,9 +2787,10 @@ async function checkUserSession() {
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (session) {
         console.log('%c[Auth] User is logged in', 'color: #10b981');
-        await loadFavorites(); // Load cloud favorites
+        await loadFavorites();
     }
-}</script>
+}
+                </script>
     
 <!-- Auth Modal -->
 <div id="auth-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[300] p-4">
