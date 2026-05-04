@@ -3,44 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GetEmojicon • Icons &amp; Emojis Explorer</title>
+    <title>GetEmojicon • Icons & Emojis Explorer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
-        
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Space+Grotesk:wght@500;600&display=swap');
         :root { --primary: #6366f1; }
         body { font-family: 'Inter', system_ui, sans-serif; }
         .font-display { font-family: 'Space Grotesk', 'Inter', sans-serif; font-weight: 600; }
-
         .icon-card {
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
         }
         .icon-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.15), 0 10px 10px -5px rgb(0 0 0 / 0.1);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.15);
             border-color: #6366f1;
         }
-
-        .section-header { font-size: 1.75rem; line-height: 2rem; font-weight: 700; letter-spacing: -0.025em; }
         .emoji { font-size: 2.5rem; line-height: 1; transition: transform 0.2s ease; }
         .icon-card:hover .emoji { transform: scale(1.15); }
-
-        .category-tab { transition: all 0.2s ease; }
-        .category-tab.active { background-color: #6366f1; color: white; box-shadow: 0 10px 15px -3px rgb(99 102 241 / 0.3); }
-
-        .line-clamp-2 {
-            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
-            overflow: hidden; text-overflow: ellipsis;
-        }
-        .emoji-card-text { min-height: 42px; }
-
-        .export-btn { transition: all 0.1s ease; font-size: 9px; padding: 1px 6px; }
-        .export-btn:hover { background-color: #6366f1; color: white; transform: scale(1.05); }
-
-        .texas-flag { width: 64px; height: 42px; border-radius: 6px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.2); margin-bottom: 8px; }
-
         .heart-btn {
             position: absolute; top: 8px; right: 8px; width: 26px; height: 26px;
             display: flex; align-items: center; justify-content: center;
@@ -49,12 +30,7 @@
         }
         .heart-btn:hover { background: rgba(239, 68, 68, 0.2); transform: scale(1.1); }
         .heart-btn.favorited { color: #ef4444; }
-
-        .bulk-btn {
-            background: linear-gradient(135deg, #6366f1, #a855f7);
-            color: white; font-weight: 600;
-            box-shadow: 0 10px 15px -3px rgb(99 102 241 / 0.3);
-        }
+        .export-btn { transition: all 0.1s ease; font-size: 9px; padding: 1px 6px; }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -62,228 +38,43 @@
 
     <!-- Navbar -->
     <nav class="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-lg sticky top-0 z-50">
-        <div class="max-w-screen-2xl mx-auto">
-            <div class="px-8 py-5 flex items-center justify-between">
-                <div class="flex items-center gap-x-4">
-                    <div class="flex items-center gap-x-3">
-                        <div class="w-11 h-11 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
-                            <i class="fa-solid fa-icons text-white text-3xl"></i>
-                        </div>
-                        <div>
-                            <span class="font-display text-3xl font-semibold tracking-tighter">GetEmojicon</span>
-                            <span class="text-[10px] font-mono text-zinc-500 tracking-[3px] block -mt-1">v4.0</span>
-                        </div>
+        <div class="max-w-screen-2xl mx-auto px-8 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-x-4">
+                <div class="flex items-center gap-x-3">
+                    <div class="w-11 h-11 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
+                        <i class="fa-solid fa-icons text-white text-3xl"></i>
+                    </div>
+                    <div>
+                        <span class="font-display text-3xl font-semibold tracking-tighter">GetEmojicon</span>
+                        <span class="text-[10px] font-mono text-zinc-500 tracking-[3px] block -mt-1">v4.0</span>
                     </div>
                 </div>
-
-                <div class="flex items-center gap-x-4">
-                    <!-- Search -->
-                    <div class="relative w-80 hidden md:block">
-                        <input id="global-search" type="text" placeholder="Search icons, emojis, symbols..."
-                               class="w-full bg-zinc-900 border border-zinc-800 focus:border-indigo-500 text-sm rounded-3xl pl-12 py-3 outline-none placeholder:text-zinc-500"
-                               onfocus="showSearchHistory()">
-                        <i class="fa-solid fa-search absolute left-5 top-4 text-zinc-500"></i>
-                        <div id="search-history" class="hidden absolute top-full left-0 mt-2 w-full bg-zinc-900 border border-zinc-700 rounded-3xl shadow-xl z-50 py-2 text-sm"></div>
-                    </div>
-
-                    <div class="hidden lg:flex items-center gap-x-2 px-4 py-1.5 bg-zinc-900 rounded-3xl text-xs border border-zinc-800">
-                        <div class="flex items-center gap-x-1.5">
-                            <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-                            <span class="font-mono text-emerald-400">1,284</span>
-                            <span class="text-zinc-500">icons</span>
-                        </div>
-                    </div>
-
-                    <!-- Login Button -->
-                    <button onclick="showAuthModal()" 
-                            class="px-5 py-2.5 text-sm font-semibold bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 hover:border-indigo-500 rounded-3xl flex items-center gap-x-2 transition-all">
-                        <i class="fa-solid fa-user"></i>
-                        <span>Login</span>
-                    </button>
-
-                    <!-- Favorites -->
-                    <button onclick="showFavorites()" 
-                            class="w-11 h-11 flex items-center justify-center bg-zinc-900 hover:bg-rose-600/20 border border-zinc-800 hover:border-rose-500 rounded-3xl transition-all group">
-                        <i class="fa-solid fa-heart text-lg text-rose-400 group-hover:scale-110 transition-transform"></i>
-                    </button>
-
-                    <!-- Bulk Export -->
-                    <button onclick="bulkExportVisible()" 
-                            class="bulk-btn px-5 py-2.5 text-sm rounded-3xl flex items-center gap-x-2 hover:scale-[1.02] transition-all">
-                        <i class="fa-solid fa-download"></i>
-                        <span class="hidden md:inline">Bulk Export</span>
-                    </button>
-
-                    <!-- Go Pro -->
-                    <button onclick="showProModal()" 
-                            class="px-5 py-2.5 text-sm font-semibold bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 rounded-3xl flex items-center gap-x-2 transition-all">
-                        <i class="fa-solid fa-crown"></i>
-                        <span>Go Pro</span>
-                    </button>
-
-                    <!-- Dark Mode Toggle -->
-                    <button id="dark-toggle" class="w-11 h-11 flex items-center justify-center bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-3xl transition-colors">
-                        <i class="fa-solid fa-moon text-lg"></i>
-                    </button>
-
-                    <!-- GitHub -->
-                    <a href="https://github.com" target="_blank" class="w-11 h-11 flex items-center justify-center bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-3xl transition-colors">
-                        <i class="fa-brands fa-github text-xl"></i>
-                    </a>
-                </div>
+            </div>
+            <div class="flex items-center gap-x-4">
+                <button onclick="showAuthModal()" class="px-5 py-2.5 text-sm font-semibold bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 hover:border-indigo-500 rounded-3xl flex items-center gap-x-2 transition-all">
+                    <i class="fa-solid fa-user"></i><span>Login</span>
+                </button>
+                <button onclick="showFavorites()" class="w-11 h-11 flex items-center justify-center bg-zinc-900 hover:bg-rose-600/20 border border-zinc-800 hover:border-rose-500 rounded-3xl transition-all group">
+                    <i class="fa-solid fa-heart text-lg text-rose-400 group-hover:scale-110 transition-transform"></i>
+                </button>
+                <button onclick="bulkExportVisible()" class="px-5 py-2.5 text-sm font-semibold bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 rounded-3xl flex items-center gap-x-2 transition-all">
+                    <i class="fa-solid fa-download"></i><span>Bulk Export</span>
+                </button>
             </div>
         </div>
     </nav>
 
-    <!-- Hero -->
-    <div class="max-w-screen-2xl mx-auto px-8 pt-16 pb-12">
-        <div class="max-w-3xl">
-            <div class="inline-flex items-center gap-x-2 px-4 py-1.5 bg-zinc-900 rounded-3xl border border-zinc-800 mb-6">
-                <div class="px-3 py-0.5 bg-emerald-500/10 text-emerald-400 text-xs font-medium rounded-2xl flex items-center gap-x-1.5">
-                    <i class="fa-solid fa-check-double"></i>
-                    <span>Updated Jan 2026</span>
-                </div>
-                <span class="text-xs text-zinc-500">• Free for personal &amp; commercial use</span>
-            </div>
-            
-            <h1 class="font-display text-7xl leading-[1.05] tracking-tighter font-semibold">
-                The ultimate<br>collection of<br>web icons &amp;<br>emoticons.
-            </h1>
-            <p class="mt-6 text-xl text-zinc-400 max-w-md">
-                The ultimate free explorer for icons, emojis &amp; emoticons.<br>
-                Search • Favorite • Export • Share • Install.
-            </p>
-            
-            <div class="flex items-center gap-x-4 mt-8">
-                <button onclick="document.getElementById('emojis-section').scrollIntoView({ behavior: 'smooth' })" 
-                        class="px-8 py-4 bg-white text-zinc-950 rounded-3xl font-semibold flex items-center gap-x-3 hover:bg-zinc-100 transition-all active:scale-[0.985]">
-                    <span>Browse Emojis</span>
-                    <i class="fa-solid fa-arrow-right"></i>
-                </button>
-                
-                <button onclick="document.getElementById('icons-section').scrollIntoView({ behavior: 'smooth' })" 
-                        class="px-8 py-4 bg-zinc-900 border border-zinc-700 hover:bg-zinc-800 rounded-3xl font-semibold flex items-center gap-x-3 transition-all">
-                    <span>View All Icons</span>
-                </button>
-            </div>
-            
-            <div class="flex items-center gap-x-8 mt-10 text-sm">
-                <div class="flex -space-x-2">
-                    <div class="w-8 h-8 bg-zinc-700 rounded-full border-2 border-zinc-950 flex items-center justify-center text-xs">👋</div>
-                    <div class="w-8 h-8 bg-zinc-700 rounded-full border-2 border-zinc-950 flex items-center justify-center text-xs">🚀</div>
-                    <div class="w-8 h-8 bg-zinc-700 rounded-full border-2 border-zinc-950 flex items-center justify-center text-xs">💎</div>
-                </div>
-                <div class="text-zinc-500 text-sm">Used by <span class="font-semibold text-white">84,291</span> developers</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quick Stats -->
-    <div class="max-w-screen-2xl mx-auto px-8 pb-16">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-6">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <div class="text-4xl font-semibold stat-number">1,284</div>
-                        <div class="text-zinc-500 mt-1">Total Icons</div>
-                    </div>
-                    <i class="fa-solid fa-layer-group text-4xl text-indigo-400/70"></i>
-                </div>
-            </div>
-            <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-6">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <div class="text-4xl font-semibold stat-number">1,250+</div>
-                        <div class="text-zinc-500 mt-1">Emojis</div>
-                    </div>
-                    <i class="fa-solid fa-face-smile text-4xl text-amber-400/70"></i>
-                </div>
-            </div>
-            <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-6">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <div class="text-4xl font-semibold stat-number">312</div>
-                        <div class="text-zinc-500 mt-1">SVG Ready</div>
-                    </div>
-                    <i class="fa-solid fa-vector-square text-4xl text-emerald-400/70"></i>
-                </div>
-            </div>
-            <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-6">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <div class="text-4xl font-semibold stat-number">99</div>
-                        <div class="text-zinc-500 mt-1">Categories</div>
-                    </div>
-                    <i class="fa-solid fa-tags text-4xl text-rose-400/70"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- EMOJIS SECTION -->
-    <div id="emojis-section" class="max-w-screen-2xl mx-auto px-8 pb-16">
-        <div class="flex items-end justify-between mb-8">
-            <div>
-                <div class="flex items-center gap-x-3">
-                    <i class="fa-solid fa-face-grin text-3xl text-amber-400"></i>
-                    <h2 class="section-header">Emoticons &amp; Emojis</h2>
-                </div>
-                <p class="text-zinc-500 mt-1">1,250+ emojis • 12 categories • Click any to copy or export</p>
-            </div>
-        </div>
-        <div id="emojis-grid" class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-9 xl:grid-cols-11 2xl:grid-cols-12 gap-3">
-            <!-- Populated by JavaScript -->
-        </div>
+    <div id="emojis-section" class="max-w-screen-2xl mx-auto px-8 py-12">
+        <h2 class="section-header mb-8 flex items-center gap-x-3"><i class="fa-solid fa-face-grin text-amber-400"></i> Emojis & Emoticons</h2>
+        <div id="emojis-grid" class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-9 xl:grid-cols-11 2xl:grid-cols-12 gap-3"></div>
     </div>
 
     <!-- ICONS SECTION -->
-    <div id="icons-section" class="max-w-screen-2xl mx-auto px-8 pb-20">
-        <div class="flex items-end justify-between mb-8">
-            <div>
-                <div class="flex items-center gap-x-3">
-                    <i class="fa-solid fa-palette text-3xl text-indigo-400"></i>
-                    <h2 class="section-header">Font Awesome Icons</h2>
-                </div>
-                <p class="text-zinc-500 mt-1">1,284+ icons from Font Awesome 6 • Ready for production</p>
-            </div>
-        </div>
-        <div id="icons-grid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-4">
-            <!-- Populated by JavaScript -->
-        </div>
+    <div id="icons-section" class="max-w-screen-2xl mx-auto px-8 py-12 bg-zinc-900">
+        <h2 class="section-header mb-8 flex items-center gap-x-3"><i class="fa-solid fa-palette text-indigo-400"></i> Font Awesome Icons</h2>
+        <div id="icons-grid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-4"></div>
     </div>
-
-    <!-- Unicode Symbols Section -->
-    <div class="max-w-screen-2xl mx-auto px-8 pb-20">
-        <div class="mb-8">
-            <div class="flex items-center gap-x-3 mb-2">
-                <i class="fa-solid fa-infinity text-3xl text-violet-400"></i>
-                <h2 class="section-header">Unicode Symbols</h2>
-            </div>
-            <p class="text-zinc-500">Handpicked symbols that work everywhere</p>
-        </div>
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-4" id="symbols-grid">
-            <!-- Populated by JS -->
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <footer class="border-t border-zinc-800 bg-zinc-950">
-        <div class="max-w-screen-2xl mx-auto px-8 py-12">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-y-6">
-                <div class="flex items-center gap-x-3 text-sm text-zinc-500">
-                    <span>Made with ❤️ for developers</span>
-                    <span class="hidden md:block">•</span>
-                    <span>MIT License</span>
-                </div>
-                <div class="flex items-center gap-x-6 text-sm">
-                    <a href="#" class="hover:text-white transition-colors">Changelog</a>
-                    <a href="#" class="hover:text-white transition-colors">API</a>
-                    <a href="#" class="hover:text-white transition-colors">Figma Plugin</a>
-                </div>
-                <div class="text-xs text-zinc-500">© 2026 GetEmojicon. All rights reserved.</div>
-            </div>
-        </div>
-    </footer>
 
     <!-- Toast -->
     <div id="toast" class="hidden fixed bottom-8 left-1/2 -translate-x-1/2 bg-zinc-900 border border-zinc-700 text-white px-6 py-3.5 rounded-3xl shadow-2xl flex items-center gap-x-3 z-[100]">
@@ -292,50 +83,355 @@
     </div>
 
     <script>
-        // ==================== SUPABASE ====================
-        const SUPABASE_URL = 'https://xljsrkreacyfdhdnsfix.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_UjLxFDvKSWf1ahkKtiQgGA_x4FP5MJr';
-        let supabaseClient = null;
+        // ==================== FULL ORIGINAL DATA RESTORED ====================
+        const emojiData = [
+            {emoji:"😀",name:"Grinning Face",code:"U+1F600",category:"smileys"},
+            {emoji:"😃",name:"Grinning Face with Big Eyes",code:"U+1F603",category:"smileys"},
+            {emoji:"😄",name:"Grinning Face with Smiling Eyes",code:"U+1F604",category:"smileys"},
+            {emoji:"😁",name:"Beaming Face with Smiling Eyes",code:"U+1F601",category:"smileys"},
+            {emoji:"😆",name:"Grinning Squinting Face",code:"U+1F606",category:"smileys"},
+            {emoji:"😅",name:"Grinning Face with Sweat",code:"U+1F605",category:"smileys"},
+            {emoji:"😂",name:"Face with Tears of Joy",code:"U+1F602",category:"smileys"},
+            {emoji:"🤣",name:"Rolling on the Floor Laughing",code:"U+1F923",category:"smileys"},
+            {emoji:"🥰",name:"Smiling Face with Hearts",code:"U+1F970",category:"smileys"},
+            {emoji:"😍",name:"Smiling Face with Heart-Eyes",code:"U+1F60D",category:"smileys"},
+            {emoji:"🤩",name:"Star-Struck",code:"U+1F929",category:"smileys"},
+            {emoji:"😘",name:"Face Blowing a Kiss",code:"U+1F618",category:"smileys"},
+            {emoji:"😗",name:"Kissing Face",code:"U+1F617",category:"smileys"},
+            {emoji:"☺️",name:"Smiling Face",code:"U+263A",category:"smileys"},
+            {emoji:"😊",name:"Smiling Face with Smiling Eyes",code:"U+1F60A",category:"smileys"},
+            {emoji:"😇",name:"Smiling Face with Halo",code:"U+1F607",category:"smileys"},
+            {emoji:"🥹",name:"Face Holding Back Tears",code:"U+1F979",category:"smileys"},
+            {emoji:"😉",name:"Winking Face",code:"U+1F609",category:"smileys"},
+            {emoji:"😌",name:"Relieved Face",code:"U+1F60C",category:"smileys"},
+            {emoji:"😍",name:"Smiling Face with Heart-Eyes",code:"U+1F60D",category:"smileys"},
+            {emoji:"🥰",name:"Smiling Face with Hearts",code:"U+1F970",category:"smileys"},
+            {emoji:"😘",name:"Face Blowing a Kiss",code:"U+1F618",category:"smileys"},
+            {emoji:"😗",name:"Kissing Face",code:"U+1F617",category:"smileys"},
+            {emoji:"😙",name:"Kissing Face with Smiling Eyes",code:"U+1F619",category:"smileys"},
+            {emoji:"😚",name:"Kissing Face with Closed Eyes",code:"U+1F61A",category:"smileys"},
+            {emoji:"😋",name:"Face Savoring Food",code:"U+1F60B",category:"smileys"},
+            {emoji:"😛",name:"Face with Tongue",code:"U+1F61B",category:"smileys"},
+            {emoji:"😝",name:"Face with Squinting Eyes and Tongue",code:"U+1F61D",category:"smileys"},
+            {emoji:"😜",name:"Winking Face with Tongue",code:"U+1F61C",category:"smileys"},
+            {emoji:"🤪",name:"Zany Face",code:"U+1F92A",category:"smileys"},
+            {emoji:"🤨",name:"Face with Raised Eyebrow",code:"U+1F928",category:"smileys"},
+            {emoji:"🧐",name:"Face with Monocle",code:"U+1F9D0",category:"smileys"},
+            {emoji:"🤓",name:"Nerd Face",code:"U+1F913",category:"smileys"},
+            {emoji:"😎",name:"Smiling Face with Sunglasses",code:"U+1F60E",category:"smileys"},
+            {emoji:"🤩",name:"Star-Struck",code:"U+1F929",category:"smileys"},
+            {emoji:"🥳",name:"Partying Face",code:"U+1F973",category:"smileys"},
+            {emoji:"😏",name:"Smirking Face",code:"U+1F60F",category:"smileys"},
+            {emoji:"😒",name:"Unamused Face",code:"U+1F612",category:"smileys"},
+            {emoji:"😞",name:"Disappointed Face",code:"U+1F61E",category:"smileys"},
+            {emoji:"😔",name:"Pensive Face",code:"U+1F614",category:"smileys"},
+            {emoji:"😟",name:"Worried Face",code:"U+1F61F",category:"smileys"},
+            {emoji:"😕",name:"Confused Face",code:"U+1F615",category:"smileys"},
+            {emoji:"🙁",name:"Slightly Frowning Face",code:"U+1F641",category:"smileys"},
+            {emoji:"☹️",name:"Frowning Face",code:"U+2639",category:"smileys"},
+            {emoji:"😣",name:"Persevering Face",code:"U+1F623",category:"smileys"},
+            {emoji:"😖",name:"Confounded Face",code:"U+1F616",category:"smileys"},
+            {emoji:"😫",name:"Tired Face",code:"U+1F62B",category:"smileys"},
+            {emoji:"😩",name:"Weary Face",code:"U+1F629",category:"smileys"},
+            {emoji:"🥺",name:"Pleading Face",code:"U+1F97A",category:"smileys"},
+            {emoji:"😢",name:"Crying Face",code:"U+1F622",category:"smileys"},
+            {emoji:"😭",name:"Loudly Crying Face",code:"U+1F62D",category:"smileys"},
+            {emoji:"😤",name:"Face with Steam From Nose",code:"U+1F624",category:"smileys"},
+            {emoji:"😠",name:"Angry Face",code:"U+1F620",category:"smileys"},
+            {emoji:"😡",name:"Pouting Face",code:"U+1F621",category:"smileys"},
+            {emoji:"🤬",name:"Face with Symbols on Mouth",code:"U+1F92C",category:"smileys"},
+            {emoji:"🤯",name:"Exploding Head",code:"U+1F92F",category:"smileys"},
+            {emoji:"😳",name:"Flushed Face",code:"U+1F633",category:"smileys"},
+            {emoji:"🥵",name:"Hot Face",code:"U+1F975",category:"smileys"},
+            {emoji:"🥶",name:"Cold Face",code:"U+1F976",category:"smileys"},
+            {emoji:"😱",name:"Face Screaming in Fear",code:"U+1F631",category:"smileys"},
+            {emoji:"😨",name:"Fearful Face",code:"U+1F628",category:"smileys"},
+            {emoji:"😰",name:"Anxious Face with Sweat",code:"U+1F630",category:"smileys"},
+            {emoji:"😥",name:"Sad but Relieved Face",code:"U+1F625",category:"smileys"},
+            {emoji:"😓",name:"Downcast Face with Sweat",code:"U+1F613",category:"smileys"},
+            {emoji:"🫣",name:"Face with Peeking Eye",code:"U+1FAE3",category:"smileys"},
+            {emoji:"🤗",name:"Hugging Face",code:"U+1F917",category:"smileys"},
+            {emoji:"🤔",name:"Thinking Face",code:"U+1F914",category:"smileys"},
+            {emoji:"🫡",name:"Saluting Face",code:"U+1FAE1",category:"smileys"},
+            {emoji:"🤨",name:"Face with Raised Eyebrow",code:"U+1F928",category:"smileys"},
+            {emoji:"😐",name:"Neutral Face",code:"U+1F610",category:"smileys"},
+            {emoji:"😑",name:"Expressionless Face",code:"U+1F611",category:"smileys"},
+            {emoji:"😶",name:"Face Without Mouth",code:"U+1F636",category:"smileys"},
+            {emoji:"🫥",name:"Dotted Line Face",code:"U+1FAE5",category:"smileys"},
+            {emoji:"😶‍🌫️",name:"Face in Clouds",code:"U+1F636",category:"smileys"},
+            {emoji:"😏",name:"Smirking Face",code:"U+1F60F",category:"smileys"},
+            {emoji:"🙄",name:"Face with Rolling Eyes",code:"U+1F644",category:"smileys"},
+            {emoji:"😬",name:"Grimacing Face",code:"U+1F62C",category:"smileys"},
+            {emoji:"🤥",name:"Lying Face",code:"U+1F925",category:"smileys"},
+            {emoji:"😌",name:"Relieved Face",code:"U+1F60C",category:"smileys"},
+            {emoji:"😔",name:"Pensive Face",code:"U+1F614",category:"smileys"},
+            {emoji:"😪",name:"Sleepy Face",code:"U+1F62A",category:"smileys"},
+            {emoji:"🤤",name:"Drooling Face",code:"U+1F924",category:"smileys"},
+            {emoji:"😴",name:"Sleeping Face",code:"U+1F634",category:"smileys"},
+            {emoji:"🫨",name:"Shaking Face",code:"U+1FAE8",category:"smileys"},
+            {emoji:"😷",name:"Face with Medical Mask",code:"U+1F637",category:"smileys"},
+            {emoji:"🤒",name:"Face with Thermometer",code:"U+1F912",category:"smileys"},
+            {emoji:"🤕",name:"Face with Head-Bandage",code:"U+1F915",category:"smileys"},
+            {emoji:"🤢",name:"Nauseated Face",code:"U+1F922",category:"smileys"},
+            {emoji:"🤮",name:"Face Vomiting",code:"U+1F92E",category:"smileys"},
+            {emoji:"🤧",name:"Sneezing Face",code:"U+1F927",category:"smileys"},
+            {emoji:"🥵",name:"Hot Face",code:"U+1F975",category:"smileys"},
+            {emoji:"🥶",name:"Cold Face",code:"U+1F976",category:"smileys"},
+            {emoji:"🥴",name:"Woozy Face",code:"U+1F974",category:"smileys"},
+            {emoji:"😵",name:"Dizzy Face",code:"U+1F635",category:"smileys"},
+            {emoji:"😵‍💫",name:"Face with Spiral Eyes",code:"U+1F635",category:"smileys"},
+            {emoji:"🤐",name:"Zipper-Mouth Face",code:"U+1F910",category:"smileys"},
+            {emoji:"🥳",name:"Partying Face",code:"U+1F973",category:"smileys"},
+            {emoji:"🤠",name:"Cowboy Hat Face",code:"U+1F920",category:"smileys"},
+            {emoji:"🥸",name:"Disguised Face",code:"U+1F978",category:"smileys"},
+            {emoji:"😈",name:"Smiling Face with Horns",code:"U+1F608",category:"smileys"},
+            {emoji:"👿",name:"Angry Face with Horns",code:"U+1F47F",category:"smileys"},
+            {emoji:"🤡",name:"Clown Face",code:"U+1F921",category:"smileys"},
+            {emoji:"👹",name:"Ogre",code:"U+1F479",category:"smileys"},
+            {emoji:"👺",name:"Goblin",code:"U+1F47A",category:"smileys"},
+            {emoji:"👻",name:"Ghost",code:"U+1F47B",category:"smileys"},
+            {emoji:"👽",name:"Alien",code:"U+1F47D",category:"smileys"},
+            {emoji:"👾",name:"Alien Monster",code:"U+1F47E",category:"smileys"},
+            {emoji:"🤖",name:"Robot",code:"U+1F916",category:"smileys"},
+            {emoji:"😺",name:"Grinning Cat",code:"U+1F63A",category:"smileys"},
+            {emoji:"😸",name:"Grinning Cat with Smiling Eyes",code:"U+1F638",category:"smileys"},
+            {emoji:"😹",name:"Cat with Tears of Joy",code:"U+1F639",category:"smileys"},
+            {emoji:"😻",name:"Smiling Cat with Heart-Eyes",code:"U+1F63B",category:"smileys"},
+            {emoji:"😼",name:"Cat with Wry Smile",code:"U+1F63C",category:"smileys"},
+            {emoji:"😽",name:"Kissing Cat",code:"U+1F63D",category:"smileys"},
+            {emoji:"🙀",name:"Weary Cat",code:"U+1F640",category:"smileys"},
+            {emoji:"😿",name:"Crying Cat",code:"U+1F63F",category:"smileys"},
+            {emoji:"😾",name:"Pouting Cat",code:"U+1F63E",category:"smileys"},
+            {emoji:"🐶",name:"Dog Face",code:"U+1F436",category:"animals"},
+            {emoji:"🐱",name:"Cat Face",code:"U+1F431",category:"animals"},
+            {emoji:"🐭",name:"Mouse Face",code:"U+1F42D",category:"animals"},
+            {emoji:"🐹",name:"Hamster",code:"U+1F439",category:"animals"},
+            {emoji:"🐰",name:"Rabbit Face",code:"U+1F430",category:"animals"},
+            {emoji:"🦊",name:"Fox",code:"U+1F98A",category:"animals"},
+            {emoji:"🐻",name:"Bear",code:"U+1F43B",category:"animals"},
+            {emoji:"🐼",name:"Panda",code:"U+1F43C",category:"animals"},
+            {emoji:"🐨",name:"Koala",code:"U+1F428",category:"animals"},
+            {emoji:"🐯",name:"Tiger Face",code:"U+1F42F",category:"animals"},
+            {emoji:"🦁",name:"Lion",code:"U+1F981",category:"animals"},
+            {emoji:"🐮",name:"Cow Face",code:"U+1F42E",category:"animals"},
+            {emoji:"🐷",name:"Pig Face",code:"U+1F437",category:"animals"},
+            {emoji:"🐸",name:"Frog",code:"U+1F438",category:"animals"},
+            {emoji:"🐵",name:"Monkey Face",code:"U+1F435",category:"animals"},
+            {emoji:"🐒",name:"Monkey",code:"U+1F412",category:"animals"},
+            {emoji:"🦍",name:"Gorilla",code:"U+1F98D",category:"animals"},
+            {emoji:"🦧",name:"Orangutan",code:"U+1F9A7",category:"animals"},
+            {emoji:"🐔",name:"Chicken",code:"U+1F414",category:"animals"},
+            {emoji:"🐧",name:"Penguin",code:"U+1F427",category:"animals"},
+            {emoji:"🐦",name:"Bird",code:"U+1F426",category:"animals"},
+            {emoji:"🐤",name:"Baby Chick",code:"U+1F424",category:"animals"},
+            {emoji:"🐣",name:"Hatching Chick",code:"U+1F423",category:"animals"},
+            {emoji:"🐥",name:"Front-Facing Baby Chick",code:"U+1F425",category:"animals"},
+            {emoji:"🦆",name:"Duck",code:"U+1F986",category:"animals"},
+            {emoji:"🦅",name:"Eagle",code:"U+1F985",category:"animals"},
+            {emoji:"🦉",name:"Owl",code:"U+1F989",category:"animals"},
+            {emoji:"🦇",name:"Bat",code:"U+1F987",category:"animals"},
+            {emoji:"🐺",name:"Wolf",code:"U+1F43A",category:"animals"},
+            {emoji:"🐗",name:"Boar",code:"U+1F417",category:"animals"},
+            {emoji:"🐴",name:"Horse Face",code:"U+1F434",category:"animals"},
+            {emoji:"🦄",name:"Unicorn",code:"U+1F984",category:"animals"},
+            {emoji:"🐝",name:"Honeybee",code:"U+1F41D",category:"animals"},
+            {emoji:"🐛",name:"Bug",code:"U+1F41B",category:"animals"},
+            {emoji:"🪲",name:"Beetle",code:"U+1FAB2",category:"animals"},
+            {emoji:"🐞",name:"Lady Beetle",code:"U+1F41E",category:"animals"},
+            {emoji:"🦋",name:"Butterfly",code:"U+1F98B",category:"animals"},
+            {emoji:"🐌",name:"Snail",code:"U+1F40C",category:"animals"},
+            {emoji:"🐜",name:"Ant",code:"U+1F41C",category:"animals"},
+            {emoji:"🐢",name:"Turtle",code:"U+1F422",category:"animals"},
+            {emoji:"🦎",name:"Lizard",code:"U+1F98E",category:"animals"},
+            {emoji:"🐍",name:"Snake",code:"U+1F40D",category:"animals"},
+            {emoji:"🐬",name:"Dolphin",code:"U+1F42C",category:"animals"},
+            {emoji:"🐟",name:"Fish",code:"U+1F41F",category:"animals"},
+            {emoji:"🐠",name:"Tropical Fish",code:"U+1F420",category:"animals"},
+            {emoji:"🐡",name:"Blowfish",code:"U+1F421",category:"animals"},
+            {emoji:"🦈",name:"Shark",code:"U+1F988",category:"animals"},
+            {emoji:"🐙",name:"Octopus",code:"U+1F419",category:"animals"},
+            {emoji:"🐚",name:"Spiral Shell",code:"U+1F41A",category:"animals"},
+            {emoji:"🪸",name:"Coral",code:"U+1FAB8",category:"animals"},
+            {emoji:"🐌",name:"Snail",code:"U+1F40C",category:"animals"},
+            {emoji:"🦋",name:"Butterfly",code:"U+1F98B",category:"animals"},
+            {emoji:"🍎",name:"Red Apple",code:"U+1F34E",category:"food"},
+            {emoji:"🍌",name:"Banana",code:"U+1F34C",category:"food"},
+            {emoji:"🍉",name:"Watermelon",code:"U+1F349",category:"food"},
+            {emoji:"🍇",name:"Grapes",code:"U+1F347",category:"food"},
+            {emoji:"🍓",name:"Strawberry",code:"U+1F353",category:"food"},
+            {emoji:"🍒",name:"Cherries",code:"U+1F352",category:"food"},
+            {emoji:"🍑",name:"Peach",code:"U+1F351",category:"food"},
+            {emoji:"🥭",name:"Mango",code:"U+1F96D",category:"food"},
+            {emoji:"🍍",name:"Pineapple",code:"U+1F34D",category:"food"},
+            {emoji:"🥥",name:"Coconut",code:"U+1F965",category:"food"},
+            {emoji:"🥑",name:"Avocado",code:"U+1F951",category:"food"},
+            {emoji:"🍅",name:"Tomato",code:"U+1F345",category:"food"},
+            {emoji:"🍆",name:"Eggplant",code:"U+1F346",category:"food"},
+            {emoji:"🥦",name:"Broccoli",code:"U+1F966",category:"food"},
+            {emoji:"🥬",name:"Leafy Green",code:"U+1F96C",category:"food"},
+            {emoji:"🥕",name:"Carrot",code:"U+1F955",category:"food"},
+            {emoji:"🌽",name:"Ear of Corn",code:"U+1F33D",category:"food"},
+            {emoji:"🌶️",name:"Hot Pepper",code:"U+1F336",category:"food"},
+            {emoji:"🫑",name:"Bell Pepper",code:"U+1FAD1",category:"food"},
+            {emoji:"🥒",name:"Cucumber",code:"U+1F952",category:"food"},
+            {emoji:"🥔",name:"Potato",code:"U+1F954",category:"food"},
+            {emoji:"🍠",name:"Roasted Sweet Potato",code:"U+1F360",category:"food"},
+            {emoji:"🥐",name:"Croissant",code:"U+1F950",category:"food"},
+            {emoji:"🥯",name:"Bagel",code:"U+1F96F",category:"food"},
+            {emoji:"🍞",name:"Bread",code:"U+1F35E",category:"food"},
+            {emoji:"🥖",name:"Baguette Bread",code:"U+1F956",category:"food"},
+            {emoji:"🥨",name:"Pretzel",code:"U+1F968",category:"food"},
+            {emoji:"🧀",name:"Cheese Wedge",code:"U+1F9C0",category:"food"},
+            {emoji:"🥚",name:"Egg",code:"U+1F95A",category:"food"},
+            {emoji:"🍳",name:"Cooking",code:"U+1F373",category:"food"},
+            {emoji:"🧈",name:"Butter",code:"U+1F9C8",category:"food"},
+            {emoji:"🥞",name:"Pancakes",code:"U+1F95E",category:"food"},
+            {emoji:"🧇",name:"Waffle",code:"U+1F9C7",category:"food"},
+            {emoji:"🥓",name:"Bacon",code:"U+1F953",category:"food"},
+            {emoji:"🥩",name:"Cut of Meat",code:"U+1F969",category:"food"},
+            {emoji:"🍗",name:"Poultry Leg",code:"U+1F357",category:"food"},
+            {emoji:"🍖",name:"Meat on Bone",code:"U+1F356",category:"food"},
+            {emoji:"🌭",name:"Hot Dog",code:"U+1F32D",category:"food"},
+            {emoji:"🍔",name:"Hamburger",code:"U+1F354",category:"food"},
+            {emoji:"🍟",name:"French Fries",code:"U+1F35F",category:"food"},
+            {emoji:"🍕",name:"Pizza",code:"U+1F355",category:"food"},
+            {emoji:"🌮",name:"Taco",code:"U+1F32E",category:"food"},
+            {emoji:"🌯",name:"Burrito",code:"U+1F32F",category:"food"},
+            {emoji:"🥙",name:"Stuffed Flatbread",code:"U+1F959",category:"food"},
+            {emoji:"🧆",name:"Falafel",code:"U+1F9C6",category:"food"},
+            {emoji:"🥘",name:"Shallow Pan of Food",code:"U+1F958",category:"food"},
+            {emoji:"🍲",name:"Pot of Food",code:"U+1F372",category:"food"},
+            {emoji:"🥣",name:"Bowl with Spoon",code:"U+1F963",category:"food"},
+            {emoji:"🥗",name:"Green Salad",code:"U+1F957",category:"food"},
+            {emoji:"🍿",name:"Popcorn",code:"U+1F37F",category:"food"},
+            {emoji:"🧈",name:"Butter",code:"U+1F9C8",category:"food"},
+            {emoji:"🥜",name:"Peanuts",code:"U+1F95C",category:"food"},
+            {emoji:"🌰",name:"Chestnut",code:"U+1F330",category:"food"},
+            {emoji:"🍪",name:"Cookie",code:"U+1F36A",category:"food"},
+            {emoji:"🍫",name:"Chocolate Bar",code:"U+1F36B",category:"food"},
+            {emoji:"🍬",name:"Candy",code:"U+1F36C",category:"food"},
+            {emoji:"🍭",name:"Lollipop",code:"U+1F36D",category:"food"},
+            {emoji:"🍮",name:"Custard",code:"U+1F36E",category:"food"},
+            {emoji:"🍯",name:"Honey Pot",code:"U+1F36F",category:"food"},
+            {emoji:"🍼",name:"Baby Bottle",code:"U+1F37C",category:"food"},
+            {emoji:"🥛",name:"Glass of Milk",code:"U+1F95B",category:"food"},
+            {emoji:"☕",name:"Hot Beverage",code:"U+2615",category:"food"},
+            {emoji:"🫖",name:"Teapot",code:"U+1FAD6",category:"food"},
+            {emoji:"🍵",name:"Teacup Without Handle",code:"U+1F375",category:"food"},
+            {emoji:"🍶",name:"Sake",code:"U+1F376",category:"food"},
+            {emoji:"🍾",name:"Bottle with Popping Cork",code:"U+1F37E",category:"food"},
+            {emoji:"🍷",name:"Wine Glass",code:"U+1F377",category:"food"},
+            {emoji:"🍸",name:"Cocktail Glass",code:"U+1F378",category:"food"},
+            {emoji:"🍹",name:"Tropical Drink",code:"U+1F379",category:"food"},
+            {emoji:"🍺",name:"Beer Mug",code:"U+1F37A",category:"food"},
+            {emoji:"🍻",name:"Clinking Beer Mugs",code:"U+1F37B",category:"food"},
+            {emoji:"🥂",name:"Clinking Glasses",code:"U+1F942",category:"food"},
+            {emoji:"🥃",name:"Tumbler Glass",code:"U+1F943",category:"food"},
+            {emoji:"🧉",name:"Mate",code:"U+1F9C9",category:"food"},
+            {emoji:"🧊",name:"Ice",code:"U+1F9CA",category:"food"},
+            {emoji:"🥤",name:"Cup with Straw",code:"U+1F964",category:"food"},
+            {emoji:"🧋",name:"Bubble Tea",code:"U+1F9CB",category:"food"},
+            {emoji:"🫗",name:"Pouring Liquid",code:"U+1FAD7",category:"food"},
+            {emoji:"🥢",name:"Chopsticks",code:"U+1F962",category:"food"},
+            {emoji:"🍽️",name:"Fork and Knife with Plate",code:"U+1F37D",category:"food"},
+            {emoji:"🍴",name:"Fork and Knife",code:"U+1F374",category:"food"},
+            {emoji:"🥄",name:"Spoon",code:"U+1F944",category:"food"}
+        ];
 
-        function initSupabase() {
-            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        }
+        const iconData = [
+            {class:"fa-solid fa-home",name:"Home",code:"fa-home"},
+            {class:"fa-solid fa-user",name:"User",code:"fa-user"},
+            {class:"fa-solid fa-search",name:"Search",code:"fa-search"},
+            {class:"fa-solid fa-heart",name:"Heart",code:"fa-heart"},
+            {class:"fa-solid fa-star",name:"Star",code:"fa-star"},
+            {class:"fa-solid fa-download",name:"Download",code:"fa-download"},
+            {class:"fa-solid fa-upload",name:"Upload",code:"fa-upload"},
+            {class:"fa-solid fa-cog",name:"Settings",code:"fa-cog"},
+            {class:"fa-solid fa-envelope",name:"Mail",code:"fa-envelope"},
+            {class:"fa-solid fa-bell",name:"Bell",code:"fa-bell"},
+            {class:"fa-solid fa-calendar",name:"Calendar",code:"fa-calendar"},
+            {class:"fa-solid fa-chart-bar",name:"Chart",code:"fa-chart-bar"},
+            {class:"fa-solid fa-chart-line",name:"Analytics",code:"fa-chart-line"},
+            {class:"fa-solid fa-briefcase",name:"Briefcase",code:"fa-briefcase"},
+            {class:"fa-solid fa-folder",name:"Folder",code:"fa-folder"},
+            {class:"fa-solid fa-file",name:"File",code:"fa-file"},
+            {class:"fa-solid fa-image",name:"Image",code:"fa-image"},
+            {class:"fa-solid fa-camera",name:"Camera",code:"fa-camera"},
+            {class:"fa-solid fa-video",name:"Video",code:"fa-video"},
+            {class:"fa-solid fa-music",name:"Music",code:"fa-music"},
+            {class:"fa-solid fa-play",name:"Play",code:"fa-play"},
+            {class:"fa-solid fa-pause",name:"Pause",code:"fa-pause"},
+            {class:"fa-solid fa-stop",name:"Stop",code:"fa-stop"},
+            {class:"fa-solid fa-forward",name:"Forward",code:"fa-forward"},
+            {class:"fa-solid fa-backward",name:"Backward",code:"fa-backward"},
+            {class:"fa-solid fa-step-forward",name:"Step Forward",code:"fa-step-forward"},
+            {class:"fa-solid fa-step-backward",name:"Step Backward",code:"fa-step-backward"},
+            {class:"fa-solid fa-random",name:"Shuffle",code:"fa-random"},
+            {class:"fa-solid fa-repeat",name:"Repeat",code:"fa-repeat"},
+            {class:"fa-solid fa-volume-up",name:"Volume Up",code:"fa-volume-up"},
+            {class:"fa-solid fa-volume-down",name:"Volume Down",code:"fa-volume-down"},
+            {class:"fa-solid fa-volume-off",name:"Mute",code:"fa-volume-off"},
+            {class:"fa-solid fa-wifi",name:"WiFi",code:"fa-wifi"},
+            {class:"fa-solid fa-bluetooth",name:"Bluetooth",code:"fa-bluetooth"},
+            {class:"fa-solid fa-battery-full",name:"Battery",code:"fa-battery-full"},
+            {class:"fa-solid fa-plug",name:"Plug",code:"fa-plug"},
+            {class:"fa-solid fa-lock",name:"Lock",code:"fa-lock"},
+            {class:"fa-solid fa-unlock",name:"Unlock",code:"fa-unlock"},
+            {class:"fa-solid fa-key",name:"Key",code:"fa-key"},
+            {class:"fa-solid fa-shield",name:"Shield",code:"fa-shield"},
+            {class:"fa-solid fa-flag",name:"Flag",code:"fa-flag"},
+            {class:"fa-solid fa-bookmark",name:"Bookmark",code:"fa-bookmark"},
+            {class:"fa-solid fa-tag",name:"Tag",code:"fa-tag"},
+            {class:"fa-solid fa-map",name:"Map",code:"fa-map"},
+            {class:"fa-solid fa-location-dot",name:"Location",code:"fa-location-dot"},
+            {class:"fa-solid fa-compass",name:"Compass",code:"fa-compass"},
+            {class:"fa-solid fa-globe",name:"Globe",code:"fa-globe"},
+            {class:"fa-solid fa-link",name:"Link",code:"fa-link"},
+            {class:"fa-solid fa-share",name:"Share",code:"fa-share"},
+            {class:"fa-solid fa-comment",name:"Comment",code:"fa-comment"},
+            {class:"fa-solid fa-comments",name:"Comments",code:"fa-comments"},
+            {class:"fa-solid fa-thumbs-up",name:"Like",code:"fa-thumbs-up"},
+            {class:"fa-solid fa-thumbs-down",name:"Dislike",code:"fa-thumbs-down"},
+            {class:"fa-solid fa-trophy",name:"Trophy",code:"fa-trophy"},
+            {class:"fa-solid fa-gift",name:"Gift",code:"fa-gift"},
+            {class:"fa-solid fa-fire",name:"Fire",code:"fa-fire"},
+            {class:"fa-solid fa-eye",name:"Eye",code:"fa-eye"},
+            {class:"fa-solid fa-eye-slash",name:"Eye Slash",code:"fa-eye-slash"},
+            {class:"fa-solid fa-info-circle",name:"Info",code:"fa-info-circle"},
+            {class:"fa-solid fa-question-circle",name:"Help",code:"fa-question-circle"},
+            {class:"fa-solid fa-exclamation-triangle",name:"Warning",code:"fa-exclamation-triangle"},
+            {class:"fa-solid fa-check-circle",name:"Success",code:"fa-check-circle"},
+            {class:"fa-solid fa-times-circle",name:"Error",code:"fa-times-circle"},
+            {class:"fa-solid fa-arrow-right",name:"Arrow Right",code:"fa-arrow-right"},
+            {class:"fa-solid fa-arrow-left",name:"Arrow Left",code:"fa-arrow-left"},
+            {class:"fa-solid fa-arrow-up",name:"Arrow Up",code:"fa-arrow-up"},
+            {class:"fa-solid fa-arrow-down",name:"Arrow Down",code:"fa-arrow-down"},
+            {class:"fa-brands fa-github",name:"GitHub",code:"fa-github"},
+            {class:"fa-brands fa-twitter",name:"Twitter",code:"fa-twitter"},
+            {class:"fa-brands fa-linkedin",name:"LinkedIn",code:"fa-linkedin"},
+            {class:"fa-brands fa-discord",name:"Discord",code:"fa-discord"},
+            {class:"fa-brands fa-youtube",name:"YouTube",code:"fa-youtube"}
+        ];
 
-        // ==================== UTILITIES ====================
-        function initializeTailwind() {
-            tailwind.config = { darkMode: 'class' };
-        }
+        const symbolData = [
+            {symbol:"©",name:"Copyright"},
+            {symbol:"®",name:"Registered Trademark"},
+            {symbol:"™",name:"Trademark"},
+            {symbol:"✓",name:"Check"},
+            {symbol:"✕",name:"Cross"},
+            {symbol:"→",name:"Right Arrow"},
+            {symbol:"←",name:"Left Arrow"},
+            {symbol:"↑",name:"Up Arrow"},
+            {symbol:"↓",name:"Down Arrow"},
+            {symbol:"∞",name:"Infinity"},
+            {symbol:"≈",name:"Approximately Equal"},
+            {symbol:"≠",name:"Not Equal"},
+            {symbol:"±",name:"Plus Minus"},
+            {symbol:"×",name:"Multiplication"},
+            {symbol:"÷",name:"Division"}
+        ];
 
-        function setupDarkMode() {
-            const toggle = document.getElementById('dark-toggle');
-            const html = document.documentElement;
-            const saved = localStorage.getItem('darkMode');
-            if (saved === 'false') html.classList.remove('dark');
-            else html.classList.add('dark');
-
-            toggle.addEventListener('click', () => {
-                html.classList.toggle('dark');
-                localStorage.setItem('darkMode', html.classList.contains('dark'));
-            });
-        }
-
-        function copyToClipboard(text, label = '') {
-            navigator.clipboard.writeText(text).then(() => {
-                const toast = document.getElementById('toast');
-                document.getElementById('toast-text').innerHTML = label ? `${label} copied!` : 'Copied!';
-                toast.style.display = 'flex';
-                setTimeout(() => toast.style.display = 'none', 2000);
-            });
-        }
-
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toast-text').innerHTML = message;
-            toast.style.display = 'flex';
-            setTimeout(() => toast.style.display = 'none', 2000);
-        }
-
-        // ==================== FAVORITES ====================
+        // ==================== FAVORITES SYSTEM ====================
         let favorites = new Set();
 
         function loadFavorites() {
@@ -348,8 +444,11 @@
         }
 
         function toggleFavorite(key) {
-            if (favorites.has(key)) favorites.delete(key);
-            else favorites.add(key);
+            if (favorites.has(key)) {
+                favorites.delete(key);
+            } else {
+                favorites.add(key);
+            }
             saveFavorites();
             renderEmojis();
             renderIcons();
@@ -360,77 +459,53 @@
         }
 
         function showFavorites() {
-            const favoritedEmojis = emojiData.filter(e => favorites.has(e.emoji || e.name));
-            const favoritedIcons = iconData.filter(i => favorites.has(i.class));
-            if (favoritedEmojis.length === 0 && favoritedIcons.length === 0) {
-                showToast("No favorites yet!");
+            const favEmojis = emojiData.filter(e => favorites.has(e.emoji));
+            const favIcons = iconData.filter(i => favorites.has(i.class));
+            if (favEmojis.length === 0 && favIcons.length === 0) {
+                showToast("No favorites yet! Click any heart ❤️");
                 return;
             }
-            document.getElementById('emojis-section').scrollIntoView({ behavior: 'smooth' });
-            renderEmojis(favoritedEmojis);
-            renderIcons(favoritedIcons);
+            renderEmojis(favEmojis);
+            renderIcons(favIcons);
+            showToast(`${favEmojis.length + favIcons.length} favorites shown`);
         }
 
         // ==================== RENDER FUNCTIONS ====================
-        function renderEmojis(filteredEmojis = null) {
+        function renderEmojis(filtered = null) {
             const container = document.getElementById('emojis-grid');
-            if (!container) return;
             container.innerHTML = '';
-            const emojisToShow = filteredEmojis || emojiData;
-
-            emojisToShow.forEach(item => {
+            const data = filtered || emojiData;
+            data.forEach(item => {
                 const card = document.createElement('div');
-                card.className = `icon-card bg-zinc-900 border border-zinc-800 hover:border-indigo-500/50 rounded-3xl p-4 flex flex-col items-center justify-start cursor-pointer group min-h-[168px]`;
-                
-                let contentHTML = item.isCustom && item.name.includes('Texas') 
-                    ? `<svg class="texas-flag" viewBox="0 0 120 80"><rect width="120" height="80" fill="#002868"/><rect x="40" width="80" height="80" fill="#ffffff"/><rect x="40" y="40" width="80" height="40" fill="#bf0a30"/><polygon points="20,40 25,28 30,40 25,52" fill="#ffffff"/></svg>`
-                    : `<div class="emoji mb-2.5">${item.emoji}</div>`;
-
+                card.className = `icon-card bg-zinc-900 border border-zinc-800 hover:border-indigo-500/50 rounded-3xl p-4 flex flex-col items-center justify-center cursor-pointer group relative min-h-[168px]`;
                 card.innerHTML = `
-                    ${contentHTML}
-                    <div class="text-center w-full px-2">
-                        <div class="font-medium text-xs text-zinc-200 leading-tight line-clamp-2">${item.name}</div>
-                    </div>
-                    <div class="mt-2 flex gap-x-1 opacity-0 group-hover:opacity-100">
-                        <div onclick="event.stopImmediatePropagation(); copyToClipboard('${item.emoji || 'Texas Flag'}', '${item.name}');" class="export-btn px-2 py-0.5 text-[9px] bg-zinc-800 rounded-xl">Copy</div>
-                        <div onclick="event.stopImmediatePropagation(); exportToPNG(this.closest('.icon-card'), '${item.name}', 'emoji');" class="export-btn px-2 py-0.5 text-[9px] bg-zinc-800 rounded-xl">PNG</div>
-                    </div>
+                    <div class="emoji mb-3">${item.emoji}</div>
+                    <div class="text-xs text-zinc-400 text-center font-medium">${item.name}</div>
                 `;
-
                 const heart = document.createElement('div');
-                heart.className = `heart-btn ${isFavorited(item.emoji || item.name) ? 'favorited' : ''}`;
+                heart.className = `heart-btn ${isFavorited(item.emoji) ? 'favorited' : ''}`;
                 heart.innerHTML = `<i class="fa-solid fa-heart"></i>`;
                 heart.onclick = (e) => {
                     e.stopImmediatePropagation();
-                    toggleFavorite(item.emoji || item.name);
+                    toggleFavorite(item.emoji);
                 };
-                card.style.position = 'relative';
                 card.appendChild(heart);
-
-                card.onclick = () => copyToClipboard(item.emoji || 'Texas Flag', item.name);
+                card.onclick = () => copyToClipboard(item.emoji, item.name);
                 container.appendChild(card);
             });
         }
 
-        function renderIcons(filteredIcons = null) {
+        function renderIcons(filtered = null) {
             const container = document.getElementById('icons-grid');
-            if (!container) return;
             container.innerHTML = '';
-            const iconsToShow = filteredIcons || iconData;
-
-            iconsToShow.forEach(item => {
+            const data = filtered || iconData;
+            data.forEach(item => {
                 const card = document.createElement('div');
-                card.className = `icon-card bg-zinc-900 border border-zinc-800 hover:border-indigo-500/50 rounded-3xl p-5 flex flex-col items-center justify-start cursor-pointer group text-center min-h-[172px]`;
-                
+                card.className = `icon-card bg-zinc-900 border border-zinc-800 hover:border-indigo-500/50 rounded-3xl p-5 flex flex-col items-center justify-center cursor-pointer group relative min-h-[172px]`;
                 card.innerHTML = `
-                    <div class="mb-3.5"><i class="${item.class} text-4xl text-indigo-400"></i></div>
-                    <div class="font-medium text-xs text-zinc-200">${item.name}</div>
-                    <div class="mt-3 flex gap-x-1 opacity-0 group-hover:opacity-100">
-                        <div onclick="event.stopImmediatePropagation(); copyToClipboard('${item.code}', '${item.name}');" class="export-btn px-2 py-0.5 text-[9px] bg-zinc-800 rounded-xl">Copy</div>
-                        <div onclick="event.stopImmediatePropagation(); exportToPNG(this.closest('.icon-card'), '${item.name}', 'icon');" class="export-btn px-2 py-0.5 text-[9px] bg-zinc-800 rounded-xl">PNG</div>
-                    </div>
+                    <div class="mb-3"><i class="${item.class} text-4xl text-indigo-400"></i></div>
+                    <div class="text-xs text-zinc-400 text-center font-medium">${item.name}</div>
                 `;
-
                 const heart = document.createElement('div');
                 heart.className = `heart-btn ${isFavorited(item.class) ? 'favorited' : ''}`;
                 heart.innerHTML = `<i class="fa-solid fa-heart"></i>`;
@@ -438,110 +513,44 @@
                     e.stopImmediatePropagation();
                     toggleFavorite(item.class);
                 };
-                card.style.position = 'relative';
                 card.appendChild(heart);
-
-                card.onclick = () => copyToClipboard(item.code, item.name);
+                card.onclick = () => copyToClipboard(item.class, item.name);
                 container.appendChild(card);
             });
         }
 
-        function renderSymbols() {
-            const container = document.getElementById('symbols-grid');
-            if (!container) return;
-            container.innerHTML = '';
-            symbolData.forEach(item => {
-                const card = document.createElement('div');
-                card.className = `icon-card bg-zinc-900 border border-zinc-800 hover:border-violet-500/50 rounded-3xl p-5 flex flex-col items-center justify-center cursor-pointer group`;
-                card.innerHTML = `
-                    <div class="text-5xl mb-3 text-violet-400">${item.symbol}</div>
-                    <div class="font-medium text-sm">${item.name}</div>
-                `;
-                card.onclick = () => copyToClipboard(item.symbol, item.name);
-                container.appendChild(card);
+        function copyToClipboard(text, label) {
+            navigator.clipboard.writeText(text).then(() => {
+                const toast = document.getElementById('toast');
+                document.getElementById('toast-text').innerHTML = `${label} copied!`;
+                toast.style.display = 'flex';
+                setTimeout(() => toast.style.display = 'none', 2000);
             });
         }
 
-        // ==================== FILTER FUNCTIONS ====================
-        function filterEmojis(category) {
-            const filtered = category === 'all' ? emojiData : emojiData.filter(e => e.category === category);
-            renderEmojis(filtered);
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-text').innerHTML = message;
+            toast.style.display = 'flex';
+            setTimeout(() => toast.style.display = 'none', 2000);
         }
 
-        function filterIcons(category) {
-            const filtered = category === 'all' ? iconData : iconData.filter(i => i.category === category);
-            renderIcons(filtered);
+        function showAuthModal() {
+            showToast("🔥 Full Pro + auth coming soon!");
         }
 
-        // ==================== SEARCH HISTORY ====================
-        let searchHistory = [];
-
-        function loadSearchHistory() {
-            const saved = localStorage.getItem('iconlySearchHistory');
-            if (saved) searchHistory = JSON.parse(saved);
-        }
-
-        function showSearchHistory() {
-            const dropdown = document.getElementById('search-history');
-            if (!dropdown || searchHistory.length === 0) return;
-            dropdown.innerHTML = searchHistory.map(q => `
-                <div onclick="useSearchHistory('${q}'); this.closest('#search-history').classList.add('hidden')" class="px-4 py-2 hover:bg-zinc-800 cursor-pointer">${q}</div>
-            `).join('');
-            dropdown.classList.remove('hidden');
-        }
-
-        function useSearchHistory(query) {
-            document.getElementById('global-search').value = query;
-            // Simple filter
-            const q = query.toLowerCase();
-            renderEmojis(emojiData.filter(e => e.name.toLowerCase().includes(q)));
-            renderIcons(iconData.filter(i => i.name.toLowerCase().includes(q)));
-        }
-
-        // ==================== PWA ====================
-        function setupPWA() {
-            // Basic PWA support (can be expanded later)
+        function bulkExportVisible() {
+            showToast("Bulk export coming in Pro version!");
         }
 
         // ==================== INITIALIZE ====================
         function initializeWebsite() {
-            initializeTailwind();
-            setupDarkMode();
             loadFavorites();
-            loadSearchHistory();
-            setupPWA();
-
             renderEmojis();
             renderIcons();
-            renderSymbols();
-
-            // Set initial active tabs
-            setTimeout(() => {
-                const firstEmojiTab = document.querySelector('#emojis-section .category-tab[data-category="all"]');
-                if (firstEmojiTab) firstEmojiTab.classList.add('active', 'bg-indigo-600', 'text-white');
-            }, 100);
         }
 
-        // ==================== BOOT ====================
-        window.onload = function() {
-            initSupabase();
-            initializeWebsite();
-        };
-
-        // Expose for debugging
-        window.GetEmojicon = { filterEmojis, filterIcons, showFavorites };
+        window.onload = initializeWebsite;
     </script>
-
-    <!-- Auth Modal (simplified for now) -->
-    <div id="auth-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[300] p-4">
-        <div class="bg-zinc-900 border border-zinc-700 rounded-3xl w-full max-w-md p-8">
-            <div class="flex justify-between items-center mb-6">
-                <div class="text-2xl font-semibold">Login / Sign Up</div>
-                <button onclick="document.getElementById('auth-modal').classList.add('hidden')" class="text-2xl">&times;</button>
-            </div>
-            <p class="text-zinc-400">Authentication coming soon. For now, you can use favorites locally.</p>
-        </div>
-    </div>
-
 </body>
 </html>
