@@ -2646,7 +2646,6 @@ function simulateStripeCheckout() {
 }
 function updateNavbarForUser(isLoggedIn) {
     const loginBtn = document.querySelector('button[onclick="showAuthModal()"]');
-    
     if (!loginBtn) return;
 
     if (isLoggedIn) {
@@ -2654,10 +2653,7 @@ function updateNavbarForUser(isLoggedIn) {
             <i class="fa-solid fa-user-circle text-lg"></i>
             <span class="hidden md:inline ml-2">Account</span>
         `;
-        loginBtn.onclick = () => {
-            // You can expand this later to show a dropdown
-            showToast("Account menu coming soon!");
-        };
+        loginBtn.onclick = showAccountMenu;
     } else {
         loginBtn.innerHTML = `
             <i class="fa-solid fa-user"></i>
@@ -2665,6 +2661,75 @@ function updateNavbarForUser(isLoggedIn) {
         `;
         loginBtn.onclick = showAuthModal;
     }
+}
+
+function showAccountMenu() {
+    // Remove any existing menu
+    const existing = document.getElementById('account-menu');
+    if (existing) existing.remove();
+
+    const menu = document.createElement('div');
+    menu.id = 'account-menu';
+    menu.className = 'absolute right-4 top-20 bg-zinc-900 border border-zinc-700 rounded-3xl shadow-xl py-2 w-56 z-[200]';
+    
+    menu.innerHTML = `
+        <div class="px-4 py-3 border-b border-zinc-700">
+            <div class="font-medium">Account</div>
+            <div class="text-xs text-zinc-500">Signed in</div>
+        </div>
+        
+        <div class="py-1">
+            <div onclick="showFavorites(); document.getElementById('account-menu').remove()" 
+                 class="px-4 py-2.5 hover:bg-zinc-800 cursor-pointer flex items-center gap-x-3 text-sm">
+                <i class="fa-solid fa-heart text-rose-400 w-4"></i>
+                <span>My Favorites</span>
+            </div>
+            
+            <div onclick="bulkExportVisible(); document.getElementById('account-menu').remove()" 
+                 class="px-4 py-2.5 hover:bg-zinc-800 cursor-pointer flex items-center gap-x-3 text-sm">
+                <i class="fa-solid fa-download text-emerald-400 w-4"></i>
+                <span>Export All Favorites</span>
+            </div>
+            
+            <div onclick="showToast('Account settings coming soon!'); document.getElementById('account-menu').remove()" 
+                 class="px-4 py-2.5 hover:bg-zinc-800 cursor-pointer flex items-center gap-x-3 text-sm">
+                <i class="fa-solid fa-cog text-zinc-400 w-4"></i>
+                <span>Account Settings</span>
+            </div>
+        </div>
+        
+        <div class="border-t border-zinc-700 pt-1">
+            <div onclick="logoutUser()" 
+                 class="px-4 py-2.5 hover:bg-zinc-800 cursor-pointer flex items-center gap-x-3 text-sm text-rose-400">
+                <i class="fa-solid fa-sign-out-alt w-4"></i>
+                <span>Logout</span>
+            </div>
+        </div>
+    `;
+
+    // Position the menu
+    const nav = document.querySelector('nav');
+    nav.style.position = 'relative';
+    nav.appendChild(menu);
+
+    // Close when clicking outside
+    setTimeout(() => {
+        document.addEventListener('click', function handler(e) {
+            if (!menu.contains(e.target)) {
+                menu.remove();
+                document.removeEventListener('click', handler);
+            }
+        }, { once: true });
+    }, 100);
+}
+
+async function logoutUser() {
+    await supabaseClient.auth.signOut();
+    document.getElementById('account-menu').remove();
+    updateNavbarForUser(false);
+    showToast("Logged out successfully");
+    favorites.clear();
+    localStorage.removeItem('iconlyFavorites');
 }
 function hideAuthModal() {
     document.getElementById('auth-modal').classList.remove('flex');
