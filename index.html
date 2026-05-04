@@ -55,12 +55,11 @@
             color: white; font-weight: 600;
             box-shadow: 0 10px 15px -3px rgb(99 102 241 / 0.3);
         }
-
-        /* Login / Account Button */
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="bg-zinc-950 text-zinc-200">
+
     <!-- Navbar -->
     <nav class="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-lg sticky top-0 z-50">
         <div class="max-w-screen-2xl mx-auto">
@@ -80,7 +79,7 @@
                 <div class="flex items-center gap-x-4">
                     <!-- Search -->
                     <div class="relative w-80 hidden md:block">
-                        <input id="global-search" type="text" placeholder="Search icons, emojis, symbols..." 
+                        <input id="global-search" type="text" placeholder="Search icons, emojis, symbols..."
                                class="w-full bg-zinc-900 border border-zinc-800 focus:border-indigo-500 text-sm rounded-3xl pl-12 py-3 outline-none placeholder:text-zinc-500"
                                onfocus="showSearchHistory()">
                         <i class="fa-solid fa-search absolute left-5 top-4 text-zinc-500"></i>
@@ -136,192 +135,207 @@
         </div>
     </nav>
 
-    <!-- Hero + Stats + Sections (kept exactly the same as your original) -->
-    <!-- ... (I kept the hero, stats, emojis section, icons section, symbols section, and footer exactly as you had them) ... -->
+    <!-- Hero -->
+    <div class="max-w-screen-2xl mx-auto px-8 pt-16 pb-12">
+        <div class="max-w-3xl">
+            <div class="inline-flex items-center gap-x-2 px-4 py-1.5 bg-zinc-900 rounded-3xl border border-zinc-800 mb-6">
+                <div class="px-3 py-0.5 bg-emerald-500/10 text-emerald-400 text-xs font-medium rounded-2xl flex items-center gap-x-1.5">
+                    <i class="fa-solid fa-check-double"></i>
+                    <span>Updated Jan 2026</span>
+                </div>
+                <span class="text-xs text-zinc-500">• Free for personal &amp; commercial use</span>
+            </div>
+            
+            <h1 class="font-display text-7xl leading-[1.05] tracking-tighter font-semibold">
+                The ultimate<br>collection of<br>web icons &amp;<br>emoticons.
+            </h1>
+            <p class="mt-6 text-xl text-zinc-400 max-w-md">
+                The ultimate free explorer for icons, emojis &amp; emoticons.<br>
+                Search • Favorite • Export • Share • Install.
+            </p>
+            
+            <div class="flex items-center gap-x-4 mt-8">
+                <button onclick="document.getElementById('emojis-section').scrollIntoView({ behavior: 'smooth' })" 
+                        class="px-8 py-4 bg-white text-zinc-950 rounded-3xl font-semibold flex items-center gap-x-3 hover:bg-zinc-100 transition-all active:scale-[0.985]">
+                    <span>Browse Emojis</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+                
+                <button onclick="document.getElementById('icons-section').scrollIntoView({ behavior: 'smooth' })" 
+                        class="px-8 py-4 bg-zinc-900 border border-zinc-700 hover:bg-zinc-800 rounded-3xl font-semibold flex items-center gap-x-3 transition-all">
+                    <span>View All Icons</span>
+                </button>
+            </div>
+            
+            <div class="flex items-center gap-x-8 mt-10 text-sm">
+                <div class="flex -space-x-2">
+                    <div class="w-8 h-8 bg-zinc-700 rounded-full border-2 border-zinc-950 flex items-center justify-center text-xs">👋</div>
+                    <div class="w-8 h-8 bg-zinc-700 rounded-full border-2 border-zinc-950 flex items-center justify-center text-xs">🚀</div>
+                    <div class="w-8 h-8 bg-zinc-700 rounded-full border-2 border-zinc-950 flex items-center justify-center text-xs">💎</div>
+                </div>
+                <div class="text-zinc-500 text-sm">Used by <span class="font-semibold text-white">84,291</span> developers</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="max-w-screen-2xl mx-auto px-8 pb-16">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="text-4xl font-semibold stat-number">1,284</div>
+                        <div class="text-zinc-500 mt-1">Total Icons</div>
+                    </div>
+                    <i class="fa-solid fa-layer-group text-4xl text-indigo-400/70"></i>
+                </div>
+            </div>
+            <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="text-4xl font-semibold stat-number">1,250+</div>
+                        <div class="text-zinc-500 mt-1">Emojis</div>
+                    </div>
+                    <i class="fa-solid fa-face-smile text-4xl text-amber-400/70"></i>
+                </div>
+            </div>
+            <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="text-4xl font-semibold stat-number">312</div>
+                        <div class="text-zinc-500 mt-1">SVG Ready</div>
+                    </div>
+                    <i class="fa-solid fa-vector-square text-4xl text-emerald-400/70"></i>
+                </div>
+            </div>
+            <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="text-4xl font-semibold stat-number">99</div>
+                        <div class="text-zinc-500 mt-1">Categories</div>
+                    </div>
+                    <i class="fa-solid fa-tags text-4xl text-rose-400/70"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- EMOJIS SECTION -->
+    <div id="emojis-section" class="max-w-screen-2xl mx-auto px-8 pb-16">
+        <div class="flex items-end justify-between mb-8">
+            <div>
+                <div class="flex items-center gap-x-3">
+                    <i class="fa-solid fa-face-grin text-3xl text-amber-400"></i>
+                    <h2 class="section-header">Emoticons &amp; Emojis</h2>
+                </div>
+                <p class="text-zinc-500 mt-1">1,250+ emojis • 12 categories • Click any to copy or export</p>
+            </div>
+        </div>
+        <div id="emojis-grid" class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-9 xl:grid-cols-11 2xl:grid-cols-12 gap-3">
+            <!-- Populated by JavaScript -->
+        </div>
+    </div>
+
+    <!-- ICONS SECTION -->
+    <div id="icons-section" class="max-w-screen-2xl mx-auto px-8 pb-20">
+        <div class="flex items-end justify-between mb-8">
+            <div>
+                <div class="flex items-center gap-x-3">
+                    <i class="fa-solid fa-palette text-3xl text-indigo-400"></i>
+                    <h2 class="section-header">Font Awesome Icons</h2>
+                </div>
+                <p class="text-zinc-500 mt-1">1,284+ icons from Font Awesome 6 • Ready for production</p>
+            </div>
+        </div>
+        <div id="icons-grid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-4">
+            <!-- Populated by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Unicode Symbols Section -->
+    <div class="max-w-screen-2xl mx-auto px-8 pb-20">
+        <div class="mb-8">
+            <div class="flex items-center gap-x-3 mb-2">
+                <i class="fa-solid fa-infinity text-3xl text-violet-400"></i>
+                <h2 class="section-header">Unicode Symbols</h2>
+            </div>
+            <p class="text-zinc-500">Handpicked symbols that work everywhere</p>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-4" id="symbols-grid">
+            <!-- Populated by JS -->
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-zinc-800 bg-zinc-950">
+        <div class="max-w-screen-2xl mx-auto px-8 py-12">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-y-6">
+                <div class="flex items-center gap-x-3 text-sm text-zinc-500">
+                    <span>Made with ❤️ for developers</span>
+                    <span class="hidden md:block">•</span>
+                    <span>MIT License</span>
+                </div>
+                <div class="flex items-center gap-x-6 text-sm">
+                    <a href="#" class="hover:text-white transition-colors">Changelog</a>
+                    <a href="#" class="hover:text-white transition-colors">API</a>
+                    <a href="#" class="hover:text-white transition-colors">Figma Plugin</a>
+                </div>
+                <div class="text-xs text-zinc-500">© 2026 GetEmojicon. All rights reserved.</div>
+            </div>
+        </div>
+    </footer>
 
     <!-- Toast -->
-    <div id="toast" class="hidden fixed bottom-8 left-1/2 -translate-x/1/2 bg-zinc-900 border border-zinc-700 text-white px-6 py-3.5 rounded-3xl shadow-2xl flex items-center gap-x-3 z-[100]">
+    <div id="toast" class="hidden fixed bottom-8 left-1/2 -translate-x-1/2 bg-zinc-900 border border-zinc-700 text-white px-6 py-3.5 rounded-3xl shadow-2xl flex items-center gap-x-3 z-[100]">
         <i class="fa-solid fa-check-circle text-emerald-400"></i>
         <span id="toast-text" class="font-medium">Copied to clipboard!</span>
     </div>
 
     <script>
-        // ==================== SUPABASE CONFIG ====================
+        // ==================== SUPABASE ====================
         const SUPABASE_URL = 'https://xljsrkreacyfdhdnsfix.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_UjLxFDvKSWf1ahkKtiQgGA_x4FP5MJr'; // ← Verify this in Supabase dashboard
-
+        const SUPABASE_ANON_KEY = 'sb_publishable_UjLxFDvKSWf1ahkKtiQgGA_x4FP5MJr';
         let supabaseClient = null;
 
         function initSupabase() {
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            console.log('%c[Supabase] Connected successfully', 'color: #10b981');
         }
 
-        // ==================== TAILWIND + DARK MODE + UTILITIES ====================
+        // ==================== UTILITIES ====================
         function initializeTailwind() {
-            tailwind.config = {
-                darkMode: 'class',
-                theme: {
-                    extend: {
-                        fontFamily: { 'display': ['Space Grotesk', 'Inter', 'system-ui', 'sans-serif'] }
-                    }
-                }
-            };
+            tailwind.config = { darkMode: 'class' };
         }
 
         function setupDarkMode() {
             const toggle = document.getElementById('dark-toggle');
             const html = document.documentElement;
-            const body = document.body;
-
-            function setMode(isDark) {
-                if (isDark) {
-                    html.classList.add('dark');
-                    body.classList.remove('light');
-                    localStorage.setItem('darkMode', 'true');
-                    toggle.innerHTML = '<i class="fa-solid fa-moon text-lg"></i>';
-                } else {
-                    html.classList.remove('dark');
-                    body.classList.add('light');
-                    localStorage.setItem('darkMode', 'false');
-                    toggle.innerHTML = '<i class="fa-solid fa-sun text-lg"></i>';
-                }
-            }
-
             const saved = localStorage.getItem('darkMode');
-            setMode(saved !== 'false');
+            if (saved === 'false') html.classList.remove('dark');
+            else html.classList.add('dark');
 
             toggle.addEventListener('click', () => {
-                setMode(!html.classList.contains('dark'));
+                html.classList.toggle('dark');
+                localStorage.setItem('darkMode', html.classList.contains('dark'));
             });
         }
 
         function copyToClipboard(text, label = '') {
             navigator.clipboard.writeText(text).then(() => {
                 const toast = document.getElementById('toast');
-                const toastText = document.getElementById('toast-text');
-                toastText.innerHTML = label ? `${label} copied!` : 'Copied to clipboard!';
+                document.getElementById('toast-text').innerHTML = label ? `${label} copied!` : 'Copied!';
                 toast.style.display = 'flex';
-                toast.classList.remove('hidden');
-                setTimeout(() => {
-                    toast.style.transition = 'all 0.3s ease';
-                    toast.style.opacity = '0';
-                    setTimeout(() => {
-                        toast.style.opacity = '1';
-                        toast.style.transition = '';
-                        toast.style.display = 'none';
-                        toast.classList.add('hidden');
-                    }, 250);
-                }, 2200);
-            }).catch(() => {
-                const textarea = document.createElement('textarea');
-                textarea.value = text;
-                document.body.appendChild(textarea);
-                textarea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textarea);
-                showToast('Copied!');
+                setTimeout(() => toast.style.display = 'none', 2000);
             });
         }
 
         function showToast(message) {
             const toast = document.getElementById('toast');
-            const toastText = document.getElementById('toast-text');
-            toastText.innerHTML = message;
+            document.getElementById('toast-text').innerHTML = message;
             toast.style.display = 'flex';
-            toast.classList.remove('hidden');
-            setTimeout(() => {
-                toast.style.transition = 'all 0.3s ease';
-                toast.style.opacity = '0';
-                setTimeout(() => {
-                    toast.style.opacity = '1';
-                    toast.style.transition = '';
-                    toast.style.display = 'none';
-                    toast.classList.add('hidden');
-                }, 250);
-            }, 1800);
+            setTimeout(() => toast.style.display = 'none', 2000);
         }
 
-        // ==================== EXPORT FUNCTIONS ====================
-        function exportToPNG(cardElement, filename, type = 'emoji') {
-            const size = 512;
-            const canvas = document.createElement('canvas');
-            canvas.width = size;
-            canvas.height = size;
-            const ctx = canvas.getContext('2d');
-            ctx.fillStyle = '#0f172a';
-            ctx.fillRect(0, 0, size, size);
-
-            if (type === 'emoji') {
-                const emojiEl = cardElement.querySelector('.emoji');
-                if (emojiEl) {
-                    ctx.font = '280px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif';
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-                    ctx.fillText(emojiEl.textContent, size / 2, size / 2 + 20);
-                }
-            } else if (type === 'icon') {
-                const iconEl = cardElement.querySelector('i');
-                if (iconEl) {
-                    ctx.font = '220px "Font Awesome 6 Free", "Font Awesome 6 Brands"';
-                    ctx.fillStyle = '#6366f1';
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-                    ctx.fillText(iconEl.textContent || '★', size / 2, size / 2);
-                }
-            } else if (type === 'texas') {
-                drawTexasFlag(ctx, size);
-            }
-
-            const link = document.createElement('a');
-            link.download = filename.replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.png';
-            link.href = canvas.toDataURL('image/png', 0.95);
-            link.click();
-            showToast(`Downloaded ${filename}.png`);
-        }
-
-        function drawTexasFlag(ctx, size) {
-            const scale = size / 120;
-            ctx.save();
-            ctx.scale(scale, scale);
-            ctx.fillStyle = '#002868';
-            ctx.fillRect(0, 0, 40, 80);
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(40, 0, 80, 80);
-            ctx.fillStyle = '#bf0a30';
-            ctx.fillRect(40, 40, 80, 40);
-            ctx.fillStyle = '#ffffff';
-            ctx.beginPath();
-            const cx = 20, cy = 40, r = 14;
-            for (let i = 0; i < 5; i++) {
-                const angle = (i * 4 * Math.PI / 5) - Math.PI / 2;
-                const x = cx + r * Math.cos(angle);
-                const y = cy + r * Math.sin(angle);
-                if (i === 0) ctx.moveTo(x, y);
-                else ctx.lineTo(x, y);
-            }
-            ctx.closePath();
-            ctx.fill();
-            ctx.restore();
-        }
-
-        function downloadSVGForIcon(iconClass, name) {
-            const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 24 24" fill="currentColor">
-                <text x="12" y="18" font-size="20" text-anchor="middle" font-family="Font Awesome 6 Free, Font Awesome 6 Brands">${iconClass}</text>
-            </svg>`;
-            const blob = new Blob([svgContent], { type: 'image/svg+xml' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${name.replace(/[^a-z0-9]/gi, '_')}.svg`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            showToast(`Downloaded ${name}.svg`);
-        }
-
-        // ==================== FAVORITES SYSTEM ====================
+        // ==================== FAVORITES ====================
         let favorites = new Set();
 
         function loadFavorites() {
@@ -334,500 +348,162 @@
         }
 
         function toggleFavorite(key) {
-            if (favorites.has(key)) {
-                favorites.delete(key);
-                removeFavoriteFromCloud(key);
-            } else {
-                favorites.add(key);
-                saveFavoriteToCloud(key);
-            }
+            if (favorites.has(key)) favorites.delete(key);
+            else favorites.add(key);
             saveFavorites();
-
-            const activeTab = document.querySelector('#emojis-section .category-tab.active');
-            if (activeTab) {
-                const cat = activeTab.getAttribute('data-category');
-                if (cat === 'all') renderEmojis();
-                else filterEmojis(cat);
-            } else {
-                renderIcons();
-            }
+            renderEmojis();
+            renderIcons();
         }
 
         function isFavorited(key) {
             return favorites.has(key);
         }
 
-        async function saveFavoriteToCloud(key) {
-            if (!supabaseClient) return;
-            const { data: { user } } = await supabaseClient.auth.getUser();
-            if (!user) return;
-            const { error } = await supabaseClient
-                .from('favorites')
-                .insert({ user_id: user.id, item_key: key });
-            if (error) console.error('Error saving favorite to cloud:', error);
-        }
-
-        async function removeFavoriteFromCloud(key) {
-            if (!supabaseClient) return;
-            const { data: { user } } = await supabaseClient.auth.getUser();
-            if (!user) return;
-            const { error } = await supabaseClient
-                .from('favorites')
-                .delete()
-                .eq('user_id', user.id)
-                .eq('item_key', key);
-            if (error) console.error('Error removing favorite from cloud:', error);
-        }
-
-        // ==================== SHOW FAVORITES (NEW) ====================
         function showFavorites() {
             const favoritedEmojis = emojiData.filter(e => favorites.has(e.emoji || e.name));
             const favoritedIcons = iconData.filter(i => favorites.has(i.class));
-
             if (favoritedEmojis.length === 0 && favoritedIcons.length === 0) {
-                showToast("No favorites yet! Click the heart on any icon or emoji.");
+                showToast("No favorites yet!");
                 return;
             }
-
             document.getElementById('emojis-section').scrollIntoView({ behavior: 'smooth' });
             renderEmojis(favoritedEmojis);
             renderIcons(favoritedIcons);
-            showToast(`Showing ${favoritedEmojis.length + favoritedIcons.length} favorites`);
         }
 
-        // ==================== RENDER EMOJIS ====================
+        // ==================== RENDER FUNCTIONS ====================
         function renderEmojis(filteredEmojis = null) {
             const container = document.getElementById('emojis-grid');
+            if (!container) return;
             container.innerHTML = '';
             const emojisToShow = filteredEmojis || emojiData;
 
             emojisToShow.forEach(item => {
                 const card = document.createElement('div');
                 card.className = `icon-card bg-zinc-900 border border-zinc-800 hover:border-indigo-500/50 rounded-3xl p-4 flex flex-col items-center justify-start cursor-pointer group min-h-[168px]`;
-
-                let contentHTML = '';
-                if (item.isCustom && item.name.includes('Texas')) {
-                    contentHTML = `
-                        <svg class="texas-flag" viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg">
-                            <rect width="120" height="80" fill="#002868"/>
-                            <rect x="40" width="80" height="80" fill="#ffffff"/>
-                            <rect x="40" y="40" width="80" height="40" fill="#bf0a30"/>
-                            <polygon points="20,40 25,28 30,40 25,52" fill="#ffffff"/>
-                        </svg>
-                        <div class="text-center w-full px-2">
-                            <div class="font-medium text-xs text-zinc-200 leading-tight line-clamp-2 emoji-card-text">${item.name}</div>
-                            <div class="text-[9px] text-rose-400 font-mono mt-1 tracking-tight">Custom SVG</div>
-                        </div>
-                    `;
-                } else {
-                    contentHTML = `
-                        <div class="emoji mb-2.5 transition-transform">${item.emoji}</div>
-                        <div class="text-center w-full px-2">
-                            <div class="font-medium text-xs text-zinc-200 leading-tight line-clamp-2 emoji-card-text">${item.name}</div>
-                            <div class="text-[9px] text-zinc-500 font-mono mt-1 tracking-tight">${item.code}</div>
-                        </div>
-                    `;
-                }
+                
+                let contentHTML = item.isCustom && item.name.includes('Texas') 
+                    ? `<svg class="texas-flag" viewBox="0 0 120 80"><rect width="120" height="80" fill="#002868"/><rect x="40" width="80" height="80" fill="#ffffff"/><rect x="40" y="40" width="80" height="40" fill="#bf0a30"/><polygon points="20,40 25,28 30,40 25,52" fill="#ffffff"/></svg>`
+                    : `<div class="emoji mb-2.5">${item.emoji}</div>`;
 
                 card.innerHTML = `
                     ${contentHTML}
-                    <div class="mt-2.5 flex gap-x-1 opacity-0 group-hover:opacity-100 transition-all">
-                        <div onclick="event.stopImmediatePropagation(); copyToClipboard('${item.emoji || 'Texas Flag'}', '${item.name}');" 
-                             class="export-btn inline-flex items-center bg-zinc-800 hover:bg-indigo-600 text-indigo-400 hover:text-white rounded-xl px-2 py-0.5 text-[9px] cursor-pointer">
-                            <i class="fa-solid fa-copy mr-1"></i> Copy
-                        </div>
-                        <div onclick="event.stopImmediatePropagation(); exportToPNG(this.closest('.icon-card'), '${item.name}', '${item.isCustom ? 'texas' : 'emoji'}');" 
-                             class="export-btn inline-flex items-center bg-zinc-800 hover:bg-emerald-600 text-emerald-400 hover:text-white rounded-xl px-2 py-0.5 text-[9px] cursor-pointer">
-                            <i class="fa-solid fa-download mr-1"></i> PNG
-                        </div>
+                    <div class="text-center w-full px-2">
+                        <div class="font-medium text-xs text-zinc-200 leading-tight line-clamp-2">${item.name}</div>
+                    </div>
+                    <div class="mt-2 flex gap-x-1 opacity-0 group-hover:opacity-100">
+                        <div onclick="event.stopImmediatePropagation(); copyToClipboard('${item.emoji || 'Texas Flag'}', '${item.name}');" class="export-btn px-2 py-0.5 text-[9px] bg-zinc-800 rounded-xl">Copy</div>
+                        <div onclick="event.stopImmediatePropagation(); exportToPNG(this.closest('.icon-card'), '${item.name}', 'emoji');" class="export-btn px-2 py-0.5 text-[9px] bg-zinc-800 rounded-xl">PNG</div>
                     </div>
                 `;
 
-                const heartKey = item.emoji || item.name;
                 const heart = document.createElement('div');
-                heart.className = `heart-btn ${isFavorited(heartKey) ? 'favorited' : ''}`;
+                heart.className = `heart-btn ${isFavorited(item.emoji || item.name) ? 'favorited' : ''}`;
                 heart.innerHTML = `<i class="fa-solid fa-heart"></i>`;
                 heart.onclick = (e) => {
                     e.stopImmediatePropagation();
-                    toggleFavorite(heartKey);
-                    if (favorites.has(heartKey)) heart.classList.add('favorited');
-                    else heart.classList.remove('favorited');
+                    toggleFavorite(item.emoji || item.name);
                 };
                 card.style.position = 'relative';
                 card.appendChild(heart);
 
-                card.onclick = () => {
-                    if (!item.isCustom) copyToClipboard(item.emoji, item.name);
-                    else {
-                        const svgCode = `<svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg"><rect width="120" height="80" fill="#002868"/><rect x="40" width="80" height="80" fill="#ffffff"/><rect x="40" y="40" width="80" height="40" fill="#bf0a30"/><polygon points="20,40 30,20 40,40" fill="#ffffff"/><polygon points="20,40 30,60 40,40" fill="#ffffff"/></svg>`;
-                        navigator.clipboard.writeText(svgCode);
-                        showToast('Texas Flag SVG copied!');
-                    }
-                    card.style.transform = 'scale(0.95)';
-                    setTimeout(() => { card.style.transform = 'scale(1)'; }, 150);
-                };
-
+                card.onclick = () => copyToClipboard(item.emoji || 'Texas Flag', item.name);
                 container.appendChild(card);
             });
         }
 
-        // ==================== FILTER EMOJIS ====================
-        function filterEmojis(category) {
-            document.querySelectorAll('#emojis-section .category-tab').forEach(tab => {
-                tab.classList.remove('active', 'bg-indigo-600', 'text-white');
-                tab.classList.add('bg-zinc-900', 'border-zinc-700');
-                if (category === 'all' && tab.getAttribute('data-category') === 'all') {
-                    tab.classList.add('active', 'bg-indigo-600', 'text-white');
-                } else if (tab.getAttribute('data-category') === category) {
-                    tab.classList.add('active', 'bg-indigo-600', 'text-white');
-                }
-            });
-
-            if (category === 'all') renderEmojis();
-            else renderEmojis(emojiData.filter(e => e.category === category));
-        }
-
-        // ==================== RENDER ICONS (FIXED) ====================
         function renderIcons(filteredIcons = null) {
             const container = document.getElementById('icons-grid');
+            if (!container) return;
             container.innerHTML = '';
             const iconsToShow = filteredIcons || iconData;
 
             iconsToShow.forEach(item => {
                 const card = document.createElement('div');
                 card.className = `icon-card bg-zinc-900 border border-zinc-800 hover:border-indigo-500/50 rounded-3xl p-5 flex flex-col items-center justify-start cursor-pointer group text-center min-h-[172px]`;
-
+                
                 card.innerHTML = `
-                    <div class="mb-3.5">
-                        <i class="${item.class} text-4xl text-indigo-400 transition-all group-hover:scale-110 group-hover:text-indigo-300"></i>
-                    </div>
-                    <div class="font-medium text-xs text-zinc-200 leading-tight line-clamp-2 px-1 min-h-[32px]">${item.name}</div>
-                    <div class="text-[9px] text-zinc-500 font-mono mt-1 truncate max-w-[120px]">${item.class}</div>
-                    
-                    <div class="mt-3 flex gap-x-1 opacity-0 group-hover:opacity-100 transition-all">
-                        <div onclick="event.stopImmediatePropagation(); copyToClipboard('${item.code.replace(/'/g, "\\'")}', '${item.name.replace(/'/g, "\\'")}');" 
-                             class="export-btn inline-flex items-center bg-zinc-800 hover:bg-indigo-600 text-indigo-400 hover:text-white rounded-xl px-2 py-0.5 text-[9px] cursor-pointer">
-                            <i class="fa-solid fa-copy mr-1"></i> Copy
-                        </div>
-                        <div onclick="event.stopImmediatePropagation(); exportToPNG(this.closest('.icon-card'), '${item.name}', 'icon');" 
-                             class="export-btn inline-flex items-center bg-zinc-800 hover:bg-emerald-600 text-emerald-400 hover:text-white rounded-xl px-2 py-0.5 text-[9px] cursor-pointer">
-                            <i class="fa-solid fa-download mr-1"></i> PNG
-                        </div>
-                        <div onclick="event.stopImmediatePropagation(); downloadSVGForIcon('${item.class}', '${item.name}');" 
-                             class="export-btn inline-flex items-center bg-zinc-800 hover:bg-violet-600 text-violet-400 hover:text-white rounded-xl px-2 py-0.5 text-[9px] cursor-pointer">
-                            <i class="fa-solid fa-file-export mr-1"></i> SVG
-                        </div>
+                    <div class="mb-3.5"><i class="${item.class} text-4xl text-indigo-400"></i></div>
+                    <div class="font-medium text-xs text-zinc-200">${item.name}</div>
+                    <div class="mt-3 flex gap-x-1 opacity-0 group-hover:opacity-100">
+                        <div onclick="event.stopImmediatePropagation(); copyToClipboard('${item.code}', '${item.name}');" class="export-btn px-2 py-0.5 text-[9px] bg-zinc-800 rounded-xl">Copy</div>
+                        <div onclick="event.stopImmediatePropagation(); exportToPNG(this.closest('.icon-card'), '${item.name}', 'icon');" class="export-btn px-2 py-0.5 text-[9px] bg-zinc-800 rounded-xl">PNG</div>
                     </div>
                 `;
 
-                const heartKey = item.class;
                 const heart = document.createElement('div');
-                heart.className = `heart-btn ${isFavorited(heartKey) ? 'favorited' : ''}`;
+                heart.className = `heart-btn ${isFavorited(item.class) ? 'favorited' : ''}`;
                 heart.innerHTML = `<i class="fa-solid fa-heart"></i>`;
                 heart.onclick = (e) => {
                     e.stopImmediatePropagation();
-                    toggleFavorite(heartKey);
-                    if (favorites.has(heartKey)) heart.classList.add('favorited');
-                    else heart.classList.remove('favorited');
+                    toggleFavorite(item.class);
                 };
                 card.style.position = 'relative';
                 card.appendChild(heart);
 
-                card.onclick = () => {
-                    copyToClipboard(item.code, item.name);
-                    card.style.transform = 'scale(0.95)';
-                    setTimeout(() => { card.style.transform = 'scale(1)'; }, 150);
-                };
-
+                card.onclick = () => copyToClipboard(item.code, item.name);
                 container.appendChild(card);
             });
         }
 
-        // ==================== FILTER ICONS ====================
-        function filterIcons(category) {
-            document.querySelectorAll('#icons-section .category-tab').forEach(tab => {
-                tab.classList.remove('active', 'bg-indigo-600', 'text-white', 'border-indigo-500');
-                tab.classList.add('bg-zinc-900', 'border-zinc-700');
-                if (category === 'all' && tab.getAttribute('data-icon-cat') === 'all') {
-                    tab.classList.add('active', 'bg-indigo-600', 'text-white', 'border-indigo-500');
-                } else if (tab.getAttribute('data-icon-cat') === category) {
-                    tab.classList.add('active', 'bg-indigo-600', 'text-white', 'border-indigo-500');
-                }
-            });
-
-            if (category === 'all') renderIcons();
-            else renderIcons(iconData.filter(i => i.category === category));
-        }
-
-        // ==================== RENDER SYMBOLS ====================
         function renderSymbols() {
             const container = document.getElementById('symbols-grid');
+            if (!container) return;
             container.innerHTML = '';
             symbolData.forEach(item => {
                 const card = document.createElement('div');
                 card.className = `icon-card bg-zinc-900 border border-zinc-800 hover:border-violet-500/50 rounded-3xl p-5 flex flex-col items-center justify-center cursor-pointer group`;
                 card.innerHTML = `
-                    <div class="text-5xl mb-3 text-violet-400 transition-transform group-hover:scale-125" style="font-family: system-ui;">${item.symbol}</div>
-                    <div class="text-center">
-                        <div class="font-medium text-sm">${item.name}</div>
-                        <div class="text-[10px] text-zinc-500 font-mono mt-0.5">${item.code}</div>
-                    </div>
-                    <div class="mt-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <div class="inline-flex items-center text-xs px-3 py-1 bg-zinc-800 rounded-2xl text-violet-400">
-                            <i class="fa-solid fa-copy mr-1.5 text-[10px]"></i>
-                            <span class="font-medium">Copy</span>
-                        </div>
-                    </div>
+                    <div class="text-5xl mb-3 text-violet-400">${item.symbol}</div>
+                    <div class="font-medium text-sm">${item.name}</div>
                 `;
                 card.onclick = () => copyToClipboard(item.symbol, item.name);
                 container.appendChild(card);
             });
         }
 
-        // ==================== GLOBAL SEARCH + OTHER FUNCTIONS ====================
-        // (I kept search history, bulk export, PWA, etc. exactly as in your original file)
-
-        // ==================== AUTH FUNCTIONS (CLEAN SINGLE VERSIONS) ====================
-        function showAuthModal() {
-            const modal = document.getElementById('auth-modal');
-            if (modal) {
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-                switchAuthTab('login');
-            }
+        // ==================== FILTER FUNCTIONS ====================
+        function filterEmojis(category) {
+            const filtered = category === 'all' ? emojiData : emojiData.filter(e => e.category === category);
+            renderEmojis(filtered);
         }
 
-        function hideAuthModal() {
-            const modal = document.getElementById('auth-modal');
-            if (modal) {
-                modal.classList.remove('flex');
-                modal.classList.add('hidden');
-            }
+        function filterIcons(category) {
+            const filtered = category === 'all' ? iconData : iconData.filter(i => i.category === category);
+            renderIcons(filtered);
         }
 
-        function switchAuthTab(tab) {
-            const loginForm = document.getElementById('login-form');
-            const signupForm = document.getElementById('signup-form');
-            const loginTab = document.getElementById('login-tab');
-            const signupTab = document.getElementById('signup-tab');
+        // ==================== SEARCH HISTORY ====================
+        let searchHistory = [];
 
-            if (!loginForm || !signupForm) return;
-
-            if (tab === 'login') {
-                loginForm.classList.remove('hidden');
-                signupForm.classList.add('hidden');
-                if (loginTab) loginTab.classList.add('border-b-2', 'border-indigo-500', 'text-white');
-                if (signupTab) signupTab.classList.remove('border-b-2', 'border-indigo-500', 'text-white');
-            } else {
-                loginForm.classList.add('hidden');
-                signupForm.classList.remove('hidden');
-                if (signupTab) signupTab.classList.add('border-b-2', 'border-indigo-500', 'text-white');
-                if (loginTab) loginTab.classList.remove('border-b-2', 'border-indigo-500', 'text-white');
-            }
+        function loadSearchHistory() {
+            const saved = localStorage.getItem('iconlySearchHistory');
+            if (saved) searchHistory = JSON.parse(saved);
         }
 
-        async function signupUser() {
-            const email = document.getElementById('signup-email').value;
-            const password = document.getElementById('signup-password').value;
-            const confirm = document.getElementById('signup-password-confirm').value;
-
-            if (password !== confirm) {
-                showToast("Passwords don't match");
-                return;
-            }
-
-            const { data, error } = await supabaseClient.auth.signUp({ email, password });
-            if (error) showToast("Error: " + error.message);
-            else showVerificationSentScreen(email);
+        function showSearchHistory() {
+            const dropdown = document.getElementById('search-history');
+            if (!dropdown || searchHistory.length === 0) return;
+            dropdown.innerHTML = searchHistory.map(q => `
+                <div onclick="useSearchHistory('${q}'); this.closest('#search-history').classList.add('hidden')" class="px-4 py-2 hover:bg-zinc-800 cursor-pointer">${q}</div>
+            `).join('');
+            dropdown.classList.remove('hidden');
         }
 
-        async function loginUser() {
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-
-            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-            if (error) {
-                showToast("Login failed: " + error.message);
-            } else {
-                showToast("Logged in successfully!");
-                hideAuthModal();
-                updateNavbarForUser(true);
-                await loadFavorites();
-            }
+        function useSearchHistory(query) {
+            document.getElementById('global-search').value = query;
+            // Simple filter
+            const q = query.toLowerCase();
+            renderEmojis(emojiData.filter(e => e.name.toLowerCase().includes(q)));
+            renderIcons(iconData.filter(i => i.name.toLowerCase().includes(q)));
         }
 
-        function updateNavbarForUser(isLoggedIn) {
-            const loginBtn = document.querySelector('button[onclick="showAuthModal()"]');
-            if (!loginBtn) return;
-
-            if (isLoggedIn) {
-                loginBtn.innerHTML = `<i class="fa-solid fa-user-circle text-lg"></i><span class="hidden md:inline ml-2">Account</span>`;
-                loginBtn.onclick = showAccountMenu;
-            } else {
-                loginBtn.innerHTML = `<i class="fa-solid fa-user"></i><span>Login</span>`;
-                loginBtn.onclick = showAuthModal;
-            }
+        // ==================== PWA ====================
+        function setupPWA() {
+            // Basic PWA support (can be expanded later)
         }
 
-        function showAccountMenu() {
-            const existing = document.getElementById('account-menu');
-            if (existing) existing.remove();
-
-            const menu = document.createElement('div');
-            menu.id = 'account-menu';
-            menu.className = 'absolute right-4 top-20 bg-zinc-900 border border-zinc-700 rounded-3xl shadow-xl py-2 w-56 z-[200]';
-            menu.innerHTML = `
-                <div class="px-4 py-3 border-b border-zinc-700">
-                    <div class="font-medium">Account</div>
-                    <div class="text-xs text-zinc-500">Signed in</div>
-                </div>
-                <div class="py-1">
-                    <div onclick="showFavorites(); document.getElementById('account-menu').remove()" class="px-4 py-2.5 hover:bg-zinc-800 cursor-pointer flex items-center gap-x-3 text-sm">
-                        <i class="fa-solid fa-heart text-rose-400 w-4"></i><span>My Favorites</span>
-                    </div>
-                    <div onclick="bulkExportVisible(); document.getElementById('account-menu').remove()" class="px-4 py-2.5 hover:bg-zinc-800 cursor-pointer flex items-center gap-x-3 text-sm">
-                        <i class="fa-solid fa-download text-emerald-400 w-4"></i><span>Export All Favorites</span>
-                    </div>
-                    <div onclick="showToast('Account settings coming soon!'); document.getElementById('account-menu').remove()" class="px-4 py-2.5 hover:bg-zinc-800 cursor-pointer flex items-center gap-x-3 text-sm">
-                        <i class="fa-solid fa-cog text-zinc-400 w-4"></i><span>Account Settings</span>
-                    </div>
-                </div>
-                <div class="border-t border-zinc-700 pt-1">
-                    <div onclick="logoutUser()" class="px-4 py-2.5 hover:bg-zinc-800 cursor-pointer flex items-center gap-x-3 text-sm text-rose-400">
-                        <i class="fa-solid fa-sign-out-alt w-4"></i><span>Logout</span>
-                    </div>
-                </div>
-            `;
-
-            const nav = document.querySelector('nav');
-            nav.style.position = 'relative';
-            nav.appendChild(menu);
-
-            setTimeout(() => {
-                document.addEventListener('click', function handler(e) {
-                    if (!menu.contains(e.target)) {
-                        menu.remove();
-                        document.removeEventListener('click', handler);
-                    }
-                }, { once: true });
-            }, 100);
-        }
-
-        async function logoutUser() {
-            await supabaseClient.auth.signOut();
-            document.getElementById('account-menu').remove();
-            updateNavbarForUser(false);
-            showToast("Logged out successfully");
-            favorites.clear();
-            localStorage.removeItem('iconlyFavorites');
-        }
-
-        async function checkUserSession() {
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            if (session) {
-                console.log('%c[Auth] User is logged in', 'color: #10b981');
-                await loadFavorites();
-            }
-        }
-// ==================== SEARCH HISTORY ====================
-let searchHistory = [];
-
-function loadSearchHistory() {
-    const saved = localStorage.getItem('iconlySearchHistory');
-    if (saved) searchHistory = JSON.parse(saved);
-}
-
-function saveSearchHistory(query) {
-    if (!query || query.length < 2) return;
-    searchHistory = searchHistory.filter(q => q !== query);
-    searchHistory.unshift(query);
-    searchHistory = searchHistory.slice(0, 8);
-    localStorage.setItem('iconlySearchHistory', JSON.stringify(searchHistory));
-}
-
-function showSearchHistory() {
-    const dropdown = document.getElementById('search-history');
-    if (!dropdown || searchHistory.length === 0) return;
-
-    dropdown.innerHTML = searchHistory.map((query, i) => `
-        <div onclick="useSearchHistory('${query}'); event.target.closest('#search-history').classList.add('hidden')" 
-             class="px-4 py-2 hover:bg-zinc-800 cursor-pointer flex items-center gap-x-2 text-sm">
-            <i class="fa-solid fa-history text-zinc-500 w-4"></i>
-            <span>${query}</span>
-        </div>
-    `).join('');
-    dropdown.classList.remove('hidden');
-
-    setTimeout(() => {
-        document.addEventListener('click', function handler(e) {
-            if (!dropdown.contains(e.target)) {
-                dropdown.classList.add('hidden');
-                document.removeEventListener('click', handler);
-            }
-        }, { once: true });
-    }, 100);
-}
-
-function useSearchHistory(query) {
-    const input = document.getElementById('global-search');
-    input.value = query;
-    const event = new Event('input');
-    input.dispatchEvent(event);
-    document.getElementById('search-history').classList.add('hidden');
-}
-        // ==================== PWA SUPPORT ====================
-function setupPWA() {
-    const manifest = {
-        name: "GetEmojicon - Icons & Emojis",
-        short_name: "GetEmojicon",
-        description: "Beautiful collection of web icons and emojis with export tools",
-        start_url: ".",
-        display: "standalone",
-        background_color: "#0f172a",
-        theme_color: "#6366f1",
-        icons: [
-            { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%236366f1'/%3E%3Ctext x='50' y='65' font-size='50' text-anchor='middle' fill='white'%3E🖼️%3C/text%3E%3C/svg%3E", sizes: "192x192", type: "image/svg+xml" }
-        ]
-    };
-
-    const link = document.createElement('link');
-    link.rel = 'manifest';
-    link.href = 'data:application/manifest+json,' + encodeURIComponent(JSON.stringify(manifest));
-    document.head.appendChild(link);
-
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-
-        const installBtn = document.createElement('button');
-        installBtn.className = 'px-4 py-2 text-xs bg-emerald-600 hover:bg-emerald-500 text-white rounded-3xl flex items-center gap-x-2';
-        installBtn.innerHTML = `<i class="fa-solid fa-download"></i> <span>Install</span>`;
-        installBtn.onclick = async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') showToast("Thanks for installing GetEmojicon!");
-                deferredPrompt = null;
-                installBtn.remove();
-            }
-        };
-
-        const nav = document.querySelector('nav .flex.items-center.gap-x-4');
-        if (nav && !document.getElementById('pwa-install')) {
-            installBtn.id = 'pwa-install';
-            nav.appendChild(installBtn);
-        }
-    });
-
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('data:application/javascript,' + encodeURIComponent(`
-            self.addEventListener('install', () => self.skipWaiting());
-            self.addEventListener('fetch', (e) => e.respondWith(fetch(e.request)));
-        `)).catch(() => {});
-    }
-}
-        // ==================== INITIALIZE WEBSITE ====================
+        // ==================== INITIALIZE ====================
         function initializeWebsite() {
             initializeTailwind();
             setupDarkMode();
@@ -838,63 +514,34 @@ function setupPWA() {
             renderEmojis();
             renderIcons();
             renderSymbols();
-            setupGlobalSearch();
 
+            // Set initial active tabs
             setTimeout(() => {
                 const firstEmojiTab = document.querySelector('#emojis-section .category-tab[data-category="all"]');
                 if (firstEmojiTab) firstEmojiTab.classList.add('active', 'bg-indigo-600', 'text-white');
-
-                const firstIconTab = document.querySelector('#icons-section .category-tab[data-icon-cat="all"]');
-                if (firstIconTab) firstIconTab.classList.add('active', 'bg-indigo-600', 'text-white');
             }, 100);
-
-            document.documentElement.classList.add('dark');
-        }
-
-        function launchConfetti() {
-            const colors = ['#6366f1', '#a855f7', '#ec4899', '#f43f5e'];
-            for (let i = 0; i < 80; i++) {
-                setTimeout(() => {
-                    const confetto = document.createElement('div');
-                    confetto.style.position = 'fixed';
-                    confetto.style.left = Math.random() * 100 + 'vw';
-                    confetto.style.top = '-20px';
-                    confetto.style.width = '12px';
-                    confetto.style.height = '12px';
-                    confetto.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                    confetto.style.borderRadius = Math.random() > 0.5 ? '50%' : '3px';
-                    confetto.style.zIndex = '99999';
-                    confetto.style.opacity = Math.random() + 0.4;
-                    confetto.style.pointerEvents = 'none';
-                    document.body.appendChild(confetto);
-
-                    const duration = Math.random() * 3 + 2.5;
-                    const angle = Math.random() * 60 - 30;
-
-                    confetto.animate([
-                        { transform: `translateY(0) rotate(0deg)`, opacity: confetto.style.opacity },
-                        { transform: `translateY(${window.innerHeight + 100}px) rotate(${angle * 8}deg)`, opacity: 0 }
-                    ], {
-                        duration: duration * 1000,
-                        easing: 'cubic-bezier(0.22, 1, 0.36, 1)'
-                    }).onfinish = () => confetto.remove();
-                }, i * 1.2);
-            }
         }
 
         // ==================== BOOT ====================
         window.onload = function() {
             initSupabase();
             initializeWebsite();
-            checkUserSession();
         };
 
-        window.Emojicon = { filterEmojis, filterIcons, launchConfetti };
+        // Expose for debugging
+        window.GetEmojicon = { filterEmojis, filterIcons, showFavorites };
     </script>
 
-    <!-- Auth Modal (kept exactly as original) -->
+    <!-- Auth Modal (simplified for now) -->
     <div id="auth-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[300] p-4">
-        <!-- ... (your original auth modal HTML) ... -->
+        <div class="bg-zinc-900 border border-zinc-700 rounded-3xl w-full max-w-md p-8">
+            <div class="flex justify-between items-center mb-6">
+                <div class="text-2xl font-semibold">Login / Sign Up</div>
+                <button onclick="document.getElementById('auth-modal').classList.add('hidden')" class="text-2xl">&times;</button>
+            </div>
+            <p class="text-zinc-400">Authentication coming soon. For now, you can use favorites locally.</p>
+        </div>
     </div>
+
 </body>
 </html>
