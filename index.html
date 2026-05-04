@@ -775,6 +775,58 @@ function useSearchHistory(query) {
     input.dispatchEvent(event);
     document.getElementById('search-history').classList.add('hidden');
 }
+        // ==================== PWA SUPPORT ====================
+function setupPWA() {
+    const manifest = {
+        name: "GetEmojicon - Icons & Emojis",
+        short_name: "GetEmojicon",
+        description: "Beautiful collection of web icons and emojis with export tools",
+        start_url: ".",
+        display: "standalone",
+        background_color: "#0f172a",
+        theme_color: "#6366f1",
+        icons: [
+            { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%236366f1'/%3E%3Ctext x='50' y='65' font-size='50' text-anchor='middle' fill='white'%3E🖼️%3C/text%3E%3C/svg%3E", sizes: "192x192", type: "image/svg+xml" }
+        ]
+    };
+
+    const link = document.createElement('link');
+    link.rel = 'manifest';
+    link.href = 'data:application/manifest+json,' + encodeURIComponent(JSON.stringify(manifest));
+    document.head.appendChild(link);
+
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+
+        const installBtn = document.createElement('button');
+        installBtn.className = 'px-4 py-2 text-xs bg-emerald-600 hover:bg-emerald-500 text-white rounded-3xl flex items-center gap-x-2';
+        installBtn.innerHTML = `<i class="fa-solid fa-download"></i> <span>Install</span>`;
+        installBtn.onclick = async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') showToast("Thanks for installing GetEmojicon!");
+                deferredPrompt = null;
+                installBtn.remove();
+            }
+        };
+
+        const nav = document.querySelector('nav .flex.items-center.gap-x-4');
+        if (nav && !document.getElementById('pwa-install')) {
+            installBtn.id = 'pwa-install';
+            nav.appendChild(installBtn);
+        }
+    });
+
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('data:application/javascript,' + encodeURIComponent(`
+            self.addEventListener('install', () => self.skipWaiting());
+            self.addEventListener('fetch', (e) => e.respondWith(fetch(e.request)));
+        `)).catch(() => {});
+    }
+}
         // ==================== INITIALIZE WEBSITE ====================
         function initializeWebsite() {
             initializeTailwind();
