@@ -2744,25 +2744,27 @@ async function checkUserSession() {
             </div>
 
             <!-- Login Form -->
-            <div id="login-form">
-                <div class="space-y-4">
-                    <div>
-                        <label class="text-xs text-zinc-400">Email</label>
-                        <input id="login-email" type="email" placeholder="you@example.com"
-                               class="w-full bg-zinc-950 border border-zinc-700 rounded-2xl px-4 py-3 text-sm focus:border-indigo-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="text-xs text-zinc-400">Password</label>
-                        <input id="login-password" type="password" placeholder="••••••••"
-                               class="w-full bg-zinc-950 border border-zinc-700 rounded-2xl px-4 py-3 text-sm focus:border-indigo-500 outline-none">
-                    </div>
-                </div>
-                <button onclick="loginUser()" 
-        onkeydown="if (event.key === 'Enter') loginUser()"
-        class="mt-6 w-full py-3 bg-white text-zinc-950 rounded-2xl font-semibold hover:bg-zinc-200">
-    Login
-</button>
+            <!-- Login Form -->
+<div id="login-form">
+    <form onsubmit="event.preventDefault(); loginUser();">
+        <div class="space-y-4">
+            <div>
+                <label class="text-xs text-zinc-400">Email</label>
+                <input id="login-email" type="email" placeholder="you@example.com"
+                       class="w-full bg-zinc-950 border border-zinc-700 rounded-2xl px-4 py-3 text-sm focus:border-indigo-500 outline-none">
             </div>
+            <div>
+                <label class="text-xs text-zinc-400">Password</label>
+                <input id="login-password" type="password" placeholder="••••••••"
+                       class="w-full bg-zinc-950 border border-zinc-700 rounded-2xl px-4 py-3 text-sm focus:border-indigo-500 outline-none">
+            </div>
+        </div>
+        <button type="submit" 
+                class="mt-6 w-full py-3 bg-white text-zinc-950 rounded-2xl font-semibold hover:bg-zinc-200">
+            Login
+        </button>
+    </form>
+</div>
 
             <!-- Signup Form -->
             <div id="signup-form" class="hidden">
