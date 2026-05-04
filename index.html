@@ -2052,12 +2052,18 @@ async function loadFavoritesFromCloud() {
                 // Add favorite heart
                 const heartKey = item.emoji || item.name;
                 const heart = document.createElement('div');
-                heart.className = `heart-btn ${isFavorited(heartKey) ? 'favorited' : ''}`;
-                heart.innerHTML = `<i class="fa-solid fa-heart"></i>`;
-                heart.onclick = (e) => {
-                    e.stopImmediatePropagation();
-                    toggleFavorite(heartKey);
-                };
+heart.className = `heart-btn ${isFavorited(heartKey) ? 'favorited' : ''}`;
+heart.innerHTML = `<i class="fa-solid fa-heart"></i>`;
+heart.onclick = (e) => {
+    e.stopImmediatePropagation();
+    toggleFavorite(heartKey);
+    // Refresh the heart color immediately
+    if (favorites.has(heartKey)) {
+        heart.classList.add('favorited');
+    } else {
+        heart.classList.remove('favorited');
+    }
+};
                 card.style.position = 'relative';
                 card.appendChild(heart);
                 
@@ -2140,21 +2146,18 @@ async function loadFavoritesFromCloud() {
                 
                 const heartKey = item.class;
                 const heart = document.createElement('div');
-                heart.className = `heart-btn ${isFavorited(heartKey) ? 'favorited' : ''}`;
-                heart.innerHTML = `<i class="fa-solid fa-heart"></i>`;
-                heart.onclick = (e) => {
-                    e.stopImmediatePropagation();
-                    toggleFavorite(heartKey);
-                };
-                card.style.position = 'relative';
-                card.appendChild(heart);
-                
-                card.onclick = () => {
-                    copyToClipboard(item.code, item.name);
-                };
-                
-                container.appendChild(card);
-            });
+heart.className = `heart-btn ${isFavorited(heartKey) ? 'favorited' : ''}`;
+heart.innerHTML = `<i class="fa-solid fa-heart"></i>`;
+heart.onclick = (e) => {
+    e.stopImmediatePropagation();
+    toggleFavorite(heartKey);
+    // Refresh the heart color immediately
+    if (favorites.has(heartKey)) {
+        heart.classList.add('favorited');
+    } else {
+        heart.classList.remove('favorited');
+    }
+};
         }
 
         // Filter Icons by category
