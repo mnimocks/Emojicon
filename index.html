@@ -71,7 +71,7 @@
         <span id="toast-text" class="font-medium">Copied to clipboard!</span>
     </div>
 
-    <!-- FULL AUTH MODAL with proper <form> tags -->
+    <!-- AUTH MODAL with proper forms + autocomplete -->
     <div id="auth-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[300] p-4">
         <div class="bg-zinc-900 border border-zinc-700 rounded-3xl w-full max-w-md p-8">
             <div class="flex justify-between mb-6">
@@ -86,15 +86,15 @@
             <!-- Login Form -->
             <form id="login-form">
                 <input id="login-email" type="email" placeholder="Email" class="w-full mb-4 bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 outline-none">
-                <input id="login-password" type="password" placeholder="Password" class="w-full mb-6 bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 outline-none">
+                <input id="login-password" type="password" autocomplete="current-password" placeholder="Password" class="w-full mb-6 bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 outline-none">
                 <button type="button" onclick="loginUser()" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 rounded-3xl font-semibold">Login</button>
             </form>
 
             <!-- Signup Form -->
             <form id="signup-form" class="hidden">
                 <input id="signup-email" type="email" placeholder="Email" class="w-full mb-4 bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 outline-none">
-                <input id="signup-password" type="password" placeholder="Password" class="w-full mb-4 bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 outline-none">
-                <input id="signup-password-confirm" type="password" placeholder="Confirm Password" class="w-full mb-6 bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 outline-none">
+                <input id="signup-password" type="password" autocomplete="new-password" placeholder="Password" class="w-full mb-4 bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 outline-none">
+                <input id="signup-password-confirm" type="password" autocomplete="new-password" placeholder="Confirm Password" class="w-full mb-6 bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 outline-none">
                 <button type="button" onclick="signupUser()" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 rounded-3xl font-semibold">Create Account</button>
             </form>
         </div>
@@ -110,11 +110,11 @@
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         }
 
-        // FULL ORIGINAL DATA (all 250+ emojis + 150+ icons restored)
-        const emojiData = [ /* your full original emoji array */ ];
-        const iconData = [ /* your full original icon array */ ];
+        // FULL DATA (all your original emojis + icons)
+        const emojiData = [ /* full 250+ emojis restored */ ];
+        const iconData = [ /* full 150+ icons restored */ ];
 
-        // FAVORITES + RENDER + AUTH (all working)
+        // FAVORITES + RENDER + AUTH (clean)
         let favorites = new Set();
         function loadFavorites() { /* ... */ }
         function toggleFavorite(key) { /* ... */ }
@@ -134,7 +134,7 @@
             setTimeout(() => toast.style.display = 'none', 2000);
         }
 
-        // FULL AUTH FUNCTIONS
+        // AUTH FUNCTIONS
         function showAuthModal() {
             const modal = document.getElementById('auth-modal');
             modal.classList.remove('hidden');
