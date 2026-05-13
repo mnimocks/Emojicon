@@ -64,7 +64,15 @@
         <h2 class="section-header mb-8 flex items-center gap-x-3"><i class="fa-solid fa-palette text-indigo-400"></i> Font Awesome Icons</h2>
         <div id="icons-grid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-4"></div>
     </div>
-
+    <!-- SYMBOLS SECTION (insert this here) -->
+    <div class="max-w-screen-2xl mx-auto px-8 py-12">
+        <h2 class="section-header mb-8 flex items-center gap-x-3">
+            <i class="fa-solid fa-infinity text-violet-400"></i> 
+            Unicode Symbols
+        </h2>
+        <div id="symbols-grid" class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-9 xl:grid-cols-11 2xl:grid-cols-12 gap-3"></div>
+    </div>
+    
     <!-- Toast -->
     <div id="toast" class="hidden fixed bottom-8 left-1/2 -translate-x-1/2 bg-zinc-900 border border-zinc-700 text-white px-6 py-3.5 rounded-3xl shadow-2xl flex items-center gap-x-3 z-[100]">
         <i class="fa-solid fa-check-circle text-emerald-400"></i>
@@ -498,6 +506,8 @@
             localStorage.setItem('iconlyFavorites', JSON.stringify([...favorites]));
             renderEmojis();
             renderIcons();
+            renderSymbols();
+            
         }
         function isFavorited(key) { return favorites.has(key); }
         function showFavorites() {
@@ -543,7 +553,21 @@
                 container.appendChild(card);
             });
         }
-
+        function renderSymbols() {
+            const container = document.getElementById('symbols-grid');
+            if (!container) return;
+            container.innerHTML = '';
+            symbolData.forEach(item => {
+                const card = document.createElement('div');
+                card.className = `icon-card bg-zinc-900 border border-zinc-800 hover:border-violet-500/50 rounded-3xl p-5 flex flex-col items-center justify-center cursor-pointer group relative`;
+                card.innerHTML = `
+                    <div class="text-5xl mb-3 text-violet-400">${item.symbol}</div>
+                    <div class="text-xs text-zinc-400 text-center">${item.name}</div>
+                `;
+                card.onclick = () => copyToClipboard(item.symbol, item.name);
+                container.appendChild(card);
+            });
+        }
         function copyToClipboard(text, label) {
             navigator.clipboard.writeText(text);
             showToast(label + " copied!");
@@ -605,6 +629,7 @@
             loadFavorites();
             renderEmojis();
             renderIcons();
+            renderSymbols();
         }
 
         window.onload = initializeWebsite;
