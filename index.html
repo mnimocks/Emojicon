@@ -43,9 +43,9 @@
                 <button onclick="showAuthModal()" id="login-btn" class="px-5 py-2.5 text-sm font-semibold bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 hover:border-indigo-500 rounded-3xl flex items-center gap-x-2 transition-all">
                     <i class="fa-solid fa-user"></i><span>Login</span>
                 </button>
-                <button onclick="showFavorites()" class="w-11 h-11 flex items-center justify-center bg-zinc-900 hover:bg-rose-600/20 border border-zinc-800 hover:border-rose-500 rounded-3xl transition-all group">
-                    <i class="fa-solid fa-heart text-lg text-rose-400 group-hover:scale-110 transition-transform"></i>
-                </button>
+                <button onclick="toggleFavoritesMode()" id="favorites-toggle" class="w-11 h-11 flex items-center justify-center bg-zinc-900 hover:bg-rose-600/20 border border-zinc-800 hover:border-rose-500 rounded-3xl transition-all group">
+    <i class="fa-solid fa-heart text-lg text-rose-400 group-hover:scale-110 transition-transform"></i>
+</button>
                 <button onclick="bulkExportVisible()" class="px-5 py-2.5 text-sm font-semibold bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 rounded-3xl flex items-center gap-x-2 transition-all">
                     <i class="fa-solid fa-download"></i><span>Bulk Export</span>
                 </button>
@@ -493,7 +493,9 @@
     {symbol:"⇡", name:"Upwards Dashed Arrow", code:"U+21E1"},
     {symbol:"⇣", name:"Downwards Dashed Arrow", code:"U+21E3"}
 ];
-
+// NEW: Toggle for Favorites mode
+    let favoritesMode = false;
+        
         // FAVORITES
         let favorites = new Set();
         function loadFavorites() {
@@ -510,21 +512,32 @@
             
         }
         function isFavorited(key) { return favorites.has(key); }
-                       function showFavorites() {
-            const favEmojis = emojiData.filter(e => favorites.has(e.emoji));
-            const favIcons = iconData.filter(i => favorites.has(i.class));
-            const favSymbols = symbolData.filter(s => favorites.has(s.symbol));
+                              function toggleFavoritesMode() {
+            favoritesMode = !favoritesMode;
 
-            if (favEmojis.length === 0 && favIcons.length === 0 && favSymbols.length === 0) {
-                showToast("No favorites yet! Click any heart ❤️");
-                return;
+            const heartBtn = document.getElementById('favorites-toggle');
+            if (heartBtn) {
+                heartBtn.classList.toggle('text-rose-500', favoritesMode);
+                heartBtn.querySelector('i').classList.toggle('fa-regular', !favoritesMode);
+                heartBtn.querySelector('i').classList.toggle('fa-solid', favoritesMode);
             }
 
-            renderEmojis(favEmojis);
-            renderIcons(favIcons);
-            renderSymbols(favSymbols);
+            if (favoritesMode) {
+                const favEmojis = emojiData.filter(e => favorites.has(e.emoji));
+                const favIcons = iconData.filter(i => favorites.has(i.class));
+                const favSymbols = symbolData.filter(s => favorites.has(s.symbol));
 
-            showToast(`Showing ${favEmojis.length + favIcons.length + favSymbols.length} favorites`);
+                renderEmojis(favEmojis);
+                renderIcons(favIcons);
+                renderSymbols(favSymbols);
+
+                showToast(`Showing ${favEmojis.length + favIcons.length + favSymbols.length} favorites`);
+            } else {
+                renderEmojis();
+                renderIcons();
+                renderSymbols();
+                showToast("Showing all items");
+            }
         }
 
         // RENDER
