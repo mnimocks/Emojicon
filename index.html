@@ -401,6 +401,91 @@
     {class: "fa-solid fa-sync", name: "Sync", code: "fa-sync"}
 ];
 
+    const symbolData = [
+    // Copyright & Legal
+    {symbol:"©", name:"Copyright", code:"U+00A9"},
+    {symbol:"®", name:"Registered Trademark", code:"U+00AE"},
+    {symbol:"™", name:"Trademark", code:"U+2122"},
+    {symbol:"℠", name:"Service Mark", code:"U+2120"},
+
+    // Arrows
+    {symbol:"→", name:"Right Arrow", code:"U+2192"},
+    {symbol:"←", name:"Left Arrow", code:"U+2190"},
+    {symbol:"↑", name:"Up Arrow", code:"U+2191"},
+    {symbol:"↓", name:"Down Arrow", code:"U+2193"},
+    {symbol:"↔", name:"Left Right Arrow", code:"U+2194"},
+    {symbol:"↕", name:"Up Down Arrow", code:"U+2195"},
+    {symbol:"⇒", name:"Rightwards Double Arrow", code:"U+21D2"},
+    {symbol:"⇐", name:"Leftwards Double Arrow", code:"U+21D0"},
+    {symbol:"⇑", name:"Upwards Double Arrow", code:"U+21D1"},
+    {symbol:"⇓", name:"Downwards Double Arrow", code:"U+21D3"},
+
+    // Math & Symbols
+    {symbol:"∞", name:"Infinity", code:"U+221E"},
+    {symbol:"≈", name:"Approximately Equal", code:"U+2248"},
+    {symbol:"≠", name:"Not Equal", code:"U+2260"},
+    {symbol:"±", name:"Plus Minus", code:"U+00B1"},
+    {symbol:"×", name:"Multiplication", code:"U+00D7"},
+    {symbol:"÷", name:"Division", code:"U+00F7"},
+    {symbol:"√", name:"Square Root", code:"U+221A"},
+    {symbol:"∑", name:"Summation", code:"U+2211"},
+    {symbol:"∫", name:"Integral", code:"U+222B"},
+    {symbol:"π", name:"Pi", code:"U+03C0"},
+    {symbol:"°", name:"Degree", code:"U+00B0"},
+    {symbol:"µ", name:"Micro", code:"U+00B5"},
+
+    // Currency
+    {symbol:"$", name:"Dollar", code:"U+0024"},
+    {symbol:"€", name:"Euro", code:"U+20AC"},
+    {symbol:"£", name:"Pound", code:"U+00A3"},
+    {symbol:"¥", name:"Yen", code:"U+00A5"},
+    {symbol:"₹", name:"Indian Rupee", code:"U+20B9"},
+    {symbol:"₿", name:"Bitcoin", code:"U+20BF"},
+
+    // Punctuation & Special
+    {symbol:"✓", name:"Check Mark", code:"U+2713"},
+    {symbol:"✔", name:"Heavy Check Mark", code:"U+2714"},
+    {symbol:"✕", name:"Multiplication X", code:"U+2715"},
+    {symbol:"✗", name:"Heavy X", code:"U+2717"},
+    {symbol:"•", name:"Bullet", code:"U+2022"},
+    {symbol:"⋯", name:"Horizontal Ellipsis", code:"U+22EF"},
+    {symbol:"…", name:"Ellipsis", code:"U+2026"},
+    {symbol:"†", name:"Dagger", code:"U+2020"},
+    {symbol:"‡", name:"Double Dagger", code:"U+2021"},
+    {symbol:"§", name:"Section", code:"U+00A7"},
+    {symbol:"¶", name:"Paragraph", code:"U+00B6"},
+
+    // Misc Symbols
+    {symbol:"★", name:"Black Star", code:"U+2605"},
+    {symbol:"☆", name:"White Star", code:"U+2606"},
+    {symbol:"♥", name:"Black Heart", code:"U+2665"},
+    {symbol:"♡", name:"White Heart", code:"U+2661"},
+    {symbol:"♠", name:"Spade", code:"U+2660"},
+    {symbol:"♣", name:"Club", code:"U+2663"},
+    {symbol:"♦", name:"Diamond", code:"U+2666"},
+    {symbol:"♣", name:"Club", code:"U+2663"},
+    {symbol:"♟", name:"Chess Pawn", code:"U+265F"},
+    {symbol:"♞", name:"Chess Knight", code:"U+265E"},
+    {symbol:"⚡", name:"High Voltage", code:"U+26A1"},
+    {symbol:"⚠", name:"Warning", code:"U+26A0"},
+    {symbol:"☢", name:"Radioactive", code:"U+2622"},
+    {symbol:"☣", name:"Biohazard", code:"U+2623"},
+    {symbol:"☑", name:"Ballot Box With Check", code:"U+2611"},
+    {symbol:"☒", name:"Ballot Box With X", code:"U+2612"},
+    {symbol:"♻", name:"Recycling", code:"U+267B"},
+    {symbol:"♾", name:"Permanent Paper Sign", code:"U+267E"},
+    {symbol:"⌛", name:"Hourglass", code:"U+231B"},
+    {symbol:"⏳", name:"Hourglass With Flowing Sand", code:"U+23F3"},
+    {symbol:"⌚", name:"Watch", code:"U+231A"},
+    {symbol:"⏰", name:"Alarm Clock", code:"U+23F0"},
+
+    // More Arrows & Lines
+    {symbol:"⇢", name:"Rightwards Dashed Arrow", code:"U+21E2"},
+    {symbol:"⇠", name:"Leftwards Dashed Arrow", code:"U+21E0"},
+    {symbol:"⇡", name:"Upwards Dashed Arrow", code:"U+21E1"},
+    {symbol:"⇣", name:"Downwards Dashed Arrow", code:"U+21E3"}
+];
+
         // FAVORITES
         let favorites = new Set();
         function loadFavorites() {
