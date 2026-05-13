@@ -493,11 +493,75 @@
     {symbol:"⇡", name:"Upwards Dashed Arrow", code:"U+21E1"},
     {symbol:"⇣", name:"Downwards Dashed Arrow", code:"U+21E3"}
 ];
+                // ==================== RENDER ICONS ====================
+        function renderIcons(filtered = null) {
+            const container = document.getElementById('icons-grid');
+            if (!container) return;
+            container.innerHTML = '';
+            const data = filtered || iconData;
+
+            data.forEach(item => {
+                const card = document.createElement('div');
+                card.className = `icon-card bg-zinc-900 border border-zinc-800 hover:border-indigo-500/50 rounded-3xl p-5 flex flex-col items-center justify-center cursor-pointer group relative min-h-[172px]`;
+
+                card.innerHTML = `
+                    <div class="mb-3"><i class="${item.class} text-4xl text-indigo-400"></i></div>
+                    <div class="text-xs text-zinc-400 text-center font-medium">${item.name}</div>
+                `;
+
+                const heart = document.createElement('div');
+                heart.className = `heart-btn ${isFavorited(item.class) ? 'favorited' : ''}`;
+                heart.innerHTML = `<i class="fa-solid fa-heart"></i>`;
+                heart.onclick = (e) => {
+                    e.stopImmediatePropagation();
+                    toggleFavorite(item.class);
+                };
+                card.appendChild(heart);
+
+                card.onclick = () => copyToClipboard(item.class, item.name);
+                container.appendChild(card);
+            });
+        }
+
+        // ==================== FAVORITES TOGGLE (Heart icon in toolbar) ====================
+        let favoritesMode = false;
+
+        function showFavorites() {
+            favoritesMode = !favoritesMode;
+
+            // Update heart icon appearance
+            const heartBtn = document.querySelector('button[onclick="showFavorites()"] i');
+            if (heartBtn) {
+                heartBtn.classList.toggle('text-rose-500', favoritesMode);
+                heartBtn.classList.toggle('fa-solid', favoritesMode);
+                heartBtn.classList.toggle('fa-regular', !favoritesMode);
+            }
+
+            if (favoritesMode) {
+                // Show only favorited items
+                const favEmojis = emojiData.filter(e => favorites.has(e.emoji));
+                const favIcons = iconData.filter(i => favorites.has(i.class));
+                const favSymbols = symbolData.filter(s => favorites.has(s.symbol));
+
+                renderEmojis(favEmojis);
+                renderIcons(favIcons);
+                renderSymbols(favSymbols);
+
+                showToast(`Showing ${favEmojis.length + favIcons.length + favSymbols.length} favorites`);
+            } else {
+                // Show all items
+                renderEmojis();
+                renderIcons();
+                renderSymbols();
+                showToast("Showing all items");
+            }
+        }
 // NEW: Toggle for Favorites mode
     let favoritesMode = false;
         
         // FAVORITES
         let favorites = new Set();
+                let isProUser = false;
         function loadFavorites() {
             const saved = localStorage.getItem('iconlyFavorites');
             if (saved) favorites = new Set(JSON.parse(saved));
@@ -539,7 +603,7 @@
                 showToast("Showing all items");
             }
         }
-
+      
         // RENDER
         function renderEmojis(filtered = null) {
             const container = document.getElementById('emojis-grid');
@@ -643,6 +707,7 @@
             const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
             if (error) showToast("Login failed: " + error.message);
             else { hideAuthModal(); updateNavbarForUser(true); showToast("Logged in successfully!"); }
+            isProUser = true;   // Remove this line later when you connect real Stripe
         }
 
         async function signupUser() {
@@ -656,8 +721,67 @@
             else btn.innerHTML = `<i class="fa-solid fa-user"></i><span>Login</span>`;
         }
 
-        function bulkExportVisible() {
-            showToast("Bulk export coming in Pro!");
+                async function bulkExportVisible() {
+            // 1. Check if logged in
+            if (!supabaseClient) {
+                showToast("Please log in to use Bulk Export");
+                showAuthModal();
+                return;
+            }
+
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (!session) {
+                showToast("Please log in to use Bulk Export");
+                showAuthModal();
+                return;
+            }
+
+            // 2. Check if Pro user (placeholder - you can connect to Stripe later)
+            // For now, set isProUser = true; in loginUser() for testing
+            if (!isProUser) {
+                showToast("Bulk Export is a Pro feature. Upgrade to Pro to unlock!");
+                // Optional: showProModal() if you have it
+                return;
+            }
+
+            // 3. Count favorited items
+            const favEmojis = emojiData.filter(e => favorites.has(e.emoji));
+            const favIcons = iconData.filter(i => favorites.has(i.class));
+            const favSymbols = symbolData.filter(s => favorites.has(s.symbol));
+
+            const total = favEmojis.length + favIcons.length + favSymbols.length;
+
+            if (total === 0) {
+                showToast("No favorites yet! Click any ❤️ to favorite items first.");
+                return;
+            }
+
+            showToast(`Exporting ${total} favorited items as PNG...`);
+
+            // Export emojis
+            favEmojis.forEach(item => {
+                // Create temporary card for exportToPNG
+                const tempCard = document.createElement('div');
+                tempCard.innerHTML = `<div class="emoji">${item.emoji}</div>`;
+                tempCard.querySelector('.emoji').classList.add('emoji');
+                exportToPNG(tempCard, item.name, 'emoji');
+            });
+
+            // Export icons
+            favIcons.forEach(item => {
+                const tempCard = document.createElement('div');
+                tempCard.innerHTML = `<i class="${item.class}"></i>`;
+                exportToPNG(tempCard, item.name, 'icon');
+            });
+
+            // Export symbols (as PNG with symbol)
+            favSymbols.forEach(item => {
+                const tempCard = document.createElement('div');
+                tempCard.innerHTML = `<div style="font-size:180px">${item.symbol}</div>`;
+                exportToPNG(tempCard, item.name, 'symbol');
+            });
+
+            showToast(`✅ Exported ${total} favorited items!`);
         }
 
         function initializeWebsite() {
