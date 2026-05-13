@@ -72,7 +72,7 @@
     </div>
 
     <!-- AUTH MODAL -->
-    <div id="auth-modal" class="hidden fixed inset-0 ...">
+    <div id="auth-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); align-items:center; justify-content:center; z-index:300; padding:1rem;">
         <div class="bg-zinc-900 border border-zinc-700 rounded-3xl w-full max-w-md p-8">
             <div class="flex justify-between mb-6">
                 <h3 class="text-2xl font-semibold">GetEmojicon Account</h3>
@@ -218,9 +218,13 @@
 }
 
         function switchAuthTab(tab) {
-            document.getElementById('login-form').classList.toggle('hidden', tab !== 'login');
-            document.getElementById('signup-form').classList.toggle('hidden', tab !== 'signup');
-        }
+    document.getElementById('login-form').classList.toggle('hidden', tab !== 'login');
+    document.getElementById('signup-form').classList.toggle('hidden', tab !== 'signup');
+    document.getElementById('login-tab').style.borderBottomColor = tab === 'login' ? '#6366f1' : 'transparent';
+    document.getElementById('login-tab').style.color = tab === 'login' ? 'white' : '#a1a1aa';
+    document.getElementById('signup-tab').style.borderBottomColor = tab === 'signup' ? '#6366f1' : 'transparent';
+    document.getElementById('signup-tab').style.color = tab === 'signup' ? 'white' : '#a1a1aa';
+}
 
         async function loginUser() {
             const email = document.getElementById('login-email').value;
