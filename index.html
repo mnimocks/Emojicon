@@ -510,7 +510,7 @@
             
         }
         function isFavorited(key) { return favorites.has(key); }
-                function showFavorites() {
+                       function showFavorites() {
             const favEmojis = emojiData.filter(e => favorites.has(e.emoji));
             const favIcons = iconData.filter(i => favorites.has(i.class));
             const favSymbols = symbolData.filter(s => favorites.has(s.symbol));
@@ -520,10 +520,9 @@
                 return;
             }
 
-            // Show all three sections with only favorites
             renderEmojis(favEmojis);
             renderIcons(favIcons);
-            renderSymbols();   // This will now only show favorited symbols because of the filter above? Wait - better to add a filtered render
+            renderSymbols(favSymbols);
 
             showToast(`Showing ${favEmojis.length + favIcons.length + favSymbols.length} favorites`);
         }
@@ -564,11 +563,13 @@
                 container.appendChild(card);
             });
         }
-                function renderSymbols() {
+                        function renderSymbols(filtered = null) {
             const container = document.getElementById('symbols-grid');
             if (!container) return;
             container.innerHTML = '';
-            symbolData.forEach(item => {
+            const data = filtered || symbolData;
+
+            data.forEach(item => {
                 const card = document.createElement('div');
                 card.className = `icon-card bg-zinc-900 border border-zinc-800 hover:border-violet-500/50 rounded-3xl p-5 flex flex-col items-center justify-center cursor-pointer group relative min-h-[140px]`;
 
@@ -577,7 +578,6 @@
                     <div class="text-xs text-zinc-400 text-center font-medium">${item.name}</div>
                 `;
 
-                // Heart button (same as emojis/icons)
                 const heart = document.createElement('div');
                 heart.className = `heart-btn ${isFavorited(item.symbol) ? 'favorited' : ''}`;
                 heart.innerHTML = `<i class="fa-solid fa-heart"></i>`;
