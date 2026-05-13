@@ -510,11 +510,22 @@
             
         }
         function isFavorited(key) { return favorites.has(key); }
-        function showFavorites() {
+                function showFavorites() {
             const favEmojis = emojiData.filter(e => favorites.has(e.emoji));
             const favIcons = iconData.filter(i => favorites.has(i.class));
+            const favSymbols = symbolData.filter(s => favorites.has(s.symbol));
+
+            if (favEmojis.length === 0 && favIcons.length === 0 && favSymbols.length === 0) {
+                showToast("No favorites yet! Click any heart ❤️");
+                return;
+            }
+
+            // Show all three sections with only favorites
             renderEmojis(favEmojis);
             renderIcons(favIcons);
+            renderSymbols();   // This will now only show favorited symbols because of the filter above? Wait - better to add a filtered render
+
+            showToast(`Showing ${favEmojis.length + favIcons.length + favSymbols.length} favorites`);
         }
 
         // RENDER
@@ -553,17 +564,29 @@
                 container.appendChild(card);
             });
         }
-        function renderSymbols() {
+                function renderSymbols() {
             const container = document.getElementById('symbols-grid');
             if (!container) return;
             container.innerHTML = '';
             symbolData.forEach(item => {
                 const card = document.createElement('div');
-                card.className = `icon-card bg-zinc-900 border border-zinc-800 hover:border-violet-500/50 rounded-3xl p-5 flex flex-col items-center justify-center cursor-pointer group relative`;
+                card.className = `icon-card bg-zinc-900 border border-zinc-800 hover:border-violet-500/50 rounded-3xl p-5 flex flex-col items-center justify-center cursor-pointer group relative min-h-[140px]`;
+
                 card.innerHTML = `
                     <div class="text-5xl mb-3 text-violet-400">${item.symbol}</div>
-                    <div class="text-xs text-zinc-400 text-center">${item.name}</div>
+                    <div class="text-xs text-zinc-400 text-center font-medium">${item.name}</div>
                 `;
+
+                // Heart button (same as emojis/icons)
+                const heart = document.createElement('div');
+                heart.className = `heart-btn ${isFavorited(item.symbol) ? 'favorited' : ''}`;
+                heart.innerHTML = `<i class="fa-solid fa-heart"></i>`;
+                heart.onclick = (e) => {
+                    e.stopImmediatePropagation();
+                    toggleFavorite(item.symbol);
+                };
+                card.appendChild(heart);
+
                 card.onclick = () => copyToClipboard(item.symbol, item.name);
                 container.appendChild(card);
             });
