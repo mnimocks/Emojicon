@@ -72,7 +72,7 @@
     </div>
 
     <!-- AUTH MODAL -->
-    <div id="auth-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[300] p-4">
+    <div id="auth-modal" class="hidden fixed inset-0 ...">
         <div class="bg-zinc-900 border border-zinc-700 rounded-3xl w-full max-w-md p-8">
             <div class="flex justify-between mb-6">
                 <h3 class="text-2xl font-semibold">GetEmojicon Account</h3>
@@ -207,17 +207,15 @@
 
         // AUTH FUNCTIONS (fixed)
         function showAuthModal() {
-            const modal = document.getElementById('auth-modal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            switchAuthTab('login');
-        }
+    const modal = document.getElementById('auth-modal');
+    modal.style.display = 'flex';
+    switchAuthTab('login');
+}
 
         function hideAuthModal() {
-            const modal = document.getElementById('auth-modal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
+    const modal = document.getElementById('auth-modal');
+    modal.style.display = 'none';
+}
 
         function switchAuthTab(tab) {
             document.getElementById('login-form').classList.toggle('hidden', tab !== 'login');
