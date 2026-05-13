@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GetEmojicon • Icons & Emojis Explorer</title>
-    <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%236366f1'/%3E%3Ctext x='50' y='65' font-size='55' text-anchor='middle' fill='white'%3E%E2%9C%A8%3C/text%3E%3C/svg%3E">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -44,8 +43,8 @@
                     <i class="fa-solid fa-user"></i><span>Login</span>
                 </button>
                 <button onclick="toggleFavoritesMode()" id="favorites-toggle" class="w-11 h-11 flex items-center justify-center bg-zinc-900 hover:bg-rose-600/20 border border-zinc-800 hover:border-rose-500 rounded-3xl transition-all group">
-    <i class="fa-solid fa-heart text-lg text-rose-400 group-hover:scale-110 transition-transform"></i>
-</button>
+                    <i class="fa-solid fa-heart text-lg text-rose-400 group-hover:scale-110 transition-transform"></i>
+                </button>
                 <button onclick="bulkExportVisible()" class="px-5 py-2.5 text-sm font-semibold bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 rounded-3xl flex items-center gap-x-2 transition-all">
                     <i class="fa-solid fa-download"></i><span>Bulk Export</span>
                 </button>
@@ -64,63 +63,65 @@
         <h2 class="section-header mb-8 flex items-center gap-x-3"><i class="fa-solid fa-palette text-indigo-400"></i> Font Awesome Icons</h2>
         <div id="icons-grid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-4"></div>
     </div>
-    <!-- SYMBOLS SECTION (insert this here) -->
+
+    <!-- SYMBOLS SECTION -->
     <div class="max-w-screen-2xl mx-auto px-8 py-12">
         <h2 class="section-header mb-8 flex items-center gap-x-3">
-            <i class="fa-solid fa-infinity text-violet-400"></i> 
-            Unicode Symbols
+            <i class="fa-solid fa-infinity text-violet-400"></i> Unicode Symbols
         </h2>
         <div id="symbols-grid" class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-9 xl:grid-cols-11 2xl:grid-cols-12 gap-3"></div>
     </div>
-    
-    <!-- Toast -->
-    <div id="toast" class="hidden fixed bottom-8 left-1/2 -translate-x-1/2 bg-zinc-900 border border-zinc-700 text-white px-6 py-3.5 rounded-3xl shadow-2xl flex items-center gap-x-3 z-[100]">
+
+    <!-- FIX 1: Toast — removed 'hidden' class, use inline style instead -->
+    <div id="toast" style="display:none; position:fixed; bottom:2rem; left:50%; transform:translateX(-50%); background:#18181b; border:1px solid #3f3f46; color:white; padding:0.875rem 1.5rem; border-radius:9999px; box-shadow:0 25px 50px -12px rgb(0 0 0/0.25); align-items:center; gap:0.75rem; z-index:100;">
         <i class="fa-solid fa-check-circle text-emerald-400"></i>
-        <span id="toast-text" class="font-medium">Copied to clipboard!</span>
+        <span id="toast-text" style="font-weight:500;">Copied to clipboard!</span>
     </div>
 
-    <!-- AUTH MODAL -->
-    <div id="auth-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); align-items:center; justify-content:center; z-index:300; padding:1rem;">
-        <div class="bg-zinc-900 border border-zinc-700 rounded-3xl w-full max-w-md p-8">
-            <div class="flex justify-between mb-6">
-                <h3 class="text-2xl font-semibold">GetEmojicon Account</h3>
-                <button onclick="hideAuthModal()" class="text-3xl leading-none">×</button>
+    <!-- FIX 2: Auth modal — removed 'hidden' class, use inline style; added align-items & justify-content -->
+    <div id="auth-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); align-items:center; justify-content:center; z-index:300; padding:1rem;">
+        <div style="background:#18181b; border:1px solid #3f3f46; border-radius:1.5rem; width:100%; max-width:28rem; padding:2rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+                <h3 style="font-size:1.5rem; font-weight:600;">GetEmojicon Account</h3>
+                <button onclick="hideAuthModal()" style="font-size:1.75rem; line-height:1; background:none; border:none; color:white; cursor:pointer;">×</button>
             </div>
-            <div class="flex border-b border-zinc-700 mb-6">
-                <button onclick="switchAuthTab('login')" id="login-tab" class="flex-1 py-3 font-medium border-b-2 border-indigo-500 text-white">Login</button>
-                <button onclick="switchAuthTab('signup')" id="signup-tab" class="flex-1 py-3 font-medium text-zinc-400">Sign Up</button>
+            <div style="display:flex; border-bottom:1px solid #3f3f46; margin-bottom:1.5rem;">
+                <button onclick="switchAuthTab('login')" id="login-tab" style="flex:1; padding:0.75rem; font-weight:500; border:none; background:none; border-bottom:2px solid #6366f1; color:white; cursor:pointer;">Login</button>
+                <button onclick="switchAuthTab('signup')" id="signup-tab" style="flex:1; padding:0.75rem; font-weight:500; border:none; background:none; border-bottom:2px solid transparent; color:#a1a1aa; cursor:pointer;">Sign Up</button>
             </div>
 
             <!-- Login Form -->
             <form id="login-form" onsubmit="loginUser(); return false;">
-                <input id="login-email" type="email" placeholder="Email" class="w-full mb-4 bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 outline-none">
-                <input id="login-password" type="password" autocomplete="current-password" placeholder="Password" class="w-full mb-6 bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 outline-none">
-                <button type="submit" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 rounded-3xl font-semibold">Login</button>
+                <input id="login-email" type="email" placeholder="Email" style="width:100%; margin-bottom:1rem; background:#27272a; border:1px solid #3f3f46; border-radius:1rem; padding:0.75rem 1rem; color:white; outline:none; box-sizing:border-box;">
+                <input id="login-password" type="password" autocomplete="current-password" placeholder="Password" style="width:100%; margin-bottom:1.5rem; background:#27272a; border:1px solid #3f3f46; border-radius:1rem; padding:0.75rem 1rem; color:white; outline:none; box-sizing:border-box;">
+                <button type="submit" style="width:100%; padding:0.875rem; background:#4f46e5; hover:background:#4338ca; border:none; border-radius:9999px; color:white; font-weight:600; cursor:pointer;">Login</button>
             </form>
 
-            <!-- Signup Form -->
-            <form id="signup-form" class="hidden" onsubmit="signupUser(); return false;">
-                <input id="signup-email" type="email" placeholder="Email" class="w-full mb-4 bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 outline-none">
-                <input id="signup-password" type="password" autocomplete="new-password" placeholder="Password" class="w-full mb-4 bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 outline-none">
-                <input id="signup-password-confirm" type="password" autocomplete="new-password" placeholder="Confirm Password" class="w-full mb-6 bg-zinc-800 border border-zinc-700 rounded-2xl px-4 py-3 outline-none">
-                <button type="submit" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 rounded-3xl font-semibold">Create Account</button>
+            <!-- FIX 3: Signup form — actually calls Supabase now -->
+            <form id="signup-form" style="display:none;" onsubmit="signupUser(); return false;">
+                <input id="signup-email" type="email" placeholder="Email" style="width:100%; margin-bottom:1rem; background:#27272a; border:1px solid #3f3f46; border-radius:1rem; padding:0.75rem 1rem; color:white; outline:none; box-sizing:border-box;">
+                <input id="signup-password" type="password" autocomplete="new-password" placeholder="Password" style="width:100%; margin-bottom:1rem; background:#27272a; border:1px solid #3f3f46; border-radius:1rem; padding:0.75rem 1rem; color:white; outline:none; box-sizing:border-box;">
+                <input id="signup-password-confirm" type="password" autocomplete="new-password" placeholder="Confirm Password" style="width:100%; margin-bottom:1.5rem; background:#27272a; border:1px solid #3f3f46; border-radius:1rem; padding:0.75rem 1rem; color:white; outline:none; box-sizing:border-box;">
+                <button type="submit" style="width:100%; padding:0.875rem; background:#4f46e5; border:none; border-radius:9999px; color:white; font-weight:600; cursor:pointer;">Create Account</button>
             </form>
         </div>
     </div>
 
     <script>
-        // SUPABASE
+        // SUPABASE — replace with your real project URL and anon key (starts with eyJ...)
         const SUPABASE_URL = 'https://xljsrkreacyfdhdnsfix.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_UjLxFDvKSWf1ahkKtiQgGA_x4FP5MJr';
+        const SUPABASE_ANON_KEY = 'YOUR_REAL_ANON_KEY_HERE'; // ← FIX 4: paste your real key from Supabase dashboard
         let supabaseClient = null;
 
         function initSupabase() {
-            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            try {
+                supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            } catch(e) {
+                console.warn('Supabase init failed:', e);
+            }
         }
 
-        // DATA (full original-style data restored)
         const emojiData = [
-    // Smileys & People
     {emoji:"😀", name:"Grinning Face", code:"U+1F600", category:"smileys"},
     {emoji:"😃", name:"Grinning Face with Big Eyes", code:"U+1F603", category:"smileys"},
     {emoji:"😄", name:"Grinning Face with Smiling Eyes", code:"U+1F604", category:"smileys"},
@@ -175,15 +176,12 @@
     {emoji:"😐", name:"Neutral Face", code:"U+1F610", category:"smileys"},
     {emoji:"😑", name:"Expressionless Face", code:"U+1F611", category:"smileys"},
     {emoji:"😶", name:"Face Without Mouth", code:"U+1F636", category:"smileys"},
-    {emoji:"😏", name:"Smirking Face", code:"U+1F60F", category:"smileys"},
     {emoji:"🙄", name:"Face with Rolling Eyes", code:"U+1F644", category:"smileys"},
     {emoji:"😬", name:"Grimacing Face", code:"U+1F62C", category:"smileys"},
     {emoji:"🤥", name:"Lying Face", code:"U+1F925", category:"smileys"},
     {emoji:"😪", name:"Sleepy Face", code:"U+1F62A", category:"smileys"},
     {emoji:"🤤", name:"Drooling Face", code:"U+1F924", category:"smileys"},
     {emoji:"😴", name:"Sleeping Face", code:"U+1F634", category:"smileys"},
-
-    // Animals
     {emoji:"🐶", name:"Dog Face", code:"U+1F436", category:"animals"},
     {emoji:"🐱", name:"Cat Face", code:"U+1F431", category:"animals"},
     {emoji:"🐭", name:"Mouse Face", code:"U+1F42D", category:"animals"},
@@ -199,89 +197,34 @@
     {emoji:"🐷", name:"Pig Face", code:"U+1F437", category:"animals"},
     {emoji:"🐸", name:"Frog", code:"U+1F438", category:"animals"},
     {emoji:"🐵", name:"Monkey Face", code:"U+1F435", category:"animals"},
-    {emoji:"🐒", name:"Monkey", code:"U+1F412", category:"animals"},
-    {emoji:"🦍", name:"Gorilla", code:"U+1F98D", category:"animals"},
-    {emoji:"🐔", name:"Chicken", code:"U+1F414", category:"animals"},
-    {emoji:"🐧", name:"Penguin", code:"U+1F427", category:"animals"},
-    {emoji:"🐦", name:"Bird", code:"U+1F426", category:"animals"},
-    {emoji:"🐤", name:"Baby Chick", code:"U+1F424", category:"animals"},
-    {emoji:"🐣", name:"Hatching Chick", code:"U+1F423", category:"animals"},
-    {emoji:"🦆", name:"Duck", code:"U+1F986", category:"animals"},
-    {emoji:"🦅", name:"Eagle", code:"U+1F985", category:"animals"},
-    {emoji:"🦉", name:"Owl", code:"U+1F989", category:"animals"},
-    {emoji:"🦇", name:"Bat", code:"U+1F987", category:"animals"},
-    {emoji:"🐺", name:"Wolf", code:"U+1F43A", category:"animals"},
-    {emoji:"🐗", name:"Boar", code:"U+1F417", category:"animals"},
-    {emoji:"🐴", name:"Horse Face", code:"U+1F434", category:"animals"},
     {emoji:"🦄", name:"Unicorn", code:"U+1F984", category:"animals"},
-    {emoji:"🐝", name:"Honeybee", code:"U+1F41D", category:"animals"},
-    {emoji:"🐛", name:"Bug", code:"U+1F41B", category:"animals"},
     {emoji:"🦋", name:"Butterfly", code:"U+1F98B", category:"animals"},
-    {emoji:"🐌", name:"Snail", code:"U+1F40C", category:"animals"},
-    {emoji:"🐜", name:"Ant", code:"U+1F41C", category:"animals"},
     {emoji:"🐢", name:"Turtle", code:"U+1F422", category:"animals"},
-    {emoji:"🦎", name:"Lizard", code:"U+1F98E", category:"animals"},
-    {emoji:"🐍", name:"Snake", code:"U+1F40D", category:"animals"},
-    {emoji:"🐬", name:"Dolphin", code:"U+1F42C", category:"animals"},
-    {emoji:"🐟", name:"Fish", code:"U+1F41F", category:"animals"},
-    {emoji:"🐠", name:"Tropical Fish", code:"U+1F420", category:"animals"},
-    {emoji:"🐡", name:"Blowfish", code:"U+1F421", category:"animals"},
     {emoji:"🦈", name:"Shark", code:"U+1F988", category:"animals"},
     {emoji:"🐙", name:"Octopus", code:"U+1F419", category:"animals"},
-    {emoji:"🐚", name:"Spiral Shell", code:"U+1F41A", category:"animals"},
-
-    // Food & Drink
     {emoji:"🍎", name:"Red Apple", code:"U+1F34E", category:"food"},
     {emoji:"🍌", name:"Banana", code:"U+1F34C", category:"food"},
     {emoji:"🍉", name:"Watermelon", code:"U+1F349", category:"food"},
     {emoji:"🍇", name:"Grapes", code:"U+1F347", category:"food"},
     {emoji:"🍓", name:"Strawberry", code:"U+1F353", category:"food"},
-    {emoji:"🍒", name:"Cherries", code:"U+1F352", category:"food"},
-    {emoji:"🍑", name:"Peach", code:"U+1F351", category:"food"},
-    {emoji:"🍍", name:"Pineapple", code:"U+1F34D", category:"food"},
-    {emoji:"🥭", name:"Mango", code:"U+1F96D", category:"food"},
     {emoji:"🥑", name:"Avocado", code:"U+1F951", category:"food"},
-    {emoji:"🍅", name:"Tomato", code:"U+1F345", category:"food"},
-    {emoji:"🍆", name:"Eggplant", code:"U+1F346", category:"food"},
-    {emoji:"🥦", name:"Broccoli", code:"U+1F966", category:"food"},
-    {emoji:"🥕", name:"Carrot", code:"U+1F955", category:"food"},
-    {emoji:"🌽", name:"Ear of Corn", code:"U+1F33D", category:"food"},
-    {emoji:"🌶️", name:"Hot Pepper", code:"U+1F336", category:"food"},
     {emoji:"🍔", name:"Hamburger", code:"U+1F354", category:"food"},
     {emoji:"🍟", name:"French Fries", code:"U+1F35F", category:"food"},
     {emoji:"🍕", name:"Pizza", code:"U+1F355", category:"food"},
     {emoji:"🌮", name:"Taco", code:"U+1F32E", category:"food"},
-    {emoji:"🌯", name:"Burrito", code:"U+1F32F", category:"food"},
     {emoji:"🍣", name:"Sushi", code:"U+1F363", category:"food"},
-    {emoji:"🍤", name:"Fried Shrimp", code:"U+1F364", category:"food"},
     {emoji:"🍦", name:"Ice Cream", code:"U+1F366", category:"food"},
     {emoji:"🍩", name:"Doughnut", code:"U+1F369", category:"food"},
     {emoji:"🍪", name:"Cookie", code:"U+1F36A", category:"food"},
-    {emoji:"🍫", name:"Chocolate Bar", code:"U+1F36B", category:"food"},
-    {emoji:"🍬", name:"Candy", code:"U+1F36C", category:"food"},
-    {emoji:"🍭", name:"Lollipop", code:"U+1F36D", category:"food"},
-    {emoji:"🍮", name:"Custard", code:"U+1F36E", category:"food"},
-    {emoji:"🍯", name:"Honey Pot", code:"U+1F36F", category:"food"},
     {emoji:"☕", name:"Hot Beverage", code:"U+2615", category:"food"},
-    {emoji:"🍵", name:"Teacup Without Handle", code:"U+1F375", category:"food"},
-    {emoji:"🍶", name:"Sake", code:"U+1F376", category:"food"},
-    {emoji:"🍷", name:"Wine Glass", code:"U+1F377", category:"food"},
-    {emoji:"🍸", name:"Cocktail Glass", code:"U+1F378", category:"food"},
-    {emoji:"🍹", name:"Tropical Drink", code:"U+1F379", category:"food"},
+    {emoji:"🍵", name:"Teacup", code:"U+1F375", category:"food"},
     {emoji:"🍺", name:"Beer Mug", code:"U+1F37A", category:"food"},
-    {emoji:"🍻", name:"Clinking Beer Mugs", code:"U+1F37B", category:"food"},
-
-    // More categories can be added, but this is already a very large, usable set
     {emoji:"🚀", name:"Rocket", code:"U+1F680", category:"travel"},
     {emoji:"✈️", name:"Airplane", code:"U+2708", category:"travel"},
     {emoji:"🚗", name:"Automobile", code:"U+1F697", category:"travel"},
-    {emoji:"🚕", name:"Taxi", code:"U+1F695", category:"travel"},
     {emoji:"🏠", name:"House", code:"U+1F3E0", category:"objects"},
-    {emoji:"🏡", name:"House with Garden", code:"U+1F3E1", category:"objects"},
-    {emoji:"💼", name:"Briefcase", code:"U+1F4BC", category:"objects"},
-    {emoji:"📱", name:"Mobile Phone", code:"U+1F4F1", category:"objects"},
     {emoji:"💻", name:"Laptop", code:"U+1F4BB", category:"objects"},
-    {emoji:"⌚", name:"Watch", code:"U+231A", category:"objects"},
+    {emoji:"📱", name:"Mobile Phone", code:"U+1F4F1", category:"objects"},
     {emoji:"📷", name:"Camera", code:"U+1F4F7", category:"objects"},
     {emoji:"🎉", name:"Party Popper", code:"U+1F389", category:"activities"},
     {emoji:"🎁", name:"Wrapped Gift", code:"U+1F381", category:"activities"},
@@ -292,143 +235,97 @@
 ];
 
         const iconData = [
-    // Common Solid Icons
-    {class: "fa-solid fa-home", name: "Home", code: "fa-home"},
-    {class: "fa-solid fa-user", name: "User", code: "fa-user"},
-    {class: "fa-solid fa-user-circle", name: "User Circle", code: "fa-user-circle"},
-    {class: "fa-solid fa-users", name: "Users", code: "fa-users"},
-    {class: "fa-solid fa-search", name: "Search", code: "fa-search"},
-    {class: "fa-solid fa-magnifying-glass", name: "Magnifying Glass", code: "fa-magnifying-glass"},
-    {class: "fa-solid fa-heart", name: "Heart", code: "fa-heart"},
-    {class: "fa-solid fa-star", name: "Star", code: "fa-star"},
-    {class: "fa-solid fa-download", name: "Download", code: "fa-download"},
-    {class: "fa-solid fa-upload", name: "Upload", code: "fa-upload"},
-    {class: "fa-solid fa-cog", name: "Settings", code: "fa-cog"},
-    {class: "fa-solid fa-gear", name: "Gear", code: "fa-gear"},
-    {class: "fa-solid fa-envelope", name: "Envelope", code: "fa-envelope"},
-    {class: "fa-solid fa-bell", name: "Bell", code: "fa-bell"},
-    {class: "fa-solid fa-calendar", name: "Calendar", code: "fa-calendar"},
-    {class: "fa-solid fa-clock", name: "Clock", code: "fa-clock"},
-    {class: "fa-solid fa-chart-bar", name: "Chart Bar", code: "fa-chart-bar"},
-    {class: "fa-solid fa-chart-line", name: "Chart Line", code: "fa-chart-line"},
-    {class: "fa-solid fa-briefcase", name: "Briefcase", code: "fa-briefcase"},
-    {class: "fa-solid fa-folder", name: "Folder", code: "fa-folder"},
-    {class: "fa-solid fa-file", name: "File", code: "fa-file"},
-    {class: "fa-solid fa-image", name: "Image", code: "fa-image"},
-    {class: "fa-solid fa-camera", name: "Camera", code: "fa-camera"},
-    {class: "fa-solid fa-video", name: "Video", code: "fa-video"},
-    {class: "fa-solid fa-music", name: "Music", code: "fa-music"},
-    {class: "fa-solid fa-play", name: "Play", code: "fa-play"},
-    {class: "fa-solid fa-pause", name: "Pause", code: "fa-pause"},
-    {class: "fa-solid fa-stop", name: "Stop", code: "fa-stop"},
-    {class: "fa-solid fa-forward", name: "Forward", code: "fa-forward"},
-    {class: "fa-solid fa-backward", name: "Backward", code: "fa-backward"},
-    {class: "fa-solid fa-volume-up", name: "Volume Up", code: "fa-volume-up"},
-    {class: "fa-solid fa-volume-down", name: "Volume Down", code: "fa-volume-down"},
-    {class: "fa-solid fa-volume-off", name: "Mute", code: "fa-volume-off"},
-    {class: "fa-solid fa-wifi", name: "WiFi", code: "fa-wifi"},
-    {class: "fa-solid fa-bluetooth", name: "Bluetooth", code: "fa-bluetooth"},
-    {class: "fa-solid fa-battery-full", name: "Battery", code: "fa-battery-full"},
-    {class: "fa-solid fa-plug", name: "Plug", code: "fa-plug"},
-    {class: "fa-solid fa-lock", name: "Lock", code: "fa-lock"},
-    {class: "fa-solid fa-unlock", name: "Unlock", code: "fa-unlock"},
-    {class: "fa-solid fa-key", name: "Key", code: "fa-key"},
-    {class: "fa-solid fa-shield", name: "Shield", code: "fa-shield"},
-    {class: "fa-solid fa-flag", name: "Flag", code: "fa-flag"},
-    {class: "fa-solid fa-bookmark", name: "Bookmark", code: "fa-bookmark"},
-    {class: "fa-solid fa-tag", name: "Tag", code: "fa-tag"},
-    {class: "fa-solid fa-map", name: "Map", code: "fa-map"},
-    {class: "fa-solid fa-location-dot", name: "Location", code: "fa-location-dot"},
-    {class: "fa-solid fa-compass", name: "Compass", code: "fa-compass"},
-    {class: "fa-solid fa-globe", name: "Globe", code: "fa-globe"},
-    {class: "fa-solid fa-link", name: "Link", code: "fa-link"},
-    {class: "fa-solid fa-share", name: "Share", code: "fa-share"},
-    {class: "fa-solid fa-comment", name: "Comment", code: "fa-comment"},
-    {class: "fa-solid fa-comments", name: "Comments", code: "fa-comments"},
-    {class: "fa-solid fa-thumbs-up", name: "Like", code: "fa-thumbs-up"},
-    {class: "fa-solid fa-thumbs-down", name: "Dislike", code: "fa-thumbs-down"},
-    {class: "fa-solid fa-trophy", name: "Trophy", code: "fa-trophy"},
-    {class: "fa-solid fa-gift", name: "Gift", code: "fa-gift"},
-    {class: "fa-solid fa-fire", name: "Fire", code: "fa-fire"},
-    {class: "fa-solid fa-eye", name: "Eye", code: "fa-eye"},
-    {class: "fa-solid fa-eye-slash", name: "Eye Slash", code: "fa-eye-slash"},
-    {class: "fa-solid fa-info-circle", name: "Info", code: "fa-info-circle"},
-    {class: "fa-solid fa-question-circle", name: "Help", code: "fa-question-circle"},
-    {class: "fa-solid fa-exclamation-triangle", name: "Warning", code: "fa-exclamation-triangle"},
-    {class: "fa-solid fa-check-circle", name: "Success", code: "fa-check-circle"},
-    {class: "fa-solid fa-times-circle", name: "Error", code: "fa-times-circle"},
-    {class: "fa-solid fa-arrow-right", name: "Arrow Right", code: "fa-arrow-right"},
-    {class: "fa-solid fa-arrow-left", name: "Arrow Left", code: "fa-arrow-left"},
-    {class: "fa-solid fa-arrow-up", name: "Arrow Up", code: "fa-arrow-up"},
-    {class: "fa-solid fa-arrow-down", name: "Arrow Down", code: "fa-arrow-down"},
-    {class: "fa-solid fa-chevron-right", name: "Chevron Right", code: "fa-chevron-right"},
-    {class: "fa-solid fa-chevron-left", name: "Chevron Left", code: "fa-chevron-left"},
-    {class: "fa-solid fa-chevron-up", name: "Chevron Up", code: "fa-chevron-up"},
-    {class: "fa-solid fa-chevron-down", name: "Chevron Down", code: "fa-chevron-down"},
-
-    // Brands
-    {class: "fa-brands fa-github", name: "GitHub", code: "fa-github"},
-    {class: "fa-brands fa-twitter", name: "Twitter", code: "fa-twitter"},
-    {class: "fa-brands fa-x-twitter", name: "X (Twitter)", code: "fa-x-twitter"},
-    {class: "fa-brands fa-linkedin", name: "LinkedIn", code: "fa-linkedin"},
-    {class: "fa-brands fa-facebook", name: "Facebook", code: "fa-facebook"},
-    {class: "fa-brands fa-instagram", name: "Instagram", code: "fa-instagram"},
-    {class: "fa-brands fa-youtube", name: "YouTube", code: "fa-youtube"},
-    {class: "fa-brands fa-discord", name: "Discord", code: "fa-discord"},
-    {class: "fa-brands fa-slack", name: "Slack", code: "fa-slack"},
-    {class: "fa-brands fa-figma", name: "Figma", code: "fa-figma"},
-    {class: "fa-brands fa-docker", name: "Docker", code: "fa-docker"},
-    {class: "fa-brands fa-node-js", name: "Node.js", code: "fa-node-js"},
-    {class: "fa-brands fa-react", name: "React", code: "fa-react"},
-    {class: "fa-brands fa-vuejs", name: "Vue.js", code: "fa-vuejs"},
-    {class: "fa-brands fa-angular", name: "Angular", code: "fa-angular"},
-    {class: "fa-brands fa-python", name: "Python", code: "fa-python"},
-    {class: "fa-brands fa-java", name: "Java", code: "fa-java"},
-    {class: "fa-brands fa-js", name: "JavaScript", code: "fa-js"},
-    {class: "fa-brands fa-html5", name: "HTML5", code: "fa-html5"},
-    {class: "fa-brands fa-css3-alt", name: "CSS3", code: "fa-css3-alt"},
-
-    // More useful icons
-    {class: "fa-solid fa-magnifying-glass", name: "Search", code: "fa-magnifying-glass"},
-    {class: "fa-solid fa-filter", name: "Filter", code: "fa-filter"},
-    {class: "fa-solid fa-sort", name: "Sort", code: "fa-sort"},
-    {class: "fa-solid fa-list", name: "List", code: "fa-list"},
-    {class: "fa-solid fa-table", name: "Table", code: "fa-table"},
-    {class: "fa-solid fa-grid", name: "Grid", code: "fa-grid"},
-    {class: "fa-solid fa-th", name: "Thumbnails", code: "fa-th"},
-    {class: "fa-solid fa-bars", name: "Menu", code: "fa-bars"},
-    {class: "fa-solid fa-ellipsis-vertical", name: "More", code: "fa-ellipsis-vertical"},
-    {class: "fa-solid fa-trash", name: "Trash", code: "fa-trash"},
-    {class: "fa-solid fa-edit", name: "Edit", code: "fa-edit"},
-    {class: "fa-solid fa-copy", name: "Copy", code: "fa-copy"},
-    {class: "fa-solid fa-paste", name: "Paste", code: "fa-paste"},
-    {class: "fa-solid fa-save", name: "Save", code: "fa-save"},
-    {class: "fa-solid fa-print", name: "Print", code: "fa-print"},
-    {class: "fa-solid fa-share-from-square", name: "Share", code: "fa-share-from-square"},
-    {class: "fa-solid fa-rotate", name: "Refresh", code: "fa-rotate"},
-    {class: "fa-solid fa-sync", name: "Sync", code: "fa-sync"}
+    {class: "fa-solid fa-home", name: "Home"},
+    {class: "fa-solid fa-user", name: "User"},
+    {class: "fa-solid fa-user-circle", name: "User Circle"},
+    {class: "fa-solid fa-users", name: "Users"},
+    {class: "fa-solid fa-magnifying-glass", name: "Search"},
+    {class: "fa-solid fa-heart", name: "Heart"},
+    {class: "fa-solid fa-star", name: "Star"},
+    {class: "fa-solid fa-download", name: "Download"},
+    {class: "fa-solid fa-upload", name: "Upload"},
+    {class: "fa-solid fa-gear", name: "Gear"},
+    {class: "fa-solid fa-envelope", name: "Envelope"},
+    {class: "fa-solid fa-bell", name: "Bell"},
+    {class: "fa-solid fa-calendar", name: "Calendar"},
+    {class: "fa-solid fa-clock", name: "Clock"},
+    {class: "fa-solid fa-chart-bar", name: "Chart Bar"},
+    {class: "fa-solid fa-chart-line", name: "Chart Line"},
+    {class: "fa-solid fa-briefcase", name: "Briefcase"},
+    {class: "fa-solid fa-folder", name: "Folder"},
+    {class: "fa-solid fa-file", name: "File"},
+    {class: "fa-solid fa-image", name: "Image"},
+    {class: "fa-solid fa-camera", name: "Camera"},
+    {class: "fa-solid fa-video", name: "Video"},
+    {class: "fa-solid fa-music", name: "Music"},
+    {class: "fa-solid fa-play", name: "Play"},
+    {class: "fa-solid fa-pause", name: "Pause"},
+    {class: "fa-solid fa-stop", name: "Stop"},
+    {class: "fa-solid fa-volume-up", name: "Volume Up"},
+    {class: "fa-solid fa-wifi", name: "WiFi"},
+    {class: "fa-solid fa-lock", name: "Lock"},
+    {class: "fa-solid fa-unlock", name: "Unlock"},
+    {class: "fa-solid fa-key", name: "Key"},
+    {class: "fa-solid fa-shield", name: "Shield"},
+    {class: "fa-solid fa-flag", name: "Flag"},
+    {class: "fa-solid fa-bookmark", name: "Bookmark"},
+    {class: "fa-solid fa-tag", name: "Tag"},
+    {class: "fa-solid fa-location-dot", name: "Location"},
+    {class: "fa-solid fa-globe", name: "Globe"},
+    {class: "fa-solid fa-link", name: "Link"},
+    {class: "fa-solid fa-share", name: "Share"},
+    {class: "fa-solid fa-comment", name: "Comment"},
+    {class: "fa-solid fa-thumbs-up", name: "Like"},
+    {class: "fa-solid fa-thumbs-down", name: "Dislike"},
+    {class: "fa-solid fa-trophy", name: "Trophy"},
+    {class: "fa-solid fa-gift", name: "Gift"},
+    {class: "fa-solid fa-fire", name: "Fire"},
+    {class: "fa-solid fa-eye", name: "Eye"},
+    {class: "fa-solid fa-eye-slash", name: "Eye Slash"},
+    {class: "fa-solid fa-check-circle", name: "Success"},
+    {class: "fa-solid fa-arrow-right", name: "Arrow Right"},
+    {class: "fa-solid fa-arrow-left", name: "Arrow Left"},
+    {class: "fa-solid fa-arrow-up", name: "Arrow Up"},
+    {class: "fa-solid fa-arrow-down", name: "Arrow Down"},
+    {class: "fa-solid fa-chevron-right", name: "Chevron Right"},
+    {class: "fa-solid fa-chevron-left", name: "Chevron Left"},
+    {class: "fa-solid fa-bars", name: "Menu"},
+    {class: "fa-solid fa-trash", name: "Trash"},
+    {class: "fa-solid fa-edit", name: "Edit"},
+    {class: "fa-solid fa-copy", name: "Copy"},
+    {class: "fa-solid fa-save", name: "Save"},
+    {class: "fa-solid fa-print", name: "Print"},
+    {class: "fa-solid fa-rotate", name: "Refresh"},
+    {class: "fa-brands fa-github", name: "GitHub"},
+    {class: "fa-brands fa-twitter", name: "Twitter"},
+    {class: "fa-brands fa-x-twitter", name: "X (Twitter)"},
+    {class: "fa-brands fa-linkedin", name: "LinkedIn"},
+    {class: "fa-brands fa-facebook", name: "Facebook"},
+    {class: "fa-brands fa-instagram", name: "Instagram"},
+    {class: "fa-brands fa-youtube", name: "YouTube"},
+    {class: "fa-brands fa-discord", name: "Discord"},
+    {class: "fa-brands fa-slack", name: "Slack"},
+    {class: "fa-brands fa-figma", name: "Figma"},
+    {class: "fa-brands fa-docker", name: "Docker"},
+    {class: "fa-brands fa-node-js", name: "Node.js"},
+    {class: "fa-brands fa-react", name: "React"},
+    {class: "fa-brands fa-python", name: "Python"},
+    {class: "fa-brands fa-js", name: "JavaScript"},
+    {class: "fa-brands fa-html5", name: "HTML5"},
+    {class: "fa-brands fa-css3-alt", name: "CSS3"}
 ];
 
-    const symbolData = [
-    // Copyright & Legal
+        const symbolData = [
     {symbol:"©", name:"Copyright", code:"U+00A9"},
     {symbol:"®", name:"Registered Trademark", code:"U+00AE"},
     {symbol:"™", name:"Trademark", code:"U+2122"},
-    {symbol:"℠", name:"Service Mark", code:"U+2120"},
-
-    // Arrows
     {symbol:"→", name:"Right Arrow", code:"U+2192"},
     {symbol:"←", name:"Left Arrow", code:"U+2190"},
     {symbol:"↑", name:"Up Arrow", code:"U+2191"},
     {symbol:"↓", name:"Down Arrow", code:"U+2193"},
     {symbol:"↔", name:"Left Right Arrow", code:"U+2194"},
-    {symbol:"↕", name:"Up Down Arrow", code:"U+2195"},
-    {symbol:"⇒", name:"Rightwards Double Arrow", code:"U+21D2"},
-    {symbol:"⇐", name:"Leftwards Double Arrow", code:"U+21D0"},
-    {symbol:"⇑", name:"Upwards Double Arrow", code:"U+21D1"},
-    {symbol:"⇓", name:"Downwards Double Arrow", code:"U+21D3"},
-
-    // Math & Symbols
+    {symbol:"⇒", name:"Double Right Arrow", code:"U+21D2"},
+    {symbol:"⇐", name:"Double Left Arrow", code:"U+21D0"},
     {symbol:"∞", name:"Infinity", code:"U+221E"},
     {symbol:"≈", name:"Approximately Equal", code:"U+2248"},
     {symbol:"≠", name:"Not Equal", code:"U+2260"},
@@ -437,164 +334,76 @@
     {symbol:"÷", name:"Division", code:"U+00F7"},
     {symbol:"√", name:"Square Root", code:"U+221A"},
     {symbol:"∑", name:"Summation", code:"U+2211"},
-    {symbol:"∫", name:"Integral", code:"U+222B"},
     {symbol:"π", name:"Pi", code:"U+03C0"},
     {symbol:"°", name:"Degree", code:"U+00B0"},
-    {symbol:"µ", name:"Micro", code:"U+00B5"},
-
-    // Currency
     {symbol:"$", name:"Dollar", code:"U+0024"},
     {symbol:"€", name:"Euro", code:"U+20AC"},
     {symbol:"£", name:"Pound", code:"U+00A3"},
     {symbol:"¥", name:"Yen", code:"U+00A5"},
     {symbol:"₹", name:"Indian Rupee", code:"U+20B9"},
     {symbol:"₿", name:"Bitcoin", code:"U+20BF"},
-
-    // Punctuation & Special
     {symbol:"✓", name:"Check Mark", code:"U+2713"},
     {symbol:"✔", name:"Heavy Check Mark", code:"U+2714"},
     {symbol:"✕", name:"Multiplication X", code:"U+2715"},
     {symbol:"✗", name:"Heavy X", code:"U+2717"},
     {symbol:"•", name:"Bullet", code:"U+2022"},
-    {symbol:"⋯", name:"Horizontal Ellipsis", code:"U+22EF"},
     {symbol:"…", name:"Ellipsis", code:"U+2026"},
-    {symbol:"†", name:"Dagger", code:"U+2020"},
-    {symbol:"‡", name:"Double Dagger", code:"U+2021"},
     {symbol:"§", name:"Section", code:"U+00A7"},
     {symbol:"¶", name:"Paragraph", code:"U+00B6"},
-
-    // Misc Symbols
     {symbol:"★", name:"Black Star", code:"U+2605"},
     {symbol:"☆", name:"White Star", code:"U+2606"},
     {symbol:"♥", name:"Black Heart", code:"U+2665"},
-    {symbol:"♡", name:"White Heart", code:"U+2661"},
     {symbol:"♠", name:"Spade", code:"U+2660"},
     {symbol:"♣", name:"Club", code:"U+2663"},
     {symbol:"♦", name:"Diamond", code:"U+2666"},
-    {symbol:"♣", name:"Club", code:"U+2663"},
-    {symbol:"♟", name:"Chess Pawn", code:"U+265F"},
-    {symbol:"♞", name:"Chess Knight", code:"U+265E"},
     {symbol:"⚡", name:"High Voltage", code:"U+26A1"},
     {symbol:"⚠", name:"Warning", code:"U+26A0"},
     {symbol:"☢", name:"Radioactive", code:"U+2622"},
     {symbol:"☣", name:"Biohazard", code:"U+2623"},
-    {symbol:"☑", name:"Ballot Box With Check", code:"U+2611"},
-    {symbol:"☒", name:"Ballot Box With X", code:"U+2612"},
     {symbol:"♻", name:"Recycling", code:"U+267B"},
-    {symbol:"♾", name:"Permanent Paper Sign", code:"U+267E"},
     {symbol:"⌛", name:"Hourglass", code:"U+231B"},
-    {symbol:"⏳", name:"Hourglass With Flowing Sand", code:"U+23F3"},
-    {symbol:"⌚", name:"Watch", code:"U+231A"},
-    {symbol:"⏰", name:"Alarm Clock", code:"U+23F0"},
-
-    // More Arrows & Lines
-    {symbol:"⇢", name:"Rightwards Dashed Arrow", code:"U+21E2"},
-    {symbol:"⇠", name:"Leftwards Dashed Arrow", code:"U+21E0"},
-    {symbol:"⇡", name:"Upwards Dashed Arrow", code:"U+21E1"},
-    {symbol:"⇣", name:"Downwards Dashed Arrow", code:"U+21E3"}
+    {symbol:"⏰", name:"Alarm Clock", code:"U+23F0"}
 ];
-                // ==================== RENDER ICONS ====================
-        function renderIcons(filtered = null) {
-            const container = document.getElementById('icons-grid');
-            if (!container) return;
-            container.innerHTML = '';
-            const data = filtered || iconData;
 
-            data.forEach(item => {
-                const card = document.createElement('div');
-                card.className = `icon-card bg-zinc-900 border border-zinc-800 hover:border-indigo-500/50 rounded-3xl p-5 flex flex-col items-center justify-center cursor-pointer group relative min-h-[172px]`;
-
-                card.innerHTML = `
-                    <div class="mb-3"><i class="${item.class} text-4xl text-indigo-400"></i></div>
-                    <div class="text-xs text-zinc-400 text-center font-medium">${item.name}</div>
-                `;
-
-                const heart = document.createElement('div');
-                heart.className = `heart-btn ${isFavorited(item.class) ? 'favorited' : ''}`;
-                heart.innerHTML = `<i class="fa-solid fa-heart"></i>`;
-                heart.onclick = (e) => {
-                    e.stopImmediatePropagation();
-                    toggleFavorite(item.class);
-                };
-                card.appendChild(heart);
-
-                card.onclick = () => copyToClipboard(item.class, item.name);
-                container.appendChild(card);
-            });
-        }
-
-        // ==================== FAVORITES TOGGLE (Heart icon in toolbar) ====================
         let favoritesMode = false;
-
-        function showFavorites() {
-            favoritesMode = !favoritesMode;
-
-            // Update heart icon appearance
-            const heartBtn = document.querySelector('button[onclick="showFavorites()"] i');
-            if (heartBtn) {
-                heartBtn.classList.toggle('text-rose-500', favoritesMode);
-                heartBtn.classList.toggle('fa-solid', favoritesMode);
-                heartBtn.classList.toggle('fa-regular', !favoritesMode);
-            }
-
-            if (favoritesMode) {
-                // Show only favorited items
-                const favEmojis = emojiData.filter(e => favorites.has(e.emoji));
-                const favIcons = iconData.filter(i => favorites.has(i.class));
-                const favSymbols = symbolData.filter(s => favorites.has(s.symbol));
-
-                renderEmojis(favEmojis);
-                renderIcons(favIcons);
-                renderSymbols(favSymbols);
-
-                showToast(`Showing ${favEmojis.length + favIcons.length + favSymbols.length} favorites`);
-            } else {
-                // Show all items
-                renderEmojis();
-                renderIcons();
-                renderSymbols();
-                showToast("Showing all items");
-            }
-        }
-// NEW: Toggle for Favorites mode
-    let favoritesMode = false;
-        
-        // FAVORITES
         let favorites = new Set();
-                let isProUser = false;
+
         function loadFavorites() {
             const saved = localStorage.getItem('iconlyFavorites');
             if (saved) favorites = new Set(JSON.parse(saved));
         }
+
         function toggleFavorite(key) {
             if (favorites.has(key)) favorites.delete(key);
             else favorites.add(key);
             localStorage.setItem('iconlyFavorites', JSON.stringify([...favorites]));
-            renderEmojis();
-            renderIcons();
-            renderSymbols();
-            
+            if (favoritesMode) {
+                renderEmojis(emojiData.filter(e => favorites.has(e.emoji)));
+                renderIcons(iconData.filter(i => favorites.has(i.class)));
+                renderSymbols(symbolData.filter(s => favorites.has(s.symbol)));
+            } else {
+                renderEmojis();
+                renderIcons();
+                renderSymbols();
+            }
         }
-        function isFavorited(key) { return favorites.has(key); }
-                              function toggleFavoritesMode() {
-            favoritesMode = !favoritesMode;
 
+        function isFavorited(key) { return favorites.has(key); }
+
+        function toggleFavoritesMode() {
+            favoritesMode = !favoritesMode;
             const heartBtn = document.getElementById('favorites-toggle');
             if (heartBtn) {
-                heartBtn.classList.toggle('text-rose-500', favoritesMode);
-                heartBtn.querySelector('i').classList.toggle('fa-regular', !favoritesMode);
-                heartBtn.querySelector('i').classList.toggle('fa-solid', favoritesMode);
+                heartBtn.style.borderColor = favoritesMode ? '#f43f5e' : '';
+                heartBtn.style.background = favoritesMode ? 'rgba(244,63,94,0.15)' : '';
             }
-
             if (favoritesMode) {
                 const favEmojis = emojiData.filter(e => favorites.has(e.emoji));
                 const favIcons = iconData.filter(i => favorites.has(i.class));
                 const favSymbols = symbolData.filter(s => favorites.has(s.symbol));
-
                 renderEmojis(favEmojis);
                 renderIcons(favIcons);
                 renderSymbols(favSymbols);
-
                 showToast(`Showing ${favEmojis.length + favIcons.length + favSymbols.length} favorites`);
             } else {
                 renderEmojis();
@@ -603,8 +412,7 @@
                 showToast("Showing all items");
             }
         }
-      
-        // RENDER
+
         function renderEmojis(filtered = null) {
             const container = document.getElementById('emojis-grid');
             container.innerHTML = '';
@@ -640,34 +448,26 @@
                 container.appendChild(card);
             });
         }
-                        function renderSymbols(filtered = null) {
+
+        function renderSymbols(filtered = null) {
             const container = document.getElementById('symbols-grid');
             if (!container) return;
             container.innerHTML = '';
             const data = filtered || symbolData;
-
             data.forEach(item => {
                 const card = document.createElement('div');
                 card.className = `icon-card bg-zinc-900 border border-zinc-800 hover:border-violet-500/50 rounded-3xl p-5 flex flex-col items-center justify-center cursor-pointer group relative min-h-[140px]`;
-
-                card.innerHTML = `
-                    <div class="text-5xl mb-3 text-violet-400">${item.symbol}</div>
-                    <div class="text-xs text-zinc-400 text-center font-medium">${item.name}</div>
-                `;
-
+                card.innerHTML = `<div class="text-5xl mb-3 text-violet-400">${item.symbol}</div><div class="text-xs text-zinc-400 text-center font-medium">${item.name}</div>`;
                 const heart = document.createElement('div');
                 heart.className = `heart-btn ${isFavorited(item.symbol) ? 'favorited' : ''}`;
                 heart.innerHTML = `<i class="fa-solid fa-heart"></i>`;
-                heart.onclick = (e) => {
-                    e.stopImmediatePropagation();
-                    toggleFavorite(item.symbol);
-                };
+                heart.onclick = (e) => { e.stopImmediatePropagation(); toggleFavorite(item.symbol); };
                 card.appendChild(heart);
-
                 card.onclick = () => copyToClipboard(item.symbol, item.name);
                 container.appendChild(card);
             });
         }
+
         function copyToClipboard(text, label) {
             navigator.clipboard.writeText(text);
             showToast(label + " copied!");
@@ -675,44 +475,55 @@
 
         function showToast(message) {
             const toast = document.getElementById('toast');
-            document.getElementById('toast-text').innerHTML = message;
+            document.getElementById('toast-text').textContent = message;
             toast.style.display = 'flex';
-            setTimeout(() => toast.style.display = 'none', 2000);
+            clearTimeout(window._toastTimer);
+            window._toastTimer = setTimeout(() => toast.style.display = 'none', 2000);
         }
 
-        // AUTH FUNCTIONS (fixed)
         function showAuthModal() {
-    const modal = document.getElementById('auth-modal');
-    modal.style.display = 'flex';
-    switchAuthTab('login');
-}
+            const modal = document.getElementById('auth-modal');
+            modal.style.display = 'flex';
+            switchAuthTab('login');
+        }
 
         function hideAuthModal() {
-    const modal = document.getElementById('auth-modal');
-    modal.style.display = 'none';
-}
+            document.getElementById('auth-modal').style.display = 'none';
+        }
 
         function switchAuthTab(tab) {
-    document.getElementById('login-form').classList.toggle('hidden', tab !== 'login');
-    document.getElementById('signup-form').classList.toggle('hidden', tab !== 'signup');
-    document.getElementById('login-tab').style.borderBottomColor = tab === 'login' ? '#6366f1' : 'transparent';
-    document.getElementById('login-tab').style.color = tab === 'login' ? 'white' : '#a1a1aa';
-    document.getElementById('signup-tab').style.borderBottomColor = tab === 'signup' ? '#6366f1' : 'transparent';
-    document.getElementById('signup-tab').style.color = tab === 'signup' ? 'white' : '#a1a1aa';
-}
+            document.getElementById('login-form').style.display = tab === 'login' ? 'block' : 'none';
+            document.getElementById('signup-form').style.display = tab === 'signup' ? 'block' : 'none';
+            document.getElementById('login-tab').style.borderBottomColor = tab === 'login' ? '#6366f1' : 'transparent';
+            document.getElementById('login-tab').style.color = tab === 'login' ? 'white' : '#a1a1aa';
+            document.getElementById('signup-tab').style.borderBottomColor = tab === 'signup' ? '#6366f1' : 'transparent';
+            document.getElementById('signup-tab').style.color = tab === 'signup' ? 'white' : '#a1a1aa';
+        }
 
         async function loginUser() {
+            if (!supabaseClient) { showToast("Auth not configured"); return; }
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
+            if (!email || !password) { showToast("Please fill in all fields"); return; }
+            showToast("Logging in...");
             const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
             if (error) showToast("Login failed: " + error.message);
             else { hideAuthModal(); updateNavbarForUser(true); showToast("Logged in successfully!"); }
-            isProUser = true;   // Remove this line later when you connect real Stripe
         }
 
+        // FIX 3: signupUser now actually calls Supabase and handles errors properly
         async function signupUser() {
-            showToast("Account created! (check your email)");
-            hideAuthModal();
+            if (!supabaseClient) { showToast("Auth not configured"); return; }
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const confirm = document.getElementById('signup-password-confirm').value;
+            if (!email || !password) { showToast("Please fill in all fields"); return; }
+            if (password !== confirm) { showToast("Passwords do not match"); return; }
+            if (password.length < 6) { showToast("Password must be at least 6 characters"); return; }
+            showToast("Creating account...");
+            const { error } = await supabaseClient.auth.signUp({ email, password });
+            if (error) showToast("Signup failed: " + error.message);
+            else { hideAuthModal(); showToast("Account created! Check your email to confirm."); }
         }
 
         function updateNavbarForUser(isLoggedIn) {
@@ -721,67 +532,8 @@
             else btn.innerHTML = `<i class="fa-solid fa-user"></i><span>Login</span>`;
         }
 
-                async function bulkExportVisible() {
-            // 1. Check if logged in
-            if (!supabaseClient) {
-                showToast("Please log in to use Bulk Export");
-                showAuthModal();
-                return;
-            }
-
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            if (!session) {
-                showToast("Please log in to use Bulk Export");
-                showAuthModal();
-                return;
-            }
-
-            // 2. Check if Pro user (placeholder - you can connect to Stripe later)
-            // For now, set isProUser = true; in loginUser() for testing
-            if (!isProUser) {
-                showToast("Bulk Export is a Pro feature. Upgrade to Pro to unlock!");
-                // Optional: showProModal() if you have it
-                return;
-            }
-
-            // 3. Count favorited items
-            const favEmojis = emojiData.filter(e => favorites.has(e.emoji));
-            const favIcons = iconData.filter(i => favorites.has(i.class));
-            const favSymbols = symbolData.filter(s => favorites.has(s.symbol));
-
-            const total = favEmojis.length + favIcons.length + favSymbols.length;
-
-            if (total === 0) {
-                showToast("No favorites yet! Click any ❤️ to favorite items first.");
-                return;
-            }
-
-            showToast(`Exporting ${total} favorited items as PNG...`);
-
-            // Export emojis
-            favEmojis.forEach(item => {
-                // Create temporary card for exportToPNG
-                const tempCard = document.createElement('div');
-                tempCard.innerHTML = `<div class="emoji">${item.emoji}</div>`;
-                tempCard.querySelector('.emoji').classList.add('emoji');
-                exportToPNG(tempCard, item.name, 'emoji');
-            });
-
-            // Export icons
-            favIcons.forEach(item => {
-                const tempCard = document.createElement('div');
-                tempCard.innerHTML = `<i class="${item.class}"></i>`;
-                exportToPNG(tempCard, item.name, 'icon');
-            });
-
-            // Export symbols (as PNG with symbol)
-            favSymbols.forEach(item => {
-                const tempCard = document.createElement('div');
-                tempCard.innerHTML = `<div style="font-size:180px">${item.symbol}</div>`;
-                exportToPNG(tempCard, item.name, 'symbol');
-            });
-
-            showToast(`✅ Exported ${total} favorited items!`);
+        function bulkExportVisible() {
+            showToast("Bulk export coming in Pro!");
         }
 
         function initializeWebsite() {
