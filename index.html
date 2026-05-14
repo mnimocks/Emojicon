@@ -145,7 +145,8 @@
                 <div style="background:linear-gradient(135deg,rgba(109,40,217,0.2),rgba(192,38,211,0.2)); border:1px solid rgba(139,92,246,0.3); border-radius:1rem; padding:1.25rem;">
                     <p style="font-size:13px; font-weight:600; color:#c4b5fd; margin-bottom:0.25rem;">Upgrade to Pro</p>
                     <p style="font-size:12px; color:#a78bfa; margin-bottom:0.75rem;">Bulk download all your favorited emojis, icons & symbols as a ZIP file.</p>
-                    <button onclick="showToast('Payments coming soon! 🚀', 'info')" style="width:100%; padding:0.625rem; background:linear-gradient(135deg,#7c3aed,#a21caf); border:none; border-radius:9999px; color:white; font-weight:600; font-size:13px; cursor:pointer;">Upgrade — $5/mo or $39 lifetime</button>
+                    <button onclick="startCheckout('price_1TT4AdKS4YmKUzv3Avc73Z8z')" style="width:100%; padding:0.625rem; background:linear-gradient(135deg,#7c3aed,#a21caf); border:none; border-radius:9999px; color:white; font-weight:600; font-size:13px; cursor:pointer; margin-bottom:0.5rem;">Pro Monthly — $5 / mo</button>
+                    <button onclick="startCheckout('price_1TT4CCKS4YmKUzv3CrJryfgg')" style="width:100%; padding:0.625rem; background:linear-gradient(135deg,#0f766e,#065f46); border:none; border-radius:9999px; color:white; font-weight:600; font-size:13px; cursor:pointer;">Lifetime — $39 one-time</button>
                 </div>
             </div>
 
@@ -167,11 +168,8 @@
             <div style="font-size:3rem; margin-bottom:1rem;">⚡</div>
             <h3 style="font-size:1.25rem; font-weight:600; margin-bottom:0.5rem;">Pro Feature</h3>
             <p style="font-size:13px; color:#71717a; margin-bottom:1.5rem; line-height:1.6;">Bulk export downloads all your favorited items as a ZIP file. Upgrade to Pro to unlock this.</p>
-            <div style="background:linear-gradient(135deg,rgba(109,40,217,0.2),rgba(192,38,211,0.2)); border:1px solid rgba(139,92,246,0.3); border-radius:1rem; padding:1.25rem; margin-bottom:1rem;">
-                <p style="font-size:22px; font-weight:700; color:#c4b5fd; margin-bottom:0.25rem;">$5 / month</p>
-                <p style="font-size:12px; color:#a78bfa;">or $39 one-time (lifetime)</p>
-            </div>
-            <button onclick="showToast('Payments coming soon! 🚀', 'info'); hideProModal();" style="width:100%; padding:0.875rem; background:linear-gradient(135deg,#7c3aed,#a21caf); border:none; border-radius:9999px; color:white; font-weight:600; font-size:15px; cursor:pointer; margin-bottom:0.75rem;">Upgrade to Pro</button>
+            <button onclick="startCheckout('price_1TT4AdKS4YmKUzv3Avc73Z8z')" style="width:100%; padding:0.875rem; background:linear-gradient(135deg,#7c3aed,#a21caf); border:none; border-radius:9999px; color:white; font-weight:600; font-size:15px; cursor:pointer; margin-bottom:0.5rem;">Pro Monthly — $5 / mo</button>
+            <button onclick="startCheckout('price_1TT4CCKS4YmKUzv3CrJryfgg')" style="width:100%; padding:0.875rem; background:linear-gradient(135deg,#0f766e,#065f46); border:none; border-radius:9999px; color:white; font-weight:600; font-size:15px; cursor:pointer; margin-bottom:0.75rem;">Lifetime — $39 one-time ⭐</button>
             <button onclick="hideProModal()" style="width:100%; padding:0.75rem; background:none; border:none; color:#71717a; font-size:13px; cursor:pointer;">Maybe later</button>
         </div>
     </div>
@@ -404,6 +402,10 @@
                 await loadUserProfile();
                 await loadFavoritesFromCloud();
                 updateNavbarForUser(true);
+                if (sessionStorage.getItem('paymentSuccess')) {
+                    sessionStorage.removeItem('paymentSuccess');
+                    showToast('You\'re now Pro! Bulk export is unlocked.');
+                }
             } else {
                 currentUser = null;
                 currentTier = 'free';
@@ -782,6 +784,24 @@
         toastTimer = setTimeout(() => toast.style.display = 'none', 2500);
     }
 
+    // ─── CHECKOUT ────────────────────────────────────────────────────────────────
+    async function startCheckout(priceId) {
+        if (!currentUser) { showAuthModal(); return; }
+        showToast('Redirecting to checkout…', 'info');
+        try {
+            const res = await fetch('/api/create-checkout-session', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ priceId, userId: currentUser.id, userEmail: currentUser.email }),
+            });
+            const { url, error } = await res.json();
+            if (error) throw new Error(error);
+            window.location.href = url;
+        } catch (err) {
+            showToast('Checkout failed — please try again.', 'error');
+        }
+    }
+
     // ─── PASSWORD VISIBILITY ─────────────────────────────────────────────────────
     function togglePasswordVisibility(inputId, btn) {
         const input = document.getElementById(inputId);
@@ -792,8 +812,17 @@
 
     // ─── INIT ────────────────────────────────────────────────────────────────────
     window.onload = function() {
+        // Capture and clean up payment redirect params before auth resolves
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('payment') === 'success') {
+            sessionStorage.setItem('paymentSuccess', '1');
+            window.history.replaceState({}, '', '/');
+        } else if (params.get('payment') === 'cancelled') {
+            window.history.replaceState({}, '', '/');
+        }
+
         initSupabase();
-        loadFavoritesFromLocal(); // load local cache immediately while auth resolves
+        loadFavoritesFromLocal();
         renderAll();
     };
     </script>
