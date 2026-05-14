@@ -86,7 +86,7 @@
     </div>
 
     <!-- AUTH MODAL -->
-    <div id="auth-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); align-items:center; justify-content:center; z-index:300; padding:1rem;">
+    <div id="auth-modal" style="display:none; position:fixed; top:0; right:0; bottom:0; left:0; background:rgba(0,0,0,0.75); align-items:center; justify-content:center; z-index:300; padding:1rem;">
         <div style="background:#18181b; border:1px solid #3f3f46; border-radius:1.5rem; width:100%; max-width:26rem; padding:2rem; position:relative;">
             <button onclick="hideAuthModal()" style="position:absolute; top:1rem; right:1rem; background:none; border:none; color:#a1a1aa; font-size:1.5rem; cursor:pointer; line-height:1;">×</button>
 
@@ -99,33 +99,37 @@
             <!-- Login Form -->
             <div id="login-form">
                 <p style="font-size:13px; color:#71717a; margin-bottom:1.25rem;">Welcome back! Your favorites sync across devices.</p>
-                <input id="login-email" type="email" placeholder="Email address" class="modal-input">
-                <div style="position:relative; margin-bottom:1.5rem;">
-                    <input id="login-password" type="password" autocomplete="current-password" placeholder="Password" class="modal-input" style="margin-bottom:0; padding-right:2.75rem;">
-                    <button type="button" onclick="togglePasswordVisibility('login-password', this)" style="position:absolute; right:1rem; top:50%; transform:translateY(-50%); background:none; border:none; color:#71717a; cursor:pointer; padding:0; line-height:1;"><i class="fa-solid fa-eye text-sm"></i></button>
-                </div>
-                <button onclick="loginUser()" id="login-submit" class="modal-btn">Login</button>
+                <form onsubmit="event.preventDefault(); loginUser();" autocomplete="on">
+                    <input id="login-email" type="email" placeholder="Email address" class="modal-input" autocomplete="email">
+                    <div style="position:relative; margin-bottom:1.5rem;">
+                        <input id="login-password" type="password" autocomplete="current-password" placeholder="Password" class="modal-input" style="margin-bottom:0; padding-right:2.75rem;">
+                        <button type="button" onclick="togglePasswordVisibility('login-password', this)" style="position:absolute; right:1rem; top:50%; transform:translateY(-50%); background:none; border:none; color:#71717a; cursor:pointer; padding:0; line-height:1;"><i class="fa-solid fa-eye text-sm"></i></button>
+                    </div>
+                    <button type="submit" id="login-submit" class="modal-btn">Login</button>
+                </form>
             </div>
 
             <!-- Signup Form -->
             <div id="signup-form" style="display:none;">
                 <p style="font-size:13px; color:#71717a; margin-bottom:1.25rem;">Create a free account to save favorites across devices.</p>
-                <input id="signup-email" type="email" placeholder="Email address" class="modal-input">
-                <div style="position:relative;">
-                    <input id="signup-password" type="password" autocomplete="new-password" placeholder="Password (min 6 chars)" class="modal-input" style="padding-right:2.75rem;">
-                    <button type="button" onclick="togglePasswordVisibility('signup-password', this)" style="position:absolute; right:1rem; top:calc(50% - 0.5rem); transform:translateY(-50%); background:none; border:none; color:#71717a; cursor:pointer; padding:0; line-height:1;"><i class="fa-solid fa-eye text-sm"></i></button>
-                </div>
-                <div style="position:relative; margin-bottom:1.5rem;">
-                    <input id="signup-password-confirm" type="password" autocomplete="new-password" placeholder="Confirm password" class="modal-input" style="margin-bottom:0; padding-right:2.75rem;">
-                    <button type="button" onclick="togglePasswordVisibility('signup-password-confirm', this)" style="position:absolute; right:1rem; top:50%; transform:translateY(-50%); background:none; border:none; color:#71717a; cursor:pointer; padding:0; line-height:1;"><i class="fa-solid fa-eye text-sm"></i></button>
-                </div>
-                <button onclick="signupUser()" id="signup-submit" class="modal-btn">Create Free Account</button>
+                <form onsubmit="event.preventDefault(); signupUser();" autocomplete="on">
+                    <input id="signup-email" type="email" placeholder="Email address" class="modal-input" autocomplete="email">
+                    <div style="position:relative;">
+                        <input id="signup-password" type="password" autocomplete="new-password" placeholder="Password (min 6 chars)" class="modal-input" style="padding-right:2.75rem;">
+                        <button type="button" onclick="togglePasswordVisibility('signup-password', this)" style="position:absolute; right:1rem; top:calc(50% - 0.5rem); transform:translateY(-50%); background:none; border:none; color:#71717a; cursor:pointer; padding:0; line-height:1;"><i class="fa-solid fa-eye text-sm"></i></button>
+                    </div>
+                    <div style="position:relative; margin-bottom:1.5rem;">
+                        <input id="signup-password-confirm" type="password" autocomplete="new-password" placeholder="Confirm password" class="modal-input" style="margin-bottom:0; padding-right:2.75rem;">
+                        <button type="button" onclick="togglePasswordVisibility('signup-password-confirm', this)" style="position:absolute; right:1rem; top:50%; transform:translateY(-50%); background:none; border:none; color:#71717a; cursor:pointer; padding:0; line-height:1;"><i class="fa-solid fa-eye text-sm"></i></button>
+                    </div>
+                    <button type="submit" id="signup-submit" class="modal-btn">Create Free Account</button>
+                </form>
             </div>
         </div>
     </div>
 
     <!-- ACCOUNT MODAL (shown when logged in) -->
-    <div id="account-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); align-items:center; justify-content:center; z-index:300; padding:1rem;">
+    <div id="account-modal" style="display:none; position:fixed; top:0; right:0; bottom:0; left:0; background:rgba(0,0,0,0.75); align-items:center; justify-content:center; z-index:300; padding:1rem;">
         <div style="background:#18181b; border:1px solid #3f3f46; border-radius:1.5rem; width:100%; max-width:26rem; padding:2rem; position:relative;">
             <button onclick="hideAccountModal()" style="position:absolute; top:1rem; right:1rem; background:none; border:none; color:#a1a1aa; font-size:1.5rem; cursor:pointer; line-height:1;">×</button>
             <h3 style="font-size:1.25rem; font-weight:600; margin-bottom:0.5rem;">My Account</h3>
@@ -162,7 +166,7 @@
     </div>
 
     <!-- PRO UPSELL MODAL -->
-    <div id="pro-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); align-items:center; justify-content:center; z-index:300; padding:1rem;">
+    <div id="pro-modal" style="display:none; position:fixed; top:0; right:0; bottom:0; left:0; background:rgba(0,0,0,0.75); align-items:center; justify-content:center; z-index:300; padding:1rem;">
         <div style="background:#18181b; border:1px solid #3f3f46; border-radius:1.5rem; width:100%; max-width:26rem; padding:2rem; position:relative; text-align:center;">
             <button onclick="hideProModal()" style="position:absolute; top:1rem; right:1rem; background:none; border:none; color:#a1a1aa; font-size:1.5rem; cursor:pointer; line-height:1;">×</button>
             <div style="font-size:3rem; margin-bottom:1rem;">⚡</div>
@@ -550,6 +554,7 @@
 
     // ─── AUTH ────────────────────────────────────────────────────────────────────
     function handleAuthButtonClick() {
+        console.log('[Auth] button clicked — currentUser:', currentUser ? currentUser.email : 'null');
         if (currentUser) logoutUser();
         else showAuthModal();
     }
@@ -640,8 +645,11 @@
 
     // ─── AUTH MODAL ──────────────────────────────────────────────────────────────
     function showAuthModal() {
+        console.log('[Auth] showAuthModal called');
         switchAuthTab('login');
-        document.getElementById('auth-modal').style.display = 'flex';
+        const modal = document.getElementById('auth-modal');
+        modal.style.setProperty('display', 'flex', 'important');
+        console.log('[Auth] modal display now:', modal.style.display);
     }
 
     function hideAuthModal() {
