@@ -7,6 +7,7 @@
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%236366f1'/%3E%3Ctext x='50' y='65' font-size='55' text-anchor='middle' fill='white'%3E%E2%9C%A8%3C/text%3E%3C/svg%3E">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Space+Grotesk:wght@500;600&display=swap');
         :root { --primary: #6366f1; }
@@ -19,33 +20,41 @@
         .heart-btn { position: absolute; top: 8px; right: 8px; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border-radius: 9999px; background: rgba(255,255,255,0.1); transition: all 0.2s ease; z-index: 10; }
         .heart-btn:hover { background: rgba(239,68,68,0.2); transform: scale(1.1); }
         .heart-btn.favorited { color: #ef4444; }
+        .tier-badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 9999px; font-size: 10px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
+        .tier-free { background: rgba(99,102,241,0.15); color: #818cf8; border: 1px solid rgba(99,102,241,0.3); }
+        .tier-pro { background: rgba(234,179,8,0.15); color: #fbbf24; border: 1px solid rgba(234,179,8,0.3); }
+        .modal-input { width: 100%; margin-bottom: 1rem; background: #27272a; border: 1px solid #3f3f46; border-radius: 1rem; padding: 0.75rem 1rem; color: white; outline: none; box-sizing: border-box; font-size: 15px; transition: border-color 0.2s; }
+        .modal-input:focus { border-color: #6366f1; }
+        .modal-btn { width: 100%; padding: 0.875rem; background: #4f46e5; border: none; border-radius: 9999px; color: white; font-weight: 600; cursor: pointer; font-size: 15px; transition: background 0.2s; }
+        .modal-btn:hover { background: #4338ca; }
+        .modal-btn:disabled { background: #3f3f46; color: #71717a; cursor: not-allowed; }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="bg-zinc-950 text-zinc-200">
 
     <!-- Navbar -->
     <nav class="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-lg sticky top-0 z-50">
         <div class="max-w-screen-2xl mx-auto px-8 py-5 flex items-center justify-between">
-            <div class="flex items-center gap-x-4">
-                <div class="flex items-center gap-x-3">
-                    <div class="w-11 h-11 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
-                        <i class="fa-solid fa-icons text-white text-3xl"></i>
-                    </div>
-                    <div>
-                        <span class="font-display text-3xl font-semibold tracking-tighter">GetEmojicon</span>
-                        <span class="text-[10px] font-mono text-zinc-500 tracking-[3px] block -mt-1">v4.0</span>
-                    </div>
+            <div class="flex items-center gap-x-3">
+                <div class="w-11 h-11 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
+                    <i class="fa-solid fa-icons text-white text-3xl"></i>
+                </div>
+                <div>
+                    <span class="font-display text-3xl font-semibold tracking-tighter">GetEmojicon</span>
+                    <span class="text-[10px] font-mono text-zinc-500 tracking-[3px] block -mt-1">v4.0</span>
                 </div>
             </div>
             <div class="flex items-center gap-x-4">
-                <button onclick="showAuthModal()" id="login-btn" class="px-5 py-2.5 text-sm font-semibold bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 hover:border-indigo-500 rounded-3xl flex items-center gap-x-2 transition-all">
+                <!-- Auth button: shows Login or user info -->
+                <button onclick="handleAuthButtonClick()" id="login-btn" class="px-5 py-2.5 text-sm font-semibold bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 hover:border-indigo-500 rounded-3xl flex items-center gap-x-2 transition-all">
                     <i class="fa-solid fa-user"></i><span>Login</span>
                 </button>
-                <button onclick="toggleFavoritesMode()" id="favorites-toggle" class="w-11 h-11 flex items-center justify-center bg-zinc-900 hover:bg-rose-600/20 border border-zinc-800 hover:border-rose-500 rounded-3xl transition-all group">
+                <!-- Favorites toggle -->
+                <button onclick="toggleFavoritesMode()" id="favorites-toggle" class="w-11 h-11 flex items-center justify-center bg-zinc-900 hover:bg-rose-600/20 border border-zinc-800 hover:border-rose-500 rounded-3xl transition-all group" title="Show favorites">
                     <i class="fa-solid fa-heart text-lg text-rose-400 group-hover:scale-110 transition-transform"></i>
                 </button>
-                <button onclick="bulkExportVisible()" class="px-5 py-2.5 text-sm font-semibold bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 rounded-3xl flex items-center gap-x-2 transition-all">
+                <!-- Bulk Export — gated to Pro -->
+                <button onclick="handleBulkExport()" id="bulk-export-btn" class="px-5 py-2.5 text-sm font-semibold bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 rounded-3xl flex items-center gap-x-2 transition-all">
                     <i class="fa-solid fa-download"></i><span>Bulk Export</span>
                 </button>
             </div>
@@ -54,497 +63,723 @@
 
     <!-- EMOJIS SECTION -->
     <div id="emojis-section" class="max-w-screen-2xl mx-auto px-8 py-12">
-        <h2 class="section-header mb-8 flex items-center gap-x-3"><i class="fa-solid fa-face-grin text-amber-400"></i> Emojis & Emoticons</h2>
+        <h2 class="mb-8 flex items-center gap-x-3 text-xl font-semibold"><i class="fa-solid fa-face-grin text-amber-400"></i> Emojis & Emoticons</h2>
         <div id="emojis-grid" class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-9 xl:grid-cols-11 2xl:grid-cols-12 gap-3"></div>
     </div>
 
     <!-- ICONS SECTION -->
     <div id="icons-section" class="max-w-screen-2xl mx-auto px-8 py-12 bg-zinc-900">
-        <h2 class="section-header mb-8 flex items-center gap-x-3"><i class="fa-solid fa-palette text-indigo-400"></i> Font Awesome Icons</h2>
+        <h2 class="mb-8 flex items-center gap-x-3 text-xl font-semibold"><i class="fa-solid fa-palette text-indigo-400"></i> Font Awesome Icons</h2>
         <div id="icons-grid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-4"></div>
     </div>
 
     <!-- SYMBOLS SECTION -->
     <div class="max-w-screen-2xl mx-auto px-8 py-12">
-        <h2 class="section-header mb-8 flex items-center gap-x-3">
-            <i class="fa-solid fa-infinity text-violet-400"></i> Unicode Symbols
-        </h2>
+        <h2 class="mb-8 flex items-center gap-x-3 text-xl font-semibold"><i class="fa-solid fa-infinity text-violet-400"></i> Unicode Symbols</h2>
         <div id="symbols-grid" class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-9 xl:grid-cols-11 2xl:grid-cols-12 gap-3"></div>
     </div>
 
-    <!-- FIX 1: Toast — removed 'hidden' class, use inline style instead -->
-    <div id="toast" style="display:none; position:fixed; bottom:2rem; left:50%; transform:translateX(-50%); background:#18181b; border:1px solid #3f3f46; color:white; padding:0.875rem 1.5rem; border-radius:9999px; box-shadow:0 25px 50px -12px rgb(0 0 0/0.25); align-items:center; gap:0.75rem; z-index:100;">
-        <i class="fa-solid fa-check-circle text-emerald-400"></i>
-        <span id="toast-text" style="font-weight:500;">Copied to clipboard!</span>
+    <!-- Toast -->
+    <div id="toast" style="display:none; position:fixed; bottom:2rem; left:50%; transform:translateX(-50%); background:#18181b; border:1px solid #3f3f46; color:white; padding:0.875rem 1.5rem; border-radius:9999px; box-shadow:0 25px 50px -12px rgb(0 0 0/0.5); align-items:center; gap:0.75rem; z-index:200; white-space:nowrap;">
+        <i id="toast-icon" class="fa-solid fa-check-circle text-emerald-400"></i>
+        <span id="toast-text" style="font-weight:500;">Copied!</span>
     </div>
 
-    <!-- FIX 2: Auth modal — removed 'hidden' class, use inline style; added align-items & justify-content -->
+    <!-- AUTH MODAL -->
     <div id="auth-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); align-items:center; justify-content:center; z-index:300; padding:1rem;">
-        <div style="background:#18181b; border:1px solid #3f3f46; border-radius:1.5rem; width:100%; max-width:28rem; padding:2rem;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
-                <h3 style="font-size:1.5rem; font-weight:600;">GetEmojicon Account</h3>
-                <button onclick="hideAuthModal()" style="font-size:1.75rem; line-height:1; background:none; border:none; color:white; cursor:pointer;">×</button>
-            </div>
+        <div style="background:#18181b; border:1px solid #3f3f46; border-radius:1.5rem; width:100%; max-width:26rem; padding:2rem; position:relative;">
+            <button onclick="hideAuthModal()" style="position:absolute; top:1rem; right:1rem; background:none; border:none; color:#a1a1aa; font-size:1.5rem; cursor:pointer; line-height:1;">×</button>
+
+            <!-- Tabs -->
             <div style="display:flex; border-bottom:1px solid #3f3f46; margin-bottom:1.5rem;">
-                <button onclick="switchAuthTab('login')" id="login-tab" style="flex:1; padding:0.75rem; font-weight:500; border:none; background:none; border-bottom:2px solid #6366f1; color:white; cursor:pointer;">Login</button>
-                <button onclick="switchAuthTab('signup')" id="signup-tab" style="flex:1; padding:0.75rem; font-weight:500; border:none; background:none; border-bottom:2px solid transparent; color:#a1a1aa; cursor:pointer;">Sign Up</button>
+                <button onclick="switchAuthTab('login')" id="login-tab" style="flex:1; padding:0.75rem; font-weight:600; border:none; background:none; border-bottom:2px solid #6366f1; color:white; cursor:pointer; font-size:14px;">Login</button>
+                <button onclick="switchAuthTab('signup')" id="signup-tab" style="flex:1; padding:0.75rem; font-weight:600; border:none; background:none; border-bottom:2px solid transparent; color:#a1a1aa; cursor:pointer; font-size:14px;">Sign Up</button>
             </div>
 
             <!-- Login Form -->
-            <form id="login-form" onsubmit="loginUser(); return false;">
-                <input id="login-email" type="email" placeholder="Email" style="width:100%; margin-bottom:1rem; background:#27272a; border:1px solid #3f3f46; border-radius:1rem; padding:0.75rem 1rem; color:white; outline:none; box-sizing:border-box;">
-                <input id="login-password" type="password" autocomplete="current-password" placeholder="Password" style="width:100%; margin-bottom:1.5rem; background:#27272a; border:1px solid #3f3f46; border-radius:1rem; padding:0.75rem 1rem; color:white; outline:none; box-sizing:border-box;">
-                <button type="submit" style="width:100%; padding:0.875rem; background:#4f46e5; hover:background:#4338ca; border:none; border-radius:9999px; color:white; font-weight:600; cursor:pointer;">Login</button>
-            </form>
+            <div id="login-form">
+                <p style="font-size:13px; color:#71717a; margin-bottom:1.25rem;">Welcome back! Your favorites sync across devices.</p>
+                <input id="login-email" type="email" placeholder="Email address" class="modal-input">
+                <input id="login-password" type="password" autocomplete="current-password" placeholder="Password" class="modal-input" style="margin-bottom:1.5rem;">
+                <button onclick="loginUser()" id="login-submit" class="modal-btn">Login</button>
+            </div>
 
-            <!-- FIX 3: Signup form — actually calls Supabase now -->
-            <form id="signup-form" style="display:none;" onsubmit="signupUser(); return false;">
-                <input id="signup-email" type="email" placeholder="Email" style="width:100%; margin-bottom:1rem; background:#27272a; border:1px solid #3f3f46; border-radius:1rem; padding:0.75rem 1rem; color:white; outline:none; box-sizing:border-box;">
-                <input id="signup-password" type="password" autocomplete="new-password" placeholder="Password" style="width:100%; margin-bottom:1rem; background:#27272a; border:1px solid #3f3f46; border-radius:1rem; padding:0.75rem 1rem; color:white; outline:none; box-sizing:border-box;">
-                <input id="signup-password-confirm" type="password" autocomplete="new-password" placeholder="Confirm Password" style="width:100%; margin-bottom:1.5rem; background:#27272a; border:1px solid #3f3f46; border-radius:1rem; padding:0.75rem 1rem; color:white; outline:none; box-sizing:border-box;">
-                <button type="submit" style="width:100%; padding:0.875rem; background:#4f46e5; border:none; border-radius:9999px; color:white; font-weight:600; cursor:pointer;">Create Account</button>
-            </form>
+            <!-- Signup Form -->
+            <div id="signup-form" style="display:none;">
+                <p style="font-size:13px; color:#71717a; margin-bottom:1.25rem;">Create a free account to save favorites across devices.</p>
+                <input id="signup-email" type="email" placeholder="Email address" class="modal-input">
+                <input id="signup-password" type="password" autocomplete="new-password" placeholder="Password (min 6 chars)" class="modal-input">
+                <input id="signup-password-confirm" type="password" autocomplete="new-password" placeholder="Confirm password" class="modal-input" style="margin-bottom:1.5rem;">
+                <button onclick="signupUser()" id="signup-submit" class="modal-btn">Create Free Account</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ACCOUNT MODAL (shown when logged in) -->
+    <div id="account-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); align-items:center; justify-content:center; z-index:300; padding:1rem;">
+        <div style="background:#18181b; border:1px solid #3f3f46; border-radius:1.5rem; width:100%; max-width:26rem; padding:2rem; position:relative;">
+            <button onclick="hideAccountModal()" style="position:absolute; top:1rem; right:1rem; background:none; border:none; color:#a1a1aa; font-size:1.5rem; cursor:pointer; line-height:1;">×</button>
+            <h3 style="font-size:1.25rem; font-weight:600; margin-bottom:0.5rem;">My Account</h3>
+            <p id="account-email" style="font-size:13px; color:#71717a; margin-bottom:1.5rem;"></p>
+
+            <!-- Tier display -->
+            <div style="background:#27272a; border-radius:1rem; padding:1.25rem; margin-bottom:1.5rem;">
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.5rem;">
+                    <span style="font-size:13px; font-weight:600; color:#d4d4d8;">Current Plan</span>
+                    <span id="account-tier-badge" class="tier-badge tier-free">Free</span>
+                </div>
+                <div id="tier-features" style="font-size:12px; color:#71717a; line-height:1.8;"></div>
+            </div>
+
+            <!-- Upgrade CTA (hidden for pro) -->
+            <div id="upgrade-cta" style="margin-bottom:1.5rem;">
+                <div style="background:linear-gradient(135deg,rgba(109,40,217,0.2),rgba(192,38,211,0.2)); border:1px solid rgba(139,92,246,0.3); border-radius:1rem; padding:1.25rem;">
+                    <p style="font-size:13px; font-weight:600; color:#c4b5fd; margin-bottom:0.25rem;">Upgrade to Pro</p>
+                    <p style="font-size:12px; color:#a78bfa; margin-bottom:0.75rem;">Bulk download all your favorited emojis, icons & symbols as a ZIP file.</p>
+                    <button onclick="showToast('Payments coming soon! 🚀', 'info')" style="width:100%; padding:0.625rem; background:linear-gradient(135deg,#7c3aed,#a21caf); border:none; border-radius:9999px; color:white; font-weight:600; font-size:13px; cursor:pointer;">Upgrade — $5/mo or $39 lifetime</button>
+                </div>
+            </div>
+
+            <div style="display:flex; gap:0.75rem;">
+                <button onclick="syncFavoritesToCloud()" style="flex:1; padding:0.625rem; background:#27272a; border:1px solid #3f3f46; border-radius:9999px; color:#d4d4d8; font-weight:500; font-size:13px; cursor:pointer;">
+                    <i class="fa-solid fa-cloud-arrow-up" style="margin-right:6px;"></i>Sync Favorites
+                </button>
+                <button onclick="logoutUser()" style="flex:1; padding:0.625rem; background:#27272a; border:1px solid #3f3f46; border-radius:9999px; color:#f87171; font-weight:500; font-size:13px; cursor:pointer;">
+                    <i class="fa-solid fa-right-from-bracket" style="margin-right:6px;"></i>Log Out
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRO UPSELL MODAL -->
+    <div id="pro-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); align-items:center; justify-content:center; z-index:300; padding:1rem;">
+        <div style="background:#18181b; border:1px solid #3f3f46; border-radius:1.5rem; width:100%; max-width:26rem; padding:2rem; position:relative; text-align:center;">
+            <button onclick="hideProModal()" style="position:absolute; top:1rem; right:1rem; background:none; border:none; color:#a1a1aa; font-size:1.5rem; cursor:pointer; line-height:1;">×</button>
+            <div style="font-size:3rem; margin-bottom:1rem;">⚡</div>
+            <h3 style="font-size:1.25rem; font-weight:600; margin-bottom:0.5rem;">Pro Feature</h3>
+            <p style="font-size:13px; color:#71717a; margin-bottom:1.5rem; line-height:1.6;">Bulk export downloads all your favorited items as a ZIP file. Upgrade to Pro to unlock this.</p>
+            <div style="background:linear-gradient(135deg,rgba(109,40,217,0.2),rgba(192,38,211,0.2)); border:1px solid rgba(139,92,246,0.3); border-radius:1rem; padding:1.25rem; margin-bottom:1rem;">
+                <p style="font-size:22px; font-weight:700; color:#c4b5fd; margin-bottom:0.25rem;">$5 / month</p>
+                <p style="font-size:12px; color:#a78bfa;">or $39 one-time (lifetime)</p>
+            </div>
+            <button onclick="showToast('Payments coming soon! 🚀', 'info'); hideProModal();" style="width:100%; padding:0.875rem; background:linear-gradient(135deg,#7c3aed,#a21caf); border:none; border-radius:9999px; color:white; font-weight:600; font-size:15px; cursor:pointer; margin-bottom:0.75rem;">Upgrade to Pro</button>
+            <button onclick="hideProModal()" style="width:100%; padding:0.75rem; background:none; border:none; color:#71717a; font-size:13px; cursor:pointer;">Maybe later</button>
         </div>
     </div>
 
     <script>
-        // SUPABASE — replace with your real project URL and anon key (starts with eyJ...)
-        const SUPABASE_URL = 'https://xljsrkreacyfdhdnsfix.supabase.co';
-        const SUPABASE_ANON_KEY = 'YOUR_REAL_ANON_KEY_HERE'; // ← FIX 4: paste your real key from Supabase dashboard
-        let supabaseClient = null;
+    // ─── SUPABASE ────────────────────────────────────────────────────────────────
+    const SUPABASE_URL = 'https://xljsrkreacyfdhdnsfix.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhsanNya3JlYWN5ZmRoZG5zZml4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4MTUyNDYsImV4cCI6MjA5MzM5MTI0Nn0.3c9J_ERJZj2dtATKBSUo_a-MVJGPBbyu-9vkplzFtdo';
+    let sb = null;
 
-        function initSupabase() {
-            try {
-                supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            } catch(e) {
-                console.warn('Supabase init failed:', e);
-            }
-        }
+    // ─── APP STATE ───────────────────────────────────────────────────────────────
+    let currentUser = null;
+    let currentTier = 'free'; // 'free' | 'pro_monthly' | 'pro_lifetime'
+    let favorites = new Set();
+    let favoritesMode = false;
+    let toastTimer = null;
 
-        const emojiData = [
-    {emoji:"😀", name:"Grinning Face", code:"U+1F600", category:"smileys"},
-    {emoji:"😃", name:"Grinning Face with Big Eyes", code:"U+1F603", category:"smileys"},
-    {emoji:"😄", name:"Grinning Face with Smiling Eyes", code:"U+1F604", category:"smileys"},
-    {emoji:"😁", name:"Beaming Face with Smiling Eyes", code:"U+1F601", category:"smileys"},
-    {emoji:"😆", name:"Grinning Squinting Face", code:"U+1F606", category:"smileys"},
-    {emoji:"😅", name:"Grinning Face with Sweat", code:"U+1F605", category:"smileys"},
-    {emoji:"😂", name:"Face with Tears of Joy", code:"U+1F602", category:"smileys"},
-    {emoji:"🤣", name:"Rolling on the Floor Laughing", code:"U+1F923", category:"smileys"},
-    {emoji:"🥰", name:"Smiling Face with Hearts", code:"U+1F970", category:"smileys"},
-    {emoji:"😍", name:"Smiling Face with Heart-Eyes", code:"U+1F60D", category:"smileys"},
-    {emoji:"🤩", name:"Star-Struck", code:"U+1F929", category:"smileys"},
-    {emoji:"😘", name:"Face Blowing a Kiss", code:"U+1F618", category:"smileys"},
-    {emoji:"😗", name:"Kissing Face", code:"U+1F617", category:"smileys"},
-    {emoji:"☺️", name:"Smiling Face", code:"U+263A", category:"smileys"},
-    {emoji:"😊", name:"Smiling Face with Smiling Eyes", code:"U+1F60A", category:"smileys"},
-    {emoji:"😇", name:"Smiling Face with Halo", code:"U+1F607", category:"smileys"},
-    {emoji:"🥹", name:"Face Holding Back Tears", code:"U+1F979", category:"smileys"},
-    {emoji:"😉", name:"Winking Face", code:"U+1F609", category:"smileys"},
-    {emoji:"😌", name:"Relieved Face", code:"U+1F60C", category:"smileys"},
-    {emoji:"😏", name:"Smirking Face", code:"U+1F60F", category:"smileys"},
-    {emoji:"😒", name:"Unamused Face", code:"U+1F612", category:"smileys"},
-    {emoji:"😞", name:"Disappointed Face", code:"U+1F61E", category:"smileys"},
-    {emoji:"😔", name:"Pensive Face", code:"U+1F614", category:"smileys"},
-    {emoji:"😟", name:"Worried Face", code:"U+1F61F", category:"smileys"},
-    {emoji:"😕", name:"Confused Face", code:"U+1F615", category:"smileys"},
-    {emoji:"🙁", name:"Slightly Frowning Face", code:"U+1F641", category:"smileys"},
-    {emoji:"☹️", name:"Frowning Face", code:"U+2639", category:"smileys"},
-    {emoji:"😣", name:"Persevering Face", code:"U+1F623", category:"smileys"},
-    {emoji:"😖", name:"Confounded Face", code:"U+1F616", category:"smileys"},
-    {emoji:"😫", name:"Tired Face", code:"U+1F62B", category:"smileys"},
-    {emoji:"😩", name:"Weary Face", code:"U+1F629", category:"smileys"},
-    {emoji:"🥺", name:"Pleading Face", code:"U+1F97A", category:"smileys"},
-    {emoji:"😢", name:"Crying Face", code:"U+1F622", category:"smileys"},
-    {emoji:"😭", name:"Loudly Crying Face", code:"U+1F62D", category:"smileys"},
-    {emoji:"😤", name:"Face with Steam From Nose", code:"U+1F624", category:"smileys"},
-    {emoji:"😠", name:"Angry Face", code:"U+1F620", category:"smileys"},
-    {emoji:"😡", name:"Pouting Face", code:"U+1F621", category:"smileys"},
-    {emoji:"🤬", name:"Face with Symbols on Mouth", code:"U+1F92C", category:"smileys"},
-    {emoji:"🤯", name:"Exploding Head", code:"U+1F92F", category:"smileys"},
-    {emoji:"😳", name:"Flushed Face", code:"U+1F633", category:"smileys"},
-    {emoji:"🥵", name:"Hot Face", code:"U+1F975", category:"smileys"},
-    {emoji:"🥶", name:"Cold Face", code:"U+1F976", category:"smileys"},
-    {emoji:"😱", name:"Face Screaming in Fear", code:"U+1F631", category:"smileys"},
-    {emoji:"😨", name:"Fearful Face", code:"U+1F628", category:"smileys"},
-    {emoji:"😰", name:"Anxious Face with Sweat", code:"U+1F630", category:"smileys"},
-    {emoji:"😥", name:"Sad but Relieved Face", code:"U+1F625", category:"smileys"},
-    {emoji:"😓", name:"Downcast Face with Sweat", code:"U+1F613", category:"smileys"},
-    {emoji:"🤗", name:"Hugging Face", code:"U+1F917", category:"smileys"},
-    {emoji:"🤔", name:"Thinking Face", code:"U+1F914", category:"smileys"},
-    {emoji:"🫡", name:"Saluting Face", code:"U+1FAE1", category:"smileys"},
-    {emoji:"🤨", name:"Face with Raised Eyebrow", code:"U+1F928", category:"smileys"},
-    {emoji:"😐", name:"Neutral Face", code:"U+1F610", category:"smileys"},
-    {emoji:"😑", name:"Expressionless Face", code:"U+1F611", category:"smileys"},
-    {emoji:"😶", name:"Face Without Mouth", code:"U+1F636", category:"smileys"},
-    {emoji:"🙄", name:"Face with Rolling Eyes", code:"U+1F644", category:"smileys"},
-    {emoji:"😬", name:"Grimacing Face", code:"U+1F62C", category:"smileys"},
-    {emoji:"🤥", name:"Lying Face", code:"U+1F925", category:"smileys"},
-    {emoji:"😪", name:"Sleepy Face", code:"U+1F62A", category:"smileys"},
-    {emoji:"🤤", name:"Drooling Face", code:"U+1F924", category:"smileys"},
-    {emoji:"😴", name:"Sleeping Face", code:"U+1F634", category:"smileys"},
-    {emoji:"🐶", name:"Dog Face", code:"U+1F436", category:"animals"},
-    {emoji:"🐱", name:"Cat Face", code:"U+1F431", category:"animals"},
-    {emoji:"🐭", name:"Mouse Face", code:"U+1F42D", category:"animals"},
-    {emoji:"🐹", name:"Hamster", code:"U+1F439", category:"animals"},
-    {emoji:"🐰", name:"Rabbit Face", code:"U+1F430", category:"animals"},
-    {emoji:"🦊", name:"Fox", code:"U+1F98A", category:"animals"},
-    {emoji:"🐻", name:"Bear", code:"U+1F43B", category:"animals"},
-    {emoji:"🐼", name:"Panda", code:"U+1F43C", category:"animals"},
-    {emoji:"🐨", name:"Koala", code:"U+1F428", category:"animals"},
-    {emoji:"🐯", name:"Tiger Face", code:"U+1F42F", category:"animals"},
-    {emoji:"🦁", name:"Lion", code:"U+1F981", category:"animals"},
-    {emoji:"🐮", name:"Cow Face", code:"U+1F42E", category:"animals"},
-    {emoji:"🐷", name:"Pig Face", code:"U+1F437", category:"animals"},
-    {emoji:"🐸", name:"Frog", code:"U+1F438", category:"animals"},
-    {emoji:"🐵", name:"Monkey Face", code:"U+1F435", category:"animals"},
-    {emoji:"🦄", name:"Unicorn", code:"U+1F984", category:"animals"},
-    {emoji:"🦋", name:"Butterfly", code:"U+1F98B", category:"animals"},
-    {emoji:"🐢", name:"Turtle", code:"U+1F422", category:"animals"},
-    {emoji:"🦈", name:"Shark", code:"U+1F988", category:"animals"},
-    {emoji:"🐙", name:"Octopus", code:"U+1F419", category:"animals"},
-    {emoji:"🍎", name:"Red Apple", code:"U+1F34E", category:"food"},
-    {emoji:"🍌", name:"Banana", code:"U+1F34C", category:"food"},
-    {emoji:"🍉", name:"Watermelon", code:"U+1F349", category:"food"},
-    {emoji:"🍇", name:"Grapes", code:"U+1F347", category:"food"},
-    {emoji:"🍓", name:"Strawberry", code:"U+1F353", category:"food"},
-    {emoji:"🥑", name:"Avocado", code:"U+1F951", category:"food"},
-    {emoji:"🍔", name:"Hamburger", code:"U+1F354", category:"food"},
-    {emoji:"🍟", name:"French Fries", code:"U+1F35F", category:"food"},
-    {emoji:"🍕", name:"Pizza", code:"U+1F355", category:"food"},
-    {emoji:"🌮", name:"Taco", code:"U+1F32E", category:"food"},
-    {emoji:"🍣", name:"Sushi", code:"U+1F363", category:"food"},
-    {emoji:"🍦", name:"Ice Cream", code:"U+1F366", category:"food"},
-    {emoji:"🍩", name:"Doughnut", code:"U+1F369", category:"food"},
-    {emoji:"🍪", name:"Cookie", code:"U+1F36A", category:"food"},
-    {emoji:"☕", name:"Hot Beverage", code:"U+2615", category:"food"},
-    {emoji:"🍵", name:"Teacup", code:"U+1F375", category:"food"},
-    {emoji:"🍺", name:"Beer Mug", code:"U+1F37A", category:"food"},
-    {emoji:"🚀", name:"Rocket", code:"U+1F680", category:"travel"},
-    {emoji:"✈️", name:"Airplane", code:"U+2708", category:"travel"},
-    {emoji:"🚗", name:"Automobile", code:"U+1F697", category:"travel"},
-    {emoji:"🏠", name:"House", code:"U+1F3E0", category:"objects"},
-    {emoji:"💻", name:"Laptop", code:"U+1F4BB", category:"objects"},
-    {emoji:"📱", name:"Mobile Phone", code:"U+1F4F1", category:"objects"},
-    {emoji:"📷", name:"Camera", code:"U+1F4F7", category:"objects"},
-    {emoji:"🎉", name:"Party Popper", code:"U+1F389", category:"activities"},
-    {emoji:"🎁", name:"Wrapped Gift", code:"U+1F381", category:"activities"},
-    {emoji:"❤️", name:"Red Heart", code:"U+2764", category:"symbols"},
-    {emoji:"🔥", name:"Fire", code:"U+1F525", category:"symbols"},
-    {emoji:"⭐", name:"Star", code:"U+2B50", category:"symbols"},
-    {emoji:"✅", name:"Check Mark", code:"U+2705", category:"symbols"}
-];
+    // ─── DATA ────────────────────────────────────────────────────────────────────
+    const emojiData = [
+        {emoji:"😀",name:"Grinning Face",category:"smileys"},
+        {emoji:"😃",name:"Grinning Big Eyes",category:"smileys"},
+        {emoji:"😄",name:"Smiling Eyes",category:"smileys"},
+        {emoji:"😁",name:"Beaming Face",category:"smileys"},
+        {emoji:"😆",name:"Squinting Face",category:"smileys"},
+        {emoji:"😅",name:"Sweat Smile",category:"smileys"},
+        {emoji:"😂",name:"Tears of Joy",category:"smileys"},
+        {emoji:"🤣",name:"ROTFL",category:"smileys"},
+        {emoji:"🥰",name:"Smiling Hearts",category:"smileys"},
+        {emoji:"😍",name:"Heart Eyes",category:"smileys"},
+        {emoji:"🤩",name:"Star-Struck",category:"smileys"},
+        {emoji:"😘",name:"Face Blowing Kiss",category:"smileys"},
+        {emoji:"😊",name:"Smiling Eyes",category:"smileys"},
+        {emoji:"😇",name:"Halo Face",category:"smileys"},
+        {emoji:"🥹",name:"Holding Back Tears",category:"smileys"},
+        {emoji:"😉",name:"Winking Face",category:"smileys"},
+        {emoji:"😌",name:"Relieved Face",category:"smileys"},
+        {emoji:"😏",name:"Smirking Face",category:"smileys"},
+        {emoji:"😒",name:"Unamused Face",category:"smileys"},
+        {emoji:"😞",name:"Disappointed Face",category:"smileys"},
+        {emoji:"😔",name:"Pensive Face",category:"smileys"},
+        {emoji:"😟",name:"Worried Face",category:"smileys"},
+        {emoji:"🙁",name:"Slight Frown",category:"smileys"},
+        {emoji:"😣",name:"Persevering Face",category:"smileys"},
+        {emoji:"😖",name:"Confounded Face",category:"smileys"},
+        {emoji:"😫",name:"Tired Face",category:"smileys"},
+        {emoji:"😩",name:"Weary Face",category:"smileys"},
+        {emoji:"🥺",name:"Pleading Face",category:"smileys"},
+        {emoji:"😢",name:"Crying Face",category:"smileys"},
+        {emoji:"😭",name:"Loudly Crying",category:"smileys"},
+        {emoji:"😤",name:"Steam From Nose",category:"smileys"},
+        {emoji:"😠",name:"Angry Face",category:"smileys"},
+        {emoji:"😡",name:"Pouting Face",category:"smileys"},
+        {emoji:"🤬",name:"Symbols on Mouth",category:"smileys"},
+        {emoji:"🤯",name:"Exploding Head",category:"smileys"},
+        {emoji:"😳",name:"Flushed Face",category:"smileys"},
+        {emoji:"🥵",name:"Hot Face",category:"smileys"},
+        {emoji:"🥶",name:"Cold Face",category:"smileys"},
+        {emoji:"😱",name:"Screaming Fear",category:"smileys"},
+        {emoji:"😨",name:"Fearful Face",category:"smileys"},
+        {emoji:"😰",name:"Anxious Sweat",category:"smileys"},
+        {emoji:"🤗",name:"Hugging Face",category:"smileys"},
+        {emoji:"🤔",name:"Thinking Face",category:"smileys"},
+        {emoji:"🫡",name:"Saluting Face",category:"smileys"},
+        {emoji:"🤨",name:"Raised Eyebrow",category:"smileys"},
+        {emoji:"😐",name:"Neutral Face",category:"smileys"},
+        {emoji:"😑",name:"Expressionless",category:"smileys"},
+        {emoji:"🙄",name:"Rolling Eyes",category:"smileys"},
+        {emoji:"😬",name:"Grimacing Face",category:"smileys"},
+        {emoji:"🤥",name:"Lying Face",category:"smileys"},
+        {emoji:"😪",name:"Sleepy Face",category:"smileys"},
+        {emoji:"🤤",name:"Drooling Face",category:"smileys"},
+        {emoji:"😴",name:"Sleeping Face",category:"smileys"},
+        {emoji:"🐶",name:"Dog Face",category:"animals"},
+        {emoji:"🐱",name:"Cat Face",category:"animals"},
+        {emoji:"🐭",name:"Mouse Face",category:"animals"},
+        {emoji:"🐹",name:"Hamster",category:"animals"},
+        {emoji:"🐰",name:"Rabbit Face",category:"animals"},
+        {emoji:"🦊",name:"Fox",category:"animals"},
+        {emoji:"🐻",name:"Bear",category:"animals"},
+        {emoji:"🐼",name:"Panda",category:"animals"},
+        {emoji:"🐨",name:"Koala",category:"animals"},
+        {emoji:"🐯",name:"Tiger Face",category:"animals"},
+        {emoji:"🦁",name:"Lion",category:"animals"},
+        {emoji:"🐮",name:"Cow Face",category:"animals"},
+        {emoji:"🐷",name:"Pig Face",category:"animals"},
+        {emoji:"🐸",name:"Frog",category:"animals"},
+        {emoji:"🐵",name:"Monkey Face",category:"animals"},
+        {emoji:"🦄",name:"Unicorn",category:"animals"},
+        {emoji:"🦋",name:"Butterfly",category:"animals"},
+        {emoji:"🐢",name:"Turtle",category:"animals"},
+        {emoji:"🦈",name:"Shark",category:"animals"},
+        {emoji:"🐙",name:"Octopus",category:"animals"},
+        {emoji:"🍎",name:"Red Apple",category:"food"},
+        {emoji:"🍌",name:"Banana",category:"food"},
+        {emoji:"🍉",name:"Watermelon",category:"food"},
+        {emoji:"🍇",name:"Grapes",category:"food"},
+        {emoji:"🍓",name:"Strawberry",category:"food"},
+        {emoji:"🥑",name:"Avocado",category:"food"},
+        {emoji:"🍔",name:"Hamburger",category:"food"},
+        {emoji:"🍟",name:"French Fries",category:"food"},
+        {emoji:"🍕",name:"Pizza",category:"food"},
+        {emoji:"🌮",name:"Taco",category:"food"},
+        {emoji:"🍣",name:"Sushi",category:"food"},
+        {emoji:"🍦",name:"Ice Cream",category:"food"},
+        {emoji:"🍩",name:"Doughnut",category:"food"},
+        {emoji:"🍪",name:"Cookie",category:"food"},
+        {emoji:"☕",name:"Hot Beverage",category:"food"},
+        {emoji:"🍺",name:"Beer Mug",category:"food"},
+        {emoji:"🚀",name:"Rocket",category:"travel"},
+        {emoji:"✈️",name:"Airplane",category:"travel"},
+        {emoji:"🚗",name:"Automobile",category:"travel"},
+        {emoji:"🏠",name:"House",category:"objects"},
+        {emoji:"💻",name:"Laptop",category:"objects"},
+        {emoji:"📱",name:"Mobile Phone",category:"objects"},
+        {emoji:"📷",name:"Camera",category:"objects"},
+        {emoji:"🎉",name:"Party Popper",category:"activities"},
+        {emoji:"🎁",name:"Wrapped Gift",category:"activities"},
+        {emoji:"❤️",name:"Red Heart",category:"symbols"},
+        {emoji:"🔥",name:"Fire",category:"symbols"},
+        {emoji:"⭐",name:"Star",category:"symbols"},
+        {emoji:"✅",name:"Check Mark",category:"symbols"}
+    ];
 
-        const iconData = [
-    {class: "fa-solid fa-home", name: "Home"},
-    {class: "fa-solid fa-user", name: "User"},
-    {class: "fa-solid fa-user-circle", name: "User Circle"},
-    {class: "fa-solid fa-users", name: "Users"},
-    {class: "fa-solid fa-magnifying-glass", name: "Search"},
-    {class: "fa-solid fa-heart", name: "Heart"},
-    {class: "fa-solid fa-star", name: "Star"},
-    {class: "fa-solid fa-download", name: "Download"},
-    {class: "fa-solid fa-upload", name: "Upload"},
-    {class: "fa-solid fa-gear", name: "Gear"},
-    {class: "fa-solid fa-envelope", name: "Envelope"},
-    {class: "fa-solid fa-bell", name: "Bell"},
-    {class: "fa-solid fa-calendar", name: "Calendar"},
-    {class: "fa-solid fa-clock", name: "Clock"},
-    {class: "fa-solid fa-chart-bar", name: "Chart Bar"},
-    {class: "fa-solid fa-chart-line", name: "Chart Line"},
-    {class: "fa-solid fa-briefcase", name: "Briefcase"},
-    {class: "fa-solid fa-folder", name: "Folder"},
-    {class: "fa-solid fa-file", name: "File"},
-    {class: "fa-solid fa-image", name: "Image"},
-    {class: "fa-solid fa-camera", name: "Camera"},
-    {class: "fa-solid fa-video", name: "Video"},
-    {class: "fa-solid fa-music", name: "Music"},
-    {class: "fa-solid fa-play", name: "Play"},
-    {class: "fa-solid fa-pause", name: "Pause"},
-    {class: "fa-solid fa-stop", name: "Stop"},
-    {class: "fa-solid fa-volume-up", name: "Volume Up"},
-    {class: "fa-solid fa-wifi", name: "WiFi"},
-    {class: "fa-solid fa-lock", name: "Lock"},
-    {class: "fa-solid fa-unlock", name: "Unlock"},
-    {class: "fa-solid fa-key", name: "Key"},
-    {class: "fa-solid fa-shield", name: "Shield"},
-    {class: "fa-solid fa-flag", name: "Flag"},
-    {class: "fa-solid fa-bookmark", name: "Bookmark"},
-    {class: "fa-solid fa-tag", name: "Tag"},
-    {class: "fa-solid fa-location-dot", name: "Location"},
-    {class: "fa-solid fa-globe", name: "Globe"},
-    {class: "fa-solid fa-link", name: "Link"},
-    {class: "fa-solid fa-share", name: "Share"},
-    {class: "fa-solid fa-comment", name: "Comment"},
-    {class: "fa-solid fa-thumbs-up", name: "Like"},
-    {class: "fa-solid fa-thumbs-down", name: "Dislike"},
-    {class: "fa-solid fa-trophy", name: "Trophy"},
-    {class: "fa-solid fa-gift", name: "Gift"},
-    {class: "fa-solid fa-fire", name: "Fire"},
-    {class: "fa-solid fa-eye", name: "Eye"},
-    {class: "fa-solid fa-eye-slash", name: "Eye Slash"},
-    {class: "fa-solid fa-check-circle", name: "Success"},
-    {class: "fa-solid fa-arrow-right", name: "Arrow Right"},
-    {class: "fa-solid fa-arrow-left", name: "Arrow Left"},
-    {class: "fa-solid fa-arrow-up", name: "Arrow Up"},
-    {class: "fa-solid fa-arrow-down", name: "Arrow Down"},
-    {class: "fa-solid fa-chevron-right", name: "Chevron Right"},
-    {class: "fa-solid fa-chevron-left", name: "Chevron Left"},
-    {class: "fa-solid fa-bars", name: "Menu"},
-    {class: "fa-solid fa-trash", name: "Trash"},
-    {class: "fa-solid fa-edit", name: "Edit"},
-    {class: "fa-solid fa-copy", name: "Copy"},
-    {class: "fa-solid fa-save", name: "Save"},
-    {class: "fa-solid fa-print", name: "Print"},
-    {class: "fa-solid fa-rotate", name: "Refresh"},
-    {class: "fa-brands fa-github", name: "GitHub"},
-    {class: "fa-brands fa-twitter", name: "Twitter"},
-    {class: "fa-brands fa-x-twitter", name: "X (Twitter)"},
-    {class: "fa-brands fa-linkedin", name: "LinkedIn"},
-    {class: "fa-brands fa-facebook", name: "Facebook"},
-    {class: "fa-brands fa-instagram", name: "Instagram"},
-    {class: "fa-brands fa-youtube", name: "YouTube"},
-    {class: "fa-brands fa-discord", name: "Discord"},
-    {class: "fa-brands fa-slack", name: "Slack"},
-    {class: "fa-brands fa-figma", name: "Figma"},
-    {class: "fa-brands fa-docker", name: "Docker"},
-    {class: "fa-brands fa-node-js", name: "Node.js"},
-    {class: "fa-brands fa-react", name: "React"},
-    {class: "fa-brands fa-python", name: "Python"},
-    {class: "fa-brands fa-js", name: "JavaScript"},
-    {class: "fa-brands fa-html5", name: "HTML5"},
-    {class: "fa-brands fa-css3-alt", name: "CSS3"}
-];
+    const iconData = [
+        {class:"fa-solid fa-home",name:"Home"},
+        {class:"fa-solid fa-user",name:"User"},
+        {class:"fa-solid fa-users",name:"Users"},
+        {class:"fa-solid fa-magnifying-glass",name:"Search"},
+        {class:"fa-solid fa-heart",name:"Heart"},
+        {class:"fa-solid fa-star",name:"Star"},
+        {class:"fa-solid fa-download",name:"Download"},
+        {class:"fa-solid fa-upload",name:"Upload"},
+        {class:"fa-solid fa-gear",name:"Gear"},
+        {class:"fa-solid fa-envelope",name:"Envelope"},
+        {class:"fa-solid fa-bell",name:"Bell"},
+        {class:"fa-solid fa-calendar",name:"Calendar"},
+        {class:"fa-solid fa-clock",name:"Clock"},
+        {class:"fa-solid fa-chart-bar",name:"Chart Bar"},
+        {class:"fa-solid fa-chart-line",name:"Chart Line"},
+        {class:"fa-solid fa-briefcase",name:"Briefcase"},
+        {class:"fa-solid fa-folder",name:"Folder"},
+        {class:"fa-solid fa-file",name:"File"},
+        {class:"fa-solid fa-image",name:"Image"},
+        {class:"fa-solid fa-camera",name:"Camera"},
+        {class:"fa-solid fa-video",name:"Video"},
+        {class:"fa-solid fa-music",name:"Music"},
+        {class:"fa-solid fa-play",name:"Play"},
+        {class:"fa-solid fa-pause",name:"Pause"},
+        {class:"fa-solid fa-volume-up",name:"Volume Up"},
+        {class:"fa-solid fa-wifi",name:"WiFi"},
+        {class:"fa-solid fa-lock",name:"Lock"},
+        {class:"fa-solid fa-unlock",name:"Unlock"},
+        {class:"fa-solid fa-key",name:"Key"},
+        {class:"fa-solid fa-shield",name:"Shield"},
+        {class:"fa-solid fa-flag",name:"Flag"},
+        {class:"fa-solid fa-bookmark",name:"Bookmark"},
+        {class:"fa-solid fa-tag",name:"Tag"},
+        {class:"fa-solid fa-location-dot",name:"Location"},
+        {class:"fa-solid fa-globe",name:"Globe"},
+        {class:"fa-solid fa-link",name:"Link"},
+        {class:"fa-solid fa-share",name:"Share"},
+        {class:"fa-solid fa-comment",name:"Comment"},
+        {class:"fa-solid fa-thumbs-up",name:"Like"},
+        {class:"fa-solid fa-thumbs-down",name:"Dislike"},
+        {class:"fa-solid fa-trophy",name:"Trophy"},
+        {class:"fa-solid fa-gift",name:"Gift"},
+        {class:"fa-solid fa-fire",name:"Fire"},
+        {class:"fa-solid fa-eye",name:"Eye"},
+        {class:"fa-solid fa-eye-slash",name:"Eye Slash"},
+        {class:"fa-solid fa-check-circle",name:"Success"},
+        {class:"fa-solid fa-arrow-right",name:"Arrow Right"},
+        {class:"fa-solid fa-arrow-left",name:"Arrow Left"},
+        {class:"fa-solid fa-arrow-up",name:"Arrow Up"},
+        {class:"fa-solid fa-arrow-down",name:"Arrow Down"},
+        {class:"fa-solid fa-chevron-right",name:"Chevron Right"},
+        {class:"fa-solid fa-chevron-left",name:"Chevron Left"},
+        {class:"fa-solid fa-bars",name:"Menu"},
+        {class:"fa-solid fa-trash",name:"Trash"},
+        {class:"fa-solid fa-edit",name:"Edit"},
+        {class:"fa-solid fa-copy",name:"Copy"},
+        {class:"fa-solid fa-save",name:"Save"},
+        {class:"fa-solid fa-print",name:"Print"},
+        {class:"fa-solid fa-rotate",name:"Refresh"},
+        {class:"fa-brands fa-github",name:"GitHub"},
+        {class:"fa-brands fa-twitter",name:"Twitter"},
+        {class:"fa-brands fa-x-twitter",name:"X (Twitter)"},
+        {class:"fa-brands fa-linkedin",name:"LinkedIn"},
+        {class:"fa-brands fa-facebook",name:"Facebook"},
+        {class:"fa-brands fa-instagram",name:"Instagram"},
+        {class:"fa-brands fa-youtube",name:"YouTube"},
+        {class:"fa-brands fa-discord",name:"Discord"},
+        {class:"fa-brands fa-slack",name:"Slack"},
+        {class:"fa-brands fa-figma",name:"Figma"},
+        {class:"fa-brands fa-docker",name:"Docker"},
+        {class:"fa-brands fa-node-js",name:"Node.js"},
+        {class:"fa-brands fa-react",name:"React"},
+        {class:"fa-brands fa-python",name:"Python"},
+        {class:"fa-brands fa-js",name:"JavaScript"},
+        {class:"fa-brands fa-html5",name:"HTML5"},
+        {class:"fa-brands fa-css3-alt",name:"CSS3"}
+    ];
 
-        const symbolData = [
-    {symbol:"©", name:"Copyright", code:"U+00A9"},
-    {symbol:"®", name:"Registered Trademark", code:"U+00AE"},
-    {symbol:"™", name:"Trademark", code:"U+2122"},
-    {symbol:"→", name:"Right Arrow", code:"U+2192"},
-    {symbol:"←", name:"Left Arrow", code:"U+2190"},
-    {symbol:"↑", name:"Up Arrow", code:"U+2191"},
-    {symbol:"↓", name:"Down Arrow", code:"U+2193"},
-    {symbol:"↔", name:"Left Right Arrow", code:"U+2194"},
-    {symbol:"⇒", name:"Double Right Arrow", code:"U+21D2"},
-    {symbol:"⇐", name:"Double Left Arrow", code:"U+21D0"},
-    {symbol:"∞", name:"Infinity", code:"U+221E"},
-    {symbol:"≈", name:"Approximately Equal", code:"U+2248"},
-    {symbol:"≠", name:"Not Equal", code:"U+2260"},
-    {symbol:"±", name:"Plus Minus", code:"U+00B1"},
-    {symbol:"×", name:"Multiplication", code:"U+00D7"},
-    {symbol:"÷", name:"Division", code:"U+00F7"},
-    {symbol:"√", name:"Square Root", code:"U+221A"},
-    {symbol:"∑", name:"Summation", code:"U+2211"},
-    {symbol:"π", name:"Pi", code:"U+03C0"},
-    {symbol:"°", name:"Degree", code:"U+00B0"},
-    {symbol:"$", name:"Dollar", code:"U+0024"},
-    {symbol:"€", name:"Euro", code:"U+20AC"},
-    {symbol:"£", name:"Pound", code:"U+00A3"},
-    {symbol:"¥", name:"Yen", code:"U+00A5"},
-    {symbol:"₹", name:"Indian Rupee", code:"U+20B9"},
-    {symbol:"₿", name:"Bitcoin", code:"U+20BF"},
-    {symbol:"✓", name:"Check Mark", code:"U+2713"},
-    {symbol:"✔", name:"Heavy Check Mark", code:"U+2714"},
-    {symbol:"✕", name:"Multiplication X", code:"U+2715"},
-    {symbol:"✗", name:"Heavy X", code:"U+2717"},
-    {symbol:"•", name:"Bullet", code:"U+2022"},
-    {symbol:"…", name:"Ellipsis", code:"U+2026"},
-    {symbol:"§", name:"Section", code:"U+00A7"},
-    {symbol:"¶", name:"Paragraph", code:"U+00B6"},
-    {symbol:"★", name:"Black Star", code:"U+2605"},
-    {symbol:"☆", name:"White Star", code:"U+2606"},
-    {symbol:"♥", name:"Black Heart", code:"U+2665"},
-    {symbol:"♠", name:"Spade", code:"U+2660"},
-    {symbol:"♣", name:"Club", code:"U+2663"},
-    {symbol:"♦", name:"Diamond", code:"U+2666"},
-    {symbol:"⚡", name:"High Voltage", code:"U+26A1"},
-    {symbol:"⚠", name:"Warning", code:"U+26A0"},
-    {symbol:"☢", name:"Radioactive", code:"U+2622"},
-    {symbol:"☣", name:"Biohazard", code:"U+2623"},
-    {symbol:"♻", name:"Recycling", code:"U+267B"},
-    {symbol:"⌛", name:"Hourglass", code:"U+231B"},
-    {symbol:"⏰", name:"Alarm Clock", code:"U+23F0"}
-];
+    const symbolData = [
+        {symbol:"©",name:"Copyright"},{symbol:"®",name:"Registered Trademark"},{symbol:"™",name:"Trademark"},
+        {symbol:"→",name:"Right Arrow"},{symbol:"←",name:"Left Arrow"},{symbol:"↑",name:"Up Arrow"},
+        {symbol:"↓",name:"Down Arrow"},{symbol:"↔",name:"Left Right Arrow"},{symbol:"⇒",name:"Double Right Arrow"},
+        {symbol:"⇐",name:"Double Left Arrow"},{symbol:"∞",name:"Infinity"},{symbol:"≈",name:"Approximately Equal"},
+        {symbol:"≠",name:"Not Equal"},{symbol:"±",name:"Plus Minus"},{symbol:"×",name:"Multiplication"},
+        {symbol:"÷",name:"Division"},{symbol:"√",name:"Square Root"},{symbol:"∑",name:"Summation"},
+        {symbol:"π",name:"Pi"},{symbol:"°",name:"Degree"},{symbol:"$",name:"Dollar"},
+        {symbol:"€",name:"Euro"},{symbol:"£",name:"Pound"},{symbol:"¥",name:"Yen"},
+        {symbol:"₹",name:"Indian Rupee"},{symbol:"₿",name:"Bitcoin"},{symbol:"✓",name:"Check Mark"},
+        {symbol:"✔",name:"Heavy Check Mark"},{symbol:"✕",name:"Multiplication X"},{symbol:"✗",name:"Heavy X"},
+        {symbol:"•",name:"Bullet"},{symbol:"…",name:"Ellipsis"},{symbol:"§",name:"Section"},
+        {symbol:"¶",name:"Paragraph"},{symbol:"★",name:"Black Star"},{symbol:"☆",name:"White Star"},
+        {symbol:"♥",name:"Black Heart"},{symbol:"♠",name:"Spade"},{symbol:"♣",name:"Club"},
+        {symbol:"♦",name:"Diamond"},{symbol:"⚡",name:"High Voltage"},{symbol:"⚠",name:"Warning"},
+        {symbol:"☢",name:"Radioactive"},{symbol:"☣",name:"Biohazard"},{symbol:"♻",name:"Recycling"},
+        {symbol:"⌛",name:"Hourglass"},{symbol:"⏰",name:"Alarm Clock"}
+    ];
 
-        let favoritesMode = false;
-        let favorites = new Set();
+    // ─── SUPABASE INIT ───────────────────────────────────────────────────────────
+    function initSupabase() {
+        sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        function loadFavorites() {
-            const saved = localStorage.getItem('iconlyFavorites');
-            if (saved) favorites = new Set(JSON.parse(saved));
-        }
-
-        function toggleFavorite(key) {
-            if (favorites.has(key)) favorites.delete(key);
-            else favorites.add(key);
-            localStorage.setItem('iconlyFavorites', JSON.stringify([...favorites]));
-            if (favoritesMode) {
-                renderEmojis(emojiData.filter(e => favorites.has(e.emoji)));
-                renderIcons(iconData.filter(i => favorites.has(i.class)));
-                renderSymbols(symbolData.filter(s => favorites.has(s.symbol)));
+        // Listen for auth state changes (handles page reload, token refresh)
+        sb.auth.onAuthStateChange(async (event, session) => {
+            if (session?.user) {
+                currentUser = session.user;
+                await loadUserProfile();
+                await loadFavoritesFromCloud();
+                updateNavbarForUser(true);
             } else {
-                renderEmojis();
-                renderIcons();
-                renderSymbols();
+                currentUser = null;
+                currentTier = 'free';
+                loadFavoritesFromLocal();
+                updateNavbarForUser(false);
             }
+            renderAll();
+        });
+    }
+
+    // ─── PROFILE & TIER ─────────────────────────────────────────────────────────
+    async function loadUserProfile() {
+        const { data, error } = await sb
+            .from('profiles')
+            .select('tier, tier_expires_at')
+            .eq('id', currentUser.id)
+            .single();
+
+        if (error) { console.warn('Profile load error:', error); currentTier = 'free'; return; }
+
+        // Check if pro_monthly is expired
+        if (data.tier === 'pro_monthly' && data.tier_expires_at) {
+            const expired = new Date(data.tier_expires_at) < new Date();
+            currentTier = expired ? 'free' : 'pro_monthly';
+        } else {
+            currentTier = data.tier || 'free';
         }
+    }
 
-        function isFavorited(key) { return favorites.has(key); }
+    function isPro() {
+        return currentTier === 'pro_monthly' || currentTier === 'pro_lifetime';
+    }
 
-        function toggleFavoritesMode() {
-            favoritesMode = !favoritesMode;
-            const heartBtn = document.getElementById('favorites-toggle');
-            if (heartBtn) {
-                heartBtn.style.borderColor = favoritesMode ? '#f43f5e' : '';
-                heartBtn.style.background = favoritesMode ? 'rgba(244,63,94,0.15)' : '';
-            }
-            if (favoritesMode) {
-                const favEmojis = emojiData.filter(e => favorites.has(e.emoji));
-                const favIcons = iconData.filter(i => favorites.has(i.class));
-                const favSymbols = symbolData.filter(s => favorites.has(s.symbol));
-                renderEmojis(favEmojis);
-                renderIcons(favIcons);
-                renderSymbols(favSymbols);
-                showToast(`Showing ${favEmojis.length + favIcons.length + favSymbols.length} favorites`);
+    // ─── FAVORITES — CLOUD ───────────────────────────────────────────────────────
+    async function loadFavoritesFromCloud() {
+        if (!currentUser) return;
+        const { data, error } = await sb
+            .from('favorites')
+            .select('item_key')
+            .eq('user_id', currentUser.id);
+        if (error) { console.warn('Favorites load error:', error); return; }
+        favorites = new Set(data.map(r => r.item_key));
+        // Also persist locally as cache
+        localStorage.setItem('iconlyFavorites', JSON.stringify([...favorites]));
+    }
+
+    async function saveFavoriteToCloud(key, itemType) {
+        if (!currentUser) return;
+        const { error } = await sb.from('favorites').upsert({
+            user_id: currentUser.id,
+            item_key: key,
+            item_type: itemType
+        }, { onConflict: 'user_id,item_key' });
+        if (error) console.warn('Save favorite error:', error);
+    }
+
+    async function removeFavoriteFromCloud(key) {
+        if (!currentUser) return;
+        const { error } = await sb.from('favorites')
+            .delete()
+            .eq('user_id', currentUser.id)
+            .eq('item_key', key);
+        if (error) console.warn('Remove favorite error:', error);
+    }
+
+    async function syncFavoritesToCloud() {
+        if (!currentUser) { showToast('Log in to sync favorites', 'error'); return; }
+        showToast('Syncing…', 'info');
+        // Upsert all local favorites
+        const rows = [];
+        favorites.forEach(key => {
+            const itemType = emojiData.find(e => e.emoji === key) ? 'emoji'
+                : iconData.find(i => i.class === key) ? 'icon' : 'symbol';
+            rows.push({ user_id: currentUser.id, item_key: key, item_type: itemType });
+        });
+        if (rows.length) {
+            const { error } = await sb.from('favorites').upsert(rows, { onConflict: 'user_id,item_key' });
+            if (error) { showToast('Sync failed: ' + error.message, 'error'); return; }
+        }
+        showToast(`${rows.length} favorites synced!`);
+    }
+
+    // ─── FAVORITES — LOCAL ───────────────────────────────────────────────────────
+    function loadFavoritesFromLocal() {
+        const saved = localStorage.getItem('iconlyFavorites');
+        favorites = saved ? new Set(JSON.parse(saved)) : new Set();
+    }
+
+    function saveFavoritesLocal() {
+        localStorage.setItem('iconlyFavorites', JSON.stringify([...favorites]));
+    }
+
+    // ─── TOGGLE FAVORITE ────────────────────────────────────────────────────────
+    async function toggleFavorite(key) {
+        const wasAdded = !favorites.has(key);
+        if (wasAdded) favorites.add(key);
+        else favorites.delete(key);
+        saveFavoritesLocal();
+
+        // Cloud sync if logged in
+        if (currentUser) {
+            if (wasAdded) {
+                const itemType = emojiData.find(e => e.emoji === key) ? 'emoji'
+                    : iconData.find(i => i.class === key) ? 'icon' : 'symbol';
+                saveFavoriteToCloud(key, itemType);
             } else {
-                renderEmojis();
-                renderIcons();
-                renderSymbols();
-                showToast("Showing all items");
+                removeFavoriteFromCloud(key);
             }
         }
 
-        function renderEmojis(filtered = null) {
-            const container = document.getElementById('emojis-grid');
-            container.innerHTML = '';
-            const data = filtered || emojiData;
-            data.forEach(item => {
-                const card = document.createElement('div');
-                card.className = `icon-card bg-zinc-900 border border-zinc-800 hover:border-indigo-500/50 rounded-3xl p-4 flex flex-col items-center cursor-pointer group relative`;
-                card.innerHTML = `<div class="emoji mb-3">${item.emoji}</div><div class="text-xs text-zinc-400 text-center">${item.name}</div>`;
-                const heart = document.createElement('div');
-                heart.className = `heart-btn ${isFavorited(item.emoji) ? 'favorited' : ''}`;
-                heart.innerHTML = `<i class="fa-solid fa-heart"></i>`;
-                heart.onclick = (e) => { e.stopImmediatePropagation(); toggleFavorite(item.emoji); };
-                card.appendChild(heart);
-                card.onclick = () => copyToClipboard(item.emoji, item.name);
-                container.appendChild(card);
-            });
+        // Re-render
+        if (favoritesMode) {
+            renderEmojis(emojiData.filter(e => favorites.has(e.emoji)));
+            renderIcons(iconData.filter(i => favorites.has(i.class)));
+            renderSymbols(symbolData.filter(s => favorites.has(s.symbol)));
+        } else {
+            renderAll();
+        }
+    }
+
+    function isFavorited(key) { return favorites.has(key); }
+
+    // ─── FAVORITES MODE ──────────────────────────────────────────────────────────
+    function toggleFavoritesMode() {
+        favoritesMode = !favoritesMode;
+        const btn = document.getElementById('favorites-toggle');
+        btn.style.borderColor = favoritesMode ? '#f43f5e' : '';
+        btn.style.background = favoritesMode ? 'rgba(244,63,94,0.15)' : '';
+
+        if (favoritesMode) {
+            const fe = emojiData.filter(e => favorites.has(e.emoji));
+            const fi = iconData.filter(i => favorites.has(i.class));
+            const fs = symbolData.filter(s => favorites.has(s.symbol));
+            renderEmojis(fe); renderIcons(fi); renderSymbols(fs);
+            const total = fe.length + fi.length + fs.length;
+            showToast(total ? `${total} favorites` : 'No favorites yet — heart some items!', total ? 'success' : 'info');
+        } else {
+            renderAll();
+            showToast('Showing all items', 'info');
+        }
+    }
+
+    // ─── AUTH ────────────────────────────────────────────────────────────────────
+    function handleAuthButtonClick() {
+        if (currentUser) showAccountModal();
+        else showAuthModal();
+    }
+
+    async function loginUser() {
+        const email = document.getElementById('login-email').value.trim();
+        const password = document.getElementById('login-password').value;
+        if (!email || !password) { showToast('Please fill in all fields', 'error'); return; }
+
+        const btn = document.getElementById('login-submit');
+        btn.disabled = true; btn.textContent = 'Logging in…';
+
+        const { error } = await sb.auth.signInWithPassword({ email, password });
+
+        btn.disabled = false; btn.textContent = 'Login';
+        if (error) {
+            showToast(error.message, 'error');
+        } else {
+            hideAuthModal();
+            showToast('Welcome back! Favorites loaded.');
+        }
+    }
+
+    async function signupUser() {
+        const email = document.getElementById('signup-email').value.trim();
+        const password = document.getElementById('signup-password').value;
+        const confirm = document.getElementById('signup-password-confirm').value;
+
+        if (!email || !password) { showToast('Please fill in all fields', 'error'); return; }
+        if (password !== confirm) { showToast('Passwords do not match', 'error'); return; }
+        if (password.length < 6) { showToast('Password must be at least 6 characters', 'error'); return; }
+
+        const btn = document.getElementById('signup-submit');
+        btn.disabled = true; btn.textContent = 'Creating account…';
+
+        const { error } = await sb.auth.signUp({ email, password });
+
+        btn.disabled = false; btn.textContent = 'Create Free Account';
+        if (error) {
+            showToast(error.message, 'error');
+        } else {
+            hideAuthModal();
+            showToast('Account created! You\'re now logged in.');
+        }
+    }
+
+    async function logoutUser() {
+        await sb.auth.signOut();
+        hideAccountModal();
+        showToast('Logged out', 'info');
+    }
+
+    function updateNavbarForUser(isLoggedIn) {
+        const btn = document.getElementById('login-btn');
+        if (isLoggedIn) {
+            const tierLabel = currentTier === 'free' ? '' : ` <span class="tier-badge tier-pro ml-1">${currentTier === 'pro_lifetime' ? 'Lifetime' : 'Pro'}</span>`;
+            btn.innerHTML = `<i class="fa-solid fa-circle-user"></i><span>Account${tierLabel}</span>`;
+        } else {
+            btn.innerHTML = `<i class="fa-solid fa-user"></i><span>Login</span>`;
+        }
+    }
+
+    // ─── ACCOUNT MODAL ───────────────────────────────────────────────────────────
+    function showAccountModal() {
+        document.getElementById('account-email').textContent = currentUser?.email || '';
+
+        const badge = document.getElementById('account-tier-badge');
+        const features = document.getElementById('tier-features');
+        const upgradeCta = document.getElementById('upgrade-cta');
+
+        if (isPro()) {
+            badge.className = 'tier-badge tier-pro';
+            badge.textContent = currentTier === 'pro_lifetime' ? 'Pro Lifetime' : 'Pro Monthly';
+            features.innerHTML = '✓ Favorites sync across devices<br>✓ Bulk export as ZIP<br>✓ Priority support';
+            upgradeCta.style.display = 'none';
+        } else {
+            badge.className = 'tier-badge tier-free';
+            badge.textContent = 'Free';
+            features.innerHTML = '✓ Favorites sync across devices<br>✗ Bulk export (Pro only)<br>✗ Priority support';
+            upgradeCta.style.display = 'block';
         }
 
-        function renderIcons(filtered = null) {
-            const container = document.getElementById('icons-grid');
-            container.innerHTML = '';
-            const data = filtered || iconData;
-            data.forEach(item => {
-                const card = document.createElement('div');
-                card.className = `icon-card bg-zinc-900 border border-zinc-800 hover:border-indigo-500/50 rounded-3xl p-5 flex flex-col items-center cursor-pointer group relative`;
-                card.innerHTML = `<i class="${item.class} text-4xl mb-3 text-indigo-400"></i><div class="text-xs text-zinc-400 text-center">${item.name}</div>`;
-                const heart = document.createElement('div');
-                heart.className = `heart-btn ${isFavorited(item.class) ? 'favorited' : ''}`;
-                heart.innerHTML = `<i class="fa-solid fa-heart"></i>`;
-                heart.onclick = (e) => { e.stopImmediatePropagation(); toggleFavorite(item.class); };
-                card.appendChild(heart);
-                card.onclick = () => copyToClipboard(item.class, item.name);
-                container.appendChild(card);
-            });
+        document.getElementById('account-modal').style.display = 'flex';
+    }
+
+    function hideAccountModal() {
+        document.getElementById('account-modal').style.display = 'none';
+    }
+
+    // ─── AUTH MODAL ──────────────────────────────────────────────────────────────
+    function showAuthModal() {
+        switchAuthTab('login');
+        document.getElementById('auth-modal').style.display = 'flex';
+    }
+
+    function hideAuthModal() {
+        document.getElementById('auth-modal').style.display = 'none';
+    }
+
+    function switchAuthTab(tab) {
+        document.getElementById('login-form').style.display  = tab === 'login'  ? 'block' : 'none';
+        document.getElementById('signup-form').style.display = tab === 'signup' ? 'block' : 'none';
+        document.getElementById('login-tab').style.borderBottomColor  = tab === 'login'  ? '#6366f1' : 'transparent';
+        document.getElementById('login-tab').style.color  = tab === 'login'  ? 'white' : '#a1a1aa';
+        document.getElementById('signup-tab').style.borderBottomColor = tab === 'signup' ? '#6366f1' : 'transparent';
+        document.getElementById('signup-tab').style.color = tab === 'signup' ? 'white' : '#a1a1aa';
+    }
+
+    // ─── PRO MODAL ───────────────────────────────────────────────────────────────
+    function showProModal() { document.getElementById('pro-modal').style.display = 'flex'; }
+    function hideProModal()  { document.getElementById('pro-modal').style.display = 'none'; }
+
+    // Close modals on backdrop click
+    ['auth-modal','account-modal','pro-modal'].forEach(id => {
+        document.getElementById(id).addEventListener('click', function(e) {
+            if (e.target === this) this.style.display = 'none';
+        });
+    });
+
+    // ─── BULK EXPORT ─────────────────────────────────────────────────────────────
+    function handleBulkExport() {
+        if (!currentUser) { showAuthModal(); return; }
+        if (!isPro()) { showProModal(); return; }
+
+        // Pro user — build and download
+        const favEmojis   = emojiData.filter(e => favorites.has(e.emoji));
+        const favIcons    = iconData.filter(i => favorites.has(i.class));
+        const favSymbols  = symbolData.filter(s => favorites.has(s.symbol));
+        const total = favEmojis.length + favIcons.length + favSymbols.length;
+
+        if (!total) { showToast('No favorites to export yet!', 'info'); return; }
+
+        // Build a text file with all favorites (ZIP requires a library; txt works natively)
+        let content = `GetEmojicon — Favorites Export\n`;
+        content += `Generated: ${new Date().toLocaleString()}\n`;
+        content += `Total: ${total} items\n\n`;
+
+        if (favEmojis.length) {
+            content += `── EMOJIS (${favEmojis.length}) ──\n`;
+            favEmojis.forEach(e => content += `${e.emoji}  ${e.name}\n`);
+            content += '\n';
+        }
+        if (favIcons.length) {
+            content += `── FONT AWESOME ICONS (${favIcons.length}) ──\n`;
+            favIcons.forEach(i => content += `<i class="${i.class}"></i>  ${i.name}\n`);
+            content += '\n';
+        }
+        if (favSymbols.length) {
+            content += `── SYMBOLS (${favSymbols.length}) ──\n`;
+            favSymbols.forEach(s => content += `${s.symbol}  ${s.name}\n`);
         }
 
-        function renderSymbols(filtered = null) {
-            const container = document.getElementById('symbols-grid');
-            if (!container) return;
-            container.innerHTML = '';
-            const data = filtered || symbolData;
-            data.forEach(item => {
-                const card = document.createElement('div');
-                card.className = `icon-card bg-zinc-900 border border-zinc-800 hover:border-violet-500/50 rounded-3xl p-5 flex flex-col items-center justify-center cursor-pointer group relative min-h-[140px]`;
-                card.innerHTML = `<div class="text-5xl mb-3 text-violet-400">${item.symbol}</div><div class="text-xs text-zinc-400 text-center font-medium">${item.name}</div>`;
-                const heart = document.createElement('div');
-                heart.className = `heart-btn ${isFavorited(item.symbol) ? 'favorited' : ''}`;
-                heart.innerHTML = `<i class="fa-solid fa-heart"></i>`;
-                heart.onclick = (e) => { e.stopImmediatePropagation(); toggleFavorite(item.symbol); };
-                card.appendChild(heart);
-                card.onclick = () => copyToClipboard(item.symbol, item.name);
-                container.appendChild(card);
-            });
-        }
+        const blob = new Blob([content], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'getemojicon-favorites.txt';
+        a.click(); URL.revokeObjectURL(url);
+        showToast(`Exported ${total} favorites!`);
+    }
 
-        function copyToClipboard(text, label) {
-            navigator.clipboard.writeText(text);
-            showToast(label + " copied!");
-        }
+    // ─── RENDER ──────────────────────────────────────────────────────────────────
+    function renderAll() {
+        renderEmojis(); renderIcons(); renderSymbols();
+    }
 
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toast-text').textContent = message;
-            toast.style.display = 'flex';
-            clearTimeout(window._toastTimer);
-            window._toastTimer = setTimeout(() => toast.style.display = 'none', 2000);
-        }
+    function renderEmojis(filtered = null) {
+        const container = document.getElementById('emojis-grid');
+        container.innerHTML = '';
+        (filtered || emojiData).forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'icon-card bg-zinc-900 border border-zinc-800 rounded-3xl p-4 flex flex-col items-center cursor-pointer group relative';
+            card.innerHTML = `<div class="emoji mb-3">${item.emoji}</div><div class="text-xs text-zinc-400 text-center">${item.name}</div>`;
+            const heart = document.createElement('div');
+            heart.className = `heart-btn${isFavorited(item.emoji) ? ' favorited' : ''}`;
+            heart.innerHTML = '<i class="fa-solid fa-heart text-xs"></i>';
+            heart.onclick = e => { e.stopImmediatePropagation(); toggleFavorite(item.emoji); };
+            card.appendChild(heart);
+            card.onclick = () => copyToClipboard(item.emoji, item.name);
+            container.appendChild(card);
+        });
+    }
 
-        function showAuthModal() {
-            const modal = document.getElementById('auth-modal');
-            modal.style.display = 'flex';
-            switchAuthTab('login');
-        }
+    function renderIcons(filtered = null) {
+        const container = document.getElementById('icons-grid');
+        container.innerHTML = '';
+        (filtered || iconData).forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'icon-card bg-zinc-900 border border-zinc-800 rounded-3xl p-5 flex flex-col items-center cursor-pointer group relative';
+            card.innerHTML = `<i class="${item.class} text-4xl mb-3 text-indigo-400"></i><div class="text-xs text-zinc-400 text-center">${item.name}</div>`;
+            const heart = document.createElement('div');
+            heart.className = `heart-btn${isFavorited(item.class) ? ' favorited' : ''}`;
+            heart.innerHTML = '<i class="fa-solid fa-heart text-xs"></i>';
+            heart.onclick = e => { e.stopImmediatePropagation(); toggleFavorite(item.class); };
+            card.appendChild(heart);
+            card.onclick = () => copyToClipboard(item.class, item.name);
+            container.appendChild(card);
+        });
+    }
 
-        function hideAuthModal() {
-            document.getElementById('auth-modal').style.display = 'none';
-        }
+    function renderSymbols(filtered = null) {
+        const container = document.getElementById('symbols-grid');
+        if (!container) return;
+        container.innerHTML = '';
+        (filtered || symbolData).forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'icon-card bg-zinc-900 border border-zinc-800 rounded-3xl p-5 flex flex-col items-center justify-center cursor-pointer group relative min-h-[120px]';
+            card.innerHTML = `<div class="text-4xl mb-3 text-violet-400">${item.symbol}</div><div class="text-xs text-zinc-400 text-center">${item.name}</div>`;
+            const heart = document.createElement('div');
+            heart.className = `heart-btn${isFavorited(item.symbol) ? ' favorited' : ''}`;
+            heart.innerHTML = '<i class="fa-solid fa-heart text-xs"></i>';
+            heart.onclick = e => { e.stopImmediatePropagation(); toggleFavorite(item.symbol); };
+            card.appendChild(heart);
+            card.onclick = () => copyToClipboard(item.symbol, item.name);
+            container.appendChild(card);
+        });
+    }
 
-        function switchAuthTab(tab) {
-            document.getElementById('login-form').style.display = tab === 'login' ? 'block' : 'none';
-            document.getElementById('signup-form').style.display = tab === 'signup' ? 'block' : 'none';
-            document.getElementById('login-tab').style.borderBottomColor = tab === 'login' ? '#6366f1' : 'transparent';
-            document.getElementById('login-tab').style.color = tab === 'login' ? 'white' : '#a1a1aa';
-            document.getElementById('signup-tab').style.borderBottomColor = tab === 'signup' ? '#6366f1' : 'transparent';
-            document.getElementById('signup-tab').style.color = tab === 'signup' ? 'white' : '#a1a1aa';
-        }
+    // ─── COPY & TOAST ────────────────────────────────────────────────────────────
+    function copyToClipboard(text, label) {
+        navigator.clipboard.writeText(text).catch(() => {});
+        showToast(`${label} copied!`);
+    }
 
-        async function loginUser() {
-            if (!supabaseClient) { showToast("Auth not configured"); return; }
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            if (!email || !password) { showToast("Please fill in all fields"); return; }
-            showToast("Logging in...");
-            const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-            if (error) showToast("Login failed: " + error.message);
-            else { hideAuthModal(); updateNavbarForUser(true); showToast("Logged in successfully!"); }
-        }
+    function showToast(message, type = 'success') {
+        const toast = document.getElementById('toast');
+        const icon  = document.getElementById('toast-icon');
+        document.getElementById('toast-text').textContent = message;
+        icon.className = type === 'error'   ? 'fa-solid fa-circle-exclamation text-red-400'
+                       : type === 'info'    ? 'fa-solid fa-circle-info text-blue-400'
+                       : 'fa-solid fa-check-circle text-emerald-400';
+        toast.style.display = 'flex';
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.style.display = 'none', 2500);
+    }
 
-        // FIX 3: signupUser now actually calls Supabase and handles errors properly
-        async function signupUser() {
-            if (!supabaseClient) { showToast("Auth not configured"); return; }
-            const email = document.getElementById('signup-email').value;
-            const password = document.getElementById('signup-password').value;
-            const confirm = document.getElementById('signup-password-confirm').value;
-            if (!email || !password) { showToast("Please fill in all fields"); return; }
-            if (password !== confirm) { showToast("Passwords do not match"); return; }
-            if (password.length < 6) { showToast("Password must be at least 6 characters"); return; }
-            showToast("Creating account...");
-            const { error } = await supabaseClient.auth.signUp({ email, password });
-            if (error) showToast("Signup failed: " + error.message);
-            else { hideAuthModal(); showToast("Account created! Check your email to confirm."); }
-        }
-
-        function updateNavbarForUser(isLoggedIn) {
-            const btn = document.getElementById('login-btn');
-            if (isLoggedIn) btn.innerHTML = `<i class="fa-solid fa-user-circle"></i><span>Account</span>`;
-            else btn.innerHTML = `<i class="fa-solid fa-user"></i><span>Login</span>`;
-        }
-
-        function bulkExportVisible() {
-            showToast("Bulk export coming in Pro!");
-        }
-
-        function initializeWebsite() {
-            initSupabase();
-            loadFavorites();
-            renderEmojis();
-            renderIcons();
-            renderSymbols();
-        }
-
-        window.onload = initializeWebsite;
+    // ─── INIT ────────────────────────────────────────────────────────────────────
+    window.onload = function() {
+        initSupabase();
+        loadFavoritesFromLocal(); // load local cache immediately while auth resolves
+        renderAll();
+    };
     </script>
 </body>
 </html>
