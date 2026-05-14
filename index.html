@@ -47,7 +47,7 @@
             <div class="flex items-center gap-x-4">
                 <!-- Auth button: shows Login or user info -->
                 <button onclick="handleAuthButtonClick()" id="login-btn" class="px-5 py-2.5 text-sm font-semibold bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 hover:border-indigo-500 rounded-3xl flex items-center gap-x-2 transition-all">
-                    <i class="fa-solid fa-user"></i><span>Login</span>
+                    <i class="fa-solid fa-user"></i><span>Login / Sign Up</span>
                 </button>
                 <!-- Favorites toggle -->
                 <button onclick="toggleFavoritesMode()" id="favorites-toggle" class="w-11 h-11 flex items-center justify-center bg-zinc-900 hover:bg-rose-600/20 border border-zinc-800 hover:border-rose-500 rounded-3xl transition-all group" title="Show favorites">
@@ -100,7 +100,10 @@
             <div id="login-form">
                 <p style="font-size:13px; color:#71717a; margin-bottom:1.25rem;">Welcome back! Your favorites sync across devices.</p>
                 <input id="login-email" type="email" placeholder="Email address" class="modal-input">
-                <input id="login-password" type="password" autocomplete="current-password" placeholder="Password" class="modal-input" style="margin-bottom:1.5rem;">
+                <div style="position:relative; margin-bottom:1.5rem;">
+                    <input id="login-password" type="password" autocomplete="current-password" placeholder="Password" class="modal-input" style="margin-bottom:0; padding-right:2.75rem;">
+                    <button type="button" onclick="togglePasswordVisibility('login-password', this)" style="position:absolute; right:1rem; top:50%; transform:translateY(-50%); background:none; border:none; color:#71717a; cursor:pointer; padding:0; line-height:1;"><i class="fa-solid fa-eye text-sm"></i></button>
+                </div>
                 <button onclick="loginUser()" id="login-submit" class="modal-btn">Login</button>
             </div>
 
@@ -108,8 +111,14 @@
             <div id="signup-form" style="display:none;">
                 <p style="font-size:13px; color:#71717a; margin-bottom:1.25rem;">Create a free account to save favorites across devices.</p>
                 <input id="signup-email" type="email" placeholder="Email address" class="modal-input">
-                <input id="signup-password" type="password" autocomplete="new-password" placeholder="Password (min 6 chars)" class="modal-input">
-                <input id="signup-password-confirm" type="password" autocomplete="new-password" placeholder="Confirm password" class="modal-input" style="margin-bottom:1.5rem;">
+                <div style="position:relative;">
+                    <input id="signup-password" type="password" autocomplete="new-password" placeholder="Password (min 6 chars)" class="modal-input" style="padding-right:2.75rem;">
+                    <button type="button" onclick="togglePasswordVisibility('signup-password', this)" style="position:absolute; right:1rem; top:calc(50% - 0.5rem); transform:translateY(-50%); background:none; border:none; color:#71717a; cursor:pointer; padding:0; line-height:1;"><i class="fa-solid fa-eye text-sm"></i></button>
+                </div>
+                <div style="position:relative; margin-bottom:1.5rem;">
+                    <input id="signup-password-confirm" type="password" autocomplete="new-password" placeholder="Confirm password" class="modal-input" style="margin-bottom:0; padding-right:2.75rem;">
+                    <button type="button" onclick="togglePasswordVisibility('signup-password-confirm', this)" style="position:absolute; right:1rem; top:50%; transform:translateY(-50%); background:none; border:none; color:#71717a; cursor:pointer; padding:0; line-height:1;"><i class="fa-solid fa-eye text-sm"></i></button>
+                </div>
                 <button onclick="signupUser()" id="signup-submit" class="modal-btn">Create Free Account</button>
             </div>
         </div>
@@ -539,7 +548,7 @@
 
     // ─── AUTH ────────────────────────────────────────────────────────────────────
     function handleAuthButtonClick() {
-        if (currentUser) showAccountModal();
+        if (currentUser) logoutUser();
         else showAuthModal();
     }
 
@@ -594,10 +603,9 @@
     function updateNavbarForUser(isLoggedIn) {
         const btn = document.getElementById('login-btn');
         if (isLoggedIn) {
-            const tierLabel = currentTier === 'free' ? '' : ` <span class="tier-badge tier-pro ml-1">${currentTier === 'pro_lifetime' ? 'Lifetime' : 'Pro'}</span>`;
-            btn.innerHTML = `<i class="fa-solid fa-circle-user"></i><span>Account${tierLabel}</span>`;
+            btn.innerHTML = `<i class="fa-solid fa-right-from-bracket"></i><span>Sign Out</span>`;
         } else {
-            btn.innerHTML = `<i class="fa-solid fa-user"></i><span>Login</span>`;
+            btn.innerHTML = `<i class="fa-solid fa-user"></i><span>Login / Sign Up</span>`;
         }
     }
 
@@ -772,6 +780,14 @@
         toast.style.display = 'flex';
         clearTimeout(toastTimer);
         toastTimer = setTimeout(() => toast.style.display = 'none', 2500);
+    }
+
+    // ─── PASSWORD VISIBILITY ─────────────────────────────────────────────────────
+    function togglePasswordVisibility(inputId, btn) {
+        const input = document.getElementById(inputId);
+        const show = input.type === 'password';
+        input.type = show ? 'text' : 'password';
+        btn.querySelector('i').className = show ? 'fa-solid fa-eye-slash text-sm' : 'fa-solid fa-eye text-sm';
     }
 
     // ─── INIT ────────────────────────────────────────────────────────────────────
