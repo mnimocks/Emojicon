@@ -556,10 +556,9 @@
 
     // ─── AUTH ────────────────────────────────────────────────────────────────────
     function handleAuthButtonClick() {
-        console.log('[Auth] button clicked — currentUser:', currentUser ? currentUser.email : 'null');
-        if (currentUser) logoutUser();
-        else showAuthModal();
-    }
+    if (currentUser) showAccountModal();
+    else showAuthModal();
+}
 
     async function loginUser() {
         const email = document.getElementById('login-email').value.trim();
@@ -609,14 +608,16 @@
         showToast('Logged out', 'info');
     }
 
-    function updateNavbarForUser(isLoggedIn) {
-        const btn = document.getElementById('login-btn');
-        if (isLoggedIn) {
-            btn.innerHTML = `<i class="fa-solid fa-right-from-bracket"></i><span>Sign Out</span>`;
-        } else {
-            btn.innerHTML = `<i class="fa-solid fa-user"></i><span>Login / Sign Up</span>`;
-        }
+   function updateNavbarForUser(isLoggedIn) {
+    const btn = document.getElementById('login-btn');
+    if (isLoggedIn) {
+        btn.querySelector('i').className = 'fa-solid fa-right-from-bracket';
+        btn.querySelector('span').textContent = 'Sign Out';
+    } else {
+        btn.querySelector('i').className = 'fa-solid fa-user';
+        btn.querySelector('span').textContent = 'Login / Sign Up';
     }
+}
 
     // ─── ACCOUNT MODAL ───────────────────────────────────────────────────────────
     function showAccountModal() {
