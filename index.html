@@ -610,13 +610,8 @@
 
    function updateNavbarForUser(isLoggedIn) {
     const btn = document.getElementById('login-btn');
-    if (isLoggedIn) {
-        btn.querySelector('i').className = 'fa-solid fa-right-from-bracket';
-        btn.querySelector('span').textContent = 'Sign Out';
-    } else {
-        btn.querySelector('i').className = 'fa-solid fa-user';
-        btn.querySelector('span').textContent = 'Login / Sign Up';
-    }
+    btn.querySelector('i').className = isLoggedIn ? 'fa-solid fa-right-from-bracket' : 'fa-solid fa-user';
+    btn.querySelector('span').textContent = isLoggedIn ? 'Log Out' : 'Login / Sign Up';
 }
 
     // ─── ACCOUNT MODAL ───────────────────────────────────────────────────────────
