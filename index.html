@@ -604,7 +604,12 @@
 
     async function logoutUser() {
     if (!sb) { showToast('Not connected', 'error'); return; }
-    await sb.auth.signOut();
+    try {
+        await Promise.race([
+            sb.auth.signOut({ scope: 'local' }),
+            new Promise(resolve => setTimeout(resolve, 2000))
+        ]);
+    } catch(e) {}
     currentUser = null;
     currentTier = 'free';
     loadFavoritesFromLocal();
