@@ -603,10 +603,16 @@
     }
 
     async function logoutUser() {
-        await sb.auth.signOut();
-        hideAccountModal();
-        showToast('Logged out', 'info');
-    }
+    if (!sb) { showToast('Not connected', 'error'); return; }
+    await sb.auth.signOut();
+    currentUser = null;
+    currentTier = 'free';
+    loadFavoritesFromLocal();
+    updateNavbarForUser(false);
+    renderAll();
+    hideAccountModal();
+    showToast('Logged out', 'info');
+}
 
    function updateNavbarForUser(isLoggedIn) {
     const btn = document.getElementById('login-btn');
