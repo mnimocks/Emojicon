@@ -568,15 +568,30 @@
         const btn = document.getElementById('login-submit');
         btn.disabled = true; btn.textContent = 'Logging in…';
 
-        const { error } = await sb.auth.signInWithPassword({ email, password });
+        let authResult = null;
+try {
+    authResult = await Promise.race([
+        sb.auth.signInWithPassword({ email, password }),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000))
+    ]);
+} catch(e) {
+    btn.disabled = false; btn.textContent = 'Login';
+    showToast(e.message === 'timeout' ? 'Login timed out — try incognito or disable MetaMask' : e.message, 'error');
+    return;
+}
 
-        btn.disabled = false; btn.textContent = 'Login';
-        if (error) {
-            showToast(error.message, 'error');
-        } else {
-            hideAuthModal();
-            showToast('Welcome back! Favorites loaded.');
-        }
+btn.disabled = false; btn.textContent = 'Login';
+if (authResult?.error) {
+    showToast(authResult.error.message, 'error');
+} else {
+    currentUser = authResult.data.user;
+    await loadUserProfile();
+    await loadFavoritesFromCloud();
+    updateNavbarForUser(true);
+    renderAll();
+    hideAuthModal();
+    showToast('Welcome back! Favorites loaded.');
+}
     }
 
     async function signupUser() {
