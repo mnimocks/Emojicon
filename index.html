@@ -408,28 +408,7 @@ window._safeFetch = _fetch;
 
     // ─── SUPABASE INIT ───────────────────────────────────────────────────────────
     function initSupabase() {
-    // Use XMLHttpRequest-based fetch to bypass MetaMask lockdown
-    const xhrFetch = (url, options = {}) => {
-        return new Promise((resolve, reject) => {
-            const xhr = new XMLHttpRequest();
-            xhr.open(options.method || 'GET', url);
-            if (options.headers) {
-                Object.entries(options.headers).forEach(([k, v]) => xhr.setRequestHeader(k, v));
-            }
-            xhr.onload = () => resolve({
-                ok: xhr.status >= 200 && xhr.status < 300,
-                status: xhr.status,
-                json: () => Promise.resolve(JSON.parse(xhr.responseText)),
-                text: () => Promise.resolve(xhr.responseText)
-            });
-            xhr.onerror = () => reject(new Error('Network error'));
-            xhr.send(options.body || null);
-        });
-    };
-
-    sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-        global: { fetch: xhrFetch }
-    });
+    sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     sb.auth.onAuthStateChange(async (event, session) => {
         if (session?.user) {
@@ -447,6 +426,9 @@ window._safeFetch = _fetch;
             loadFavoritesFromLocal();
             updateNavbarForUser(false);
         }
+        renderAll();
+    });
+}
 
     // ─── PROFILE & TIER ─────────────────────────────────────────────────────────
     async function loadUserProfile() {
