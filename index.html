@@ -7,7 +7,10 @@
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%236366f1'/%3E%3Ctext x='50' y='65' font-size='55' text-anchor='middle' fill='white'%3E%E2%9C%A8%3C/text%3E%3C/svg%3E">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+// Load Supabase before MetaMask lockdown can interfere
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Space+Grotesk:wght@500;600&display=swap');
         :root { --primary: #6366f1; }
@@ -181,7 +184,10 @@
     </div>
 
     <script>
-    // ─── SUPABASE ────────────────────────────────────────────────────────────────
+// Patch fetch to survive MetaMask's lockdown
+const _fetch = window.fetch.bind(window);
+window._safeFetch = _fetch;
+        // ─── SUPABASE ────────────────────────────────────────────────────────────────
     const SUPABASE_URL = 'https://xljsrkreacyfdhdnsfix.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhsanNya3JlYWN5ZmRoZG5zZml4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4MTUyNDYsImV4cCI6MjA5MzM5MTI0Nn0.3c9J_ERJZj2dtATKBSUo_a-MVJGPBbyu-9vkplzFtdo';
     let sb = null;
@@ -399,7 +405,9 @@
 
     // ─── SUPABASE INIT ───────────────────────────────────────────────────────────
     function initSupabase() {
-        sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+        global: { fetch: window._safeFetch || window.fetch.bind(window) }
+    });
 
         // Listen for auth state changes (handles page reload, token refresh)
         sb.auth.onAuthStateChange(async (event, session) => {
