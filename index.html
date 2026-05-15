@@ -408,30 +408,46 @@ window._safeFetch = _fetch;
 
     // ─── SUPABASE INIT ───────────────────────────────────────────────────────────
     function initSupabase() {
+    // Use XMLHttpRequest-based fetch to bypass MetaMask lockdown
+    const xhrFetch = (url, options = {}) => {
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open(options.method || 'GET', url);
+            if (options.headers) {
+                Object.entries(options.headers).forEach(([k, v]) => xhr.setRequestHeader(k, v));
+            }
+            xhr.onload = () => resolve({
+                ok: xhr.status >= 200 && xhr.status < 300,
+                status: xhr.status,
+                json: () => Promise.resolve(JSON.parse(xhr.responseText)),
+                text: () => Promise.resolve(xhr.responseText)
+            });
+            xhr.onerror = () => reject(new Error('Network error'));
+            xhr.send(options.body || null);
+        });
+    };
+
     sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-        global: { fetch: window._safeFetch || window.fetch.bind(window) }
+        global: { fetch: xhrFetch }
     });
 
-        // Listen for auth state changes (handles page reload, token refresh)
-        sb.auth.onAuthStateChange(async (event, session) => {
-            if (session?.user) {
-                currentUser = session.user;
-                await loadUserProfile();
-                await loadFavoritesFromCloud();
-                updateNavbarForUser(true);
-                if (sessionStorage.getItem('paymentSuccess')) {
-                    sessionStorage.removeItem('paymentSuccess');
-                    showToast('You\'re now Pro! Bulk export is unlocked.');
-                }
-            } else {
-                currentUser = null;
-                currentTier = 'free';
-                loadFavoritesFromLocal();
-                updateNavbarForUser(false);
+    sb.auth.onAuthStateChange(async (event, session) => {
+        if (session?.user) {
+            currentUser = session.user;
+            await loadUserProfile();
+            await loadFavoritesFromCloud();
+            updateNavbarForUser(true);
+            if (sessionStorage.getItem('paymentSuccess')) {
+                sessionStorage.removeItem('paymentSuccess');
+                showToast('You\'re now Pro! Bulk export is unlocked.');
             }
-            renderAll();
-        });
-    }
+        } else {
+            currentUser = null;
+            currentTier = 'free';
+            loadFavoritesFromLocal();
+            updateNavbarForUser(false);
+        }
+        r
 
     // ─── PROFILE & TIER ─────────────────────────────────────────────────────────
     async function loadUserProfile() {
