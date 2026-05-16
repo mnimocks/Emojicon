@@ -581,11 +581,9 @@ window._safeFetch = _fetch;
         const btn = document.getElementById('login-submit');
         btn.disabled = true; btn.textContent = 'Logging in…';
 
-        let authResult = null;
+       let authResult = null;
 try {
     authResult = await sb.auth.signInWithPassword({ email, password });
-console.log('authResult:', JSON.stringify(authResult));
-} catch(e) {
 } catch(e) {
     btn.disabled = false; btn.textContent = 'Login';
     showToast(e.message, 'error');
@@ -596,6 +594,17 @@ btn.disabled = false; btn.textContent = 'Login';
 const { data, error } = authResult;
 if (error) {
     showToast(error.message, 'error');
+} else if (data?.user) {
+    currentUser = data.user;
+    await loadUserProfile();
+    await loadFavoritesFromCloud();
+    updateNavbarForUser(true);
+    renderAll();
+    hideAuthModal();
+    showToast('Welcome back! Favorites loaded.');
+} else {
+    showToast('Login failed — please try again.', 'error');
+}
 } else if (data?.user) {
     currentUser = data.user;
     await loadUserProfile();
