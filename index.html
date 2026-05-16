@@ -97,7 +97,7 @@
             <!-- Login Form -->
             <div id="login-form">
                 <p style="font-size:13px; color:#71717a; margin-bottom:1.25rem;">Welcome back! Your favorites sync across devices.</p>
-                <form onsubmit="event.preventDefault(); loginUser();" autocomplete="on">
+                <form autocomplete="on">
                     <input id="login-email" type="email" placeholder="Email address" class="modal-input" autocomplete="email">
                     <div style="position:relative; margin-bottom:1.5rem;">
                         <input id="login-password" type="password" autocomplete="current-password" placeholder="Password" class="modal-input" style="margin-bottom:0; padding-right:2.75rem;">
@@ -108,7 +108,7 @@
                         Fix: <strong>disable MetaMask</strong> for this site, or use an
                         <a href="#" onclick="window.open(window.location.href)" style="color:#818cf8;">incognito window</a>.
                     </div>
-                    <button type="submit" id="login-submit" class="modal-btn">Login</button>
+                    <button type="button" onclick="loginUser()" id="login-submit" class="modal-btn">Login</button>
                 </form>
             </div>
 
