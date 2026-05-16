@@ -4,16 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GetEmojicon • Icons & Emojis Explorer</title>
-    <script>
-    window._safeFetch = window.fetch.bind(window);
-</script>
+    <script>window._safeFetch = window.fetch.bind(window);</script>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%236366f1'/%3E%3Ctext x='50' y='65' font-size='55' text-anchor='middle' fill='white'%3E%E2%9C%A8%3C/text%3E%3C/svg%3E">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script>
-// Load Supabase before MetaMask lockdown can interfere
-</script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Space+Grotesk:wght@500;600&display=swap');
         :root { --primary: #6366f1; }
@@ -53,15 +48,12 @@
                 </div>
             </div>
             <div class="flex items-center gap-x-4">
-                <!-- Auth button: shows Login or user info -->
                 <button onclick="handleAuthButtonClick()" id="login-btn" class="px-5 py-2.5 text-sm font-semibold bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 hover:border-indigo-500 rounded-3xl flex items-center gap-x-2 transition-all">
                     <i class="fa-solid fa-user"></i><span>Login / Sign Up</span>
                 </button>
-                <!-- Favorites toggle -->
                 <button onclick="toggleFavoritesMode()" id="favorites-toggle" class="w-11 h-11 flex items-center justify-center bg-zinc-900 hover:bg-rose-600/20 border border-zinc-800 hover:border-rose-500 rounded-3xl transition-all group" title="Show favorites">
                     <i class="fa-solid fa-heart text-lg text-rose-400 group-hover:scale-110 transition-transform"></i>
                 </button>
-                <!-- Bulk Export — gated to Pro -->
                 <button onclick="handleBulkExport()" id="bulk-export-btn" class="px-5 py-2.5 text-sm font-semibold bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 rounded-3xl flex items-center gap-x-2 transition-all">
                     <i class="fa-solid fa-download"></i><span>Bulk Export</span>
                 </button>
@@ -97,8 +89,6 @@
     <div id="auth-modal" class="modal-overlay">
         <div style="background:#18181b; border:1px solid #3f3f46; border-radius:1.5rem; width:100%; max-width:26rem; padding:2rem; position:relative;">
             <button onclick="hideAuthModal()" style="position:absolute; top:1rem; right:1rem; background:none; border:none; color:#a1a1aa; font-size:1.5rem; cursor:pointer; line-height:1;">×</button>
-
-            <!-- Tabs -->
             <div style="display:flex; border-bottom:1px solid #3f3f46; margin-bottom:1.5rem;">
                 <button onclick="switchAuthTab('login')" id="login-tab" style="flex:1; padding:0.75rem; font-weight:600; border:none; background:none; border-bottom:2px solid #6366f1; color:white; cursor:pointer; font-size:14px;">Login</button>
                 <button onclick="switchAuthTab('signup')" id="signup-tab" style="flex:1; padding:0.75rem; font-weight:600; border:none; background:none; border-bottom:2px solid transparent; color:#a1a1aa; cursor:pointer; font-size:14px;">Sign Up</button>
@@ -114,10 +104,10 @@
                         <button type="button" onclick="togglePasswordVisibility('login-password', this)" style="position:absolute; right:1rem; top:50%; transform:translateY(-50%); background:none; border:none; color:#71717a; cursor:pointer; padding:0; line-height:1;"><i class="fa-solid fa-eye text-sm"></i></button>
                     </div>
                     <div id="login-error-msg" style="display:none; background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); border-radius:0.75rem; padding:0.75rem; margin-bottom:1rem; font-size:12px; color:#fca5a5; line-height:1.6;">
-    ⚠️ Login blocked by a browser extension (e.g. MetaMask).<br>
-    Fix: <strong>disable MetaMask</strong> for this site, or use an 
-    <a href="#" onclick="window.open(window.location.href)" style="color:#818cf8;">incognito window</a>.
-</div>
+                        ⚠️ Login blocked by a browser extension (e.g. MetaMask).<br>
+                        Fix: <strong>disable MetaMask</strong> for this site, or use an
+                        <a href="#" onclick="window.open(window.location.href)" style="color:#818cf8;">incognito window</a>.
+                    </div>
                     <button type="submit" id="login-submit" class="modal-btn">Login</button>
                 </form>
             </div>
@@ -141,14 +131,12 @@
         </div>
     </div>
 
-    <!-- ACCOUNT MODAL (shown when logged in) -->
+    <!-- ACCOUNT MODAL -->
     <div id="account-modal" class="modal-overlay">
         <div style="background:#18181b; border:1px solid #3f3f46; border-radius:1.5rem; width:100%; max-width:26rem; padding:2rem; position:relative;">
             <button onclick="hideAccountModal()" style="position:absolute; top:1rem; right:1rem; background:none; border:none; color:#a1a1aa; font-size:1.5rem; cursor:pointer; line-height:1;">×</button>
             <h3 style="font-size:1.25rem; font-weight:600; margin-bottom:0.5rem;">My Account</h3>
             <p id="account-email" style="font-size:13px; color:#71717a; margin-bottom:1.5rem;"></p>
-
-            <!-- Tier display -->
             <div style="background:#27272a; border-radius:1rem; padding:1.25rem; margin-bottom:1.5rem;">
                 <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.5rem;">
                     <span style="font-size:13px; font-weight:600; color:#d4d4d8;">Current Plan</span>
@@ -156,8 +144,6 @@
                 </div>
                 <div id="tier-features" style="font-size:12px; color:#71717a; line-height:1.8;"></div>
             </div>
-
-            <!-- Upgrade CTA (hidden for pro) -->
             <div id="upgrade-cta" style="margin-bottom:1.5rem;">
                 <div style="background:linear-gradient(135deg,rgba(109,40,217,0.2),rgba(192,38,211,0.2)); border:1px solid rgba(139,92,246,0.3); border-radius:1rem; padding:1.25rem;">
                     <p style="font-size:13px; font-weight:600; color:#c4b5fd; margin-bottom:0.25rem;">Upgrade to Pro</p>
@@ -166,7 +152,6 @@
                     <button onclick="startCheckout('price_1TT4CCKS4YmKUzv3CrJryfgg')" style="width:100%; padding:0.625rem; background:linear-gradient(135deg,#0f766e,#065f46); border:none; border-radius:9999px; color:white; font-weight:600; font-size:13px; cursor:pointer;">Lifetime — $39 one-time</button>
                 </div>
             </div>
-
             <div style="display:flex; gap:0.75rem;">
                 <button onclick="syncFavoritesToCloud()" style="flex:1; padding:0.625rem; background:#27272a; border:1px solid #3f3f46; border-radius:9999px; color:#d4d4d8; font-weight:500; font-size:13px; cursor:pointer;">
                     <i class="fa-solid fa-cloud-arrow-up" style="margin-right:6px;"></i>Sync Favorites
@@ -192,17 +177,14 @@
     </div>
 
     <script>
-// Patch fetch to survive MetaMask's lockdown
-const _fetch = window.fetch.bind(window);
-window._safeFetch = _fetch;
-        // ─── SUPABASE ────────────────────────────────────────────────────────────────
+    // ─── SUPABASE ────────────────────────────────────────────────────────────────
     const SUPABASE_URL = 'https://xljsrkreacyfdhdnsfix.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhsanNya3JlYWN5ZmRoZG5zZml4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4MTUyNDYsImV4cCI6MjA5MzM5MTI0Nn0.3c9J_ERJZj2dtATKBSUo_a-MVJGPBbyu-9vkplzFtdo';
     let sb = null;
 
     // ─── APP STATE ───────────────────────────────────────────────────────────────
     let currentUser = null;
-    let currentTier = 'free'; // 'free' | 'pro_monthly' | 'pro_lifetime'
+    let currentTier = 'free';
     let favorites = new Set();
     let favoritesMode = false;
     let toastTimer = null;
@@ -413,27 +395,27 @@ window._safeFetch = _fetch;
 
     // ─── SUPABASE INIT ───────────────────────────────────────────────────────────
     function initSupabase() {
-    sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    sb.auth.onAuthStateChange(async (event, session) => {
-        if (session?.user) {
-            currentUser = session.user;
-            await loadUserProfile();
-            await loadFavoritesFromCloud();
-            updateNavbarForUser(true);
-            if (sessionStorage.getItem('paymentSuccess')) {
-                sessionStorage.removeItem('paymentSuccess');
-                showToast('You\'re now Pro! Bulk export is unlocked.');
+        sb.auth.onAuthStateChange(async (event, session) => {
+            if (session?.user) {
+                currentUser = session.user;
+                await loadUserProfile();
+                await loadFavoritesFromCloud();
+                updateNavbarForUser(true);
+                if (sessionStorage.getItem('paymentSuccess')) {
+                    sessionStorage.removeItem('paymentSuccess');
+                    showToast('You\'re now Pro! Bulk export is unlocked.');
+                }
+            } else {
+                currentUser = null;
+                currentTier = 'free';
+                loadFavoritesFromLocal();
+                updateNavbarForUser(false);
             }
-        } else {
-            currentUser = null;
-            currentTier = 'free';
-            loadFavoritesFromLocal();
-            updateNavbarForUser(false);
-        }
-        renderAll();
-    });
-}
+            renderAll();
+        });
+    }
 
     // ─── PROFILE & TIER ─────────────────────────────────────────────────────────
     async function loadUserProfile() {
@@ -442,10 +424,7 @@ window._safeFetch = _fetch;
             .select('tier, tier_expires_at')
             .eq('id', currentUser.id)
             .single();
-
         if (error) { console.warn('Profile load error:', error); currentTier = 'free'; return; }
-
-        // Check if pro_monthly is expired
         if (data.tier === 'pro_monthly' && data.tier_expires_at) {
             const expired = new Date(data.tier_expires_at) < new Date();
             currentTier = expired ? 'free' : 'pro_monthly';
@@ -461,39 +440,29 @@ window._safeFetch = _fetch;
     // ─── FAVORITES — CLOUD ───────────────────────────────────────────────────────
     async function loadFavoritesFromCloud() {
         if (!currentUser) return;
-        const { data, error } = await sb
-            .from('favorites')
-            .select('item_key')
-            .eq('user_id', currentUser.id);
+        const { data, error } = await sb.from('favorites').select('item_key').eq('user_id', currentUser.id);
         if (error) { console.warn('Favorites load error:', error); return; }
         favorites = new Set(data.map(r => r.item_key));
-        // Also persist locally as cache
         localStorage.setItem('iconlyFavorites', JSON.stringify([...favorites]));
     }
 
     async function saveFavoriteToCloud(key, itemType) {
         if (!currentUser) return;
         const { error } = await sb.from('favorites').upsert({
-            user_id: currentUser.id,
-            item_key: key,
-            item_type: itemType
+            user_id: currentUser.id, item_key: key, item_type: itemType
         }, { onConflict: 'user_id,item_key' });
         if (error) console.warn('Save favorite error:', error);
     }
 
     async function removeFavoriteFromCloud(key) {
         if (!currentUser) return;
-        const { error } = await sb.from('favorites')
-            .delete()
-            .eq('user_id', currentUser.id)
-            .eq('item_key', key);
+        const { error } = await sb.from('favorites').delete().eq('user_id', currentUser.id).eq('item_key', key);
         if (error) console.warn('Remove favorite error:', error);
     }
 
     async function syncFavoritesToCloud() {
         if (!currentUser) { showToast('Log in to sync favorites', 'error'); return; }
         showToast('Syncing…', 'info');
-        // Upsert all local favorites
         const rows = [];
         favorites.forEach(key => {
             const itemType = emojiData.find(e => e.emoji === key) ? 'emoji'
@@ -523,8 +492,6 @@ window._safeFetch = _fetch;
         if (wasAdded) favorites.add(key);
         else favorites.delete(key);
         saveFavoritesLocal();
-
-        // Cloud sync if logged in
         if (currentUser) {
             if (wasAdded) {
                 const itemType = emojiData.find(e => e.emoji === key) ? 'emoji'
@@ -534,8 +501,6 @@ window._safeFetch = _fetch;
                 removeFavoriteFromCloud(key);
             }
         }
-
-        // Re-render
         if (favoritesMode) {
             renderEmojis(emojiData.filter(e => favorites.has(e.emoji)));
             renderIcons(iconData.filter(i => favorites.has(i.class)));
@@ -553,7 +518,6 @@ window._safeFetch = _fetch;
         const btn = document.getElementById('favorites-toggle');
         btn.style.borderColor = favoritesMode ? '#f43f5e' : '';
         btn.style.background = favoritesMode ? 'rgba(244,63,94,0.15)' : '';
-
         if (favoritesMode) {
             const fe = emojiData.filter(e => favorites.has(e.emoji));
             const fi = iconData.filter(i => favorites.has(i.class));
@@ -569,11 +533,12 @@ window._safeFetch = _fetch;
 
     // ─── AUTH ────────────────────────────────────────────────────────────────────
     function handleAuthButtonClick() {
-    if (currentUser) showAccountModal();
-    else showAuthModal();
-}
+        if (currentUser) showAccountModal();
+        else showAuthModal();
+    }
 
     async function loginUser() {
+        document.getElementById('login-error-msg').style.display = 'none';
         const email = document.getElementById('login-email').value.trim();
         const password = document.getElementById('login-password').value;
         if (!email || !password) { showToast('Please fill in all fields', 'error'); return; }
@@ -581,36 +546,36 @@ window._safeFetch = _fetch;
         const btn = document.getElementById('login-submit');
         btn.disabled = true; btn.textContent = 'Logging in…';
 
-       let authResult = null;
-try {
-    authResult = await sb.auth.signInWithPassword({ email, password });
-} catch(e) {
-    btn.disabled = false; btn.textContent = 'Login';
-    showToast(e.message, 'error');
-    return;
-}
+        let authResult = null;
+        try {
+            authResult = await sb.auth.signInWithPassword({ email, password });
+        } catch(e) {
+            btn.disabled = false; btn.textContent = 'Login';
+            showToast(e.message, 'error');
+            return;
+        }
 
-btn.disabled = false; btn.textContent = 'Login';
-const { data, error } = authResult;
-if (error) {
-    showToast(error.message, 'error');
-} else if (data?.user) {
-    currentUser = data.user;
-    await loadUserProfile();
-    await loadFavoritesFromCloud();
-    updateNavbarForUser(true);
-    renderAll();
-    hideAuthModal();
-    showToast('Welcome back! Favorites loaded.');
-} else {
-    showToast('Login failed — please try again.', 'error');
-}
+        btn.disabled = false; btn.textContent = 'Login';
+        const { data, error } = authResult;
+        if (error) {
+            showToast(error.message, 'error');
+        } else if (data?.user) {
+            currentUser = data.user;
+            await loadUserProfile();
+            await loadFavoritesFromCloud();
+            updateNavbarForUser(true);
+            renderAll();
+            hideAuthModal();
+            showToast('Welcome back! Favorites loaded.');
+        } else {
+            showToast('Login failed — please try again.', 'error');
+        }
+    }
 
     async function signupUser() {
         const email = document.getElementById('signup-email').value.trim();
         const password = document.getElementById('signup-password').value;
         const confirm = document.getElementById('signup-password-confirm').value;
-
         if (!email || !password) { showToast('Please fill in all fields', 'error'); return; }
         if (password !== confirm) { showToast('Passwords do not match', 'error'); return; }
         if (password.length < 6) { showToast('Password must be at least 6 characters', 'error'); return; }
@@ -630,36 +595,34 @@ if (error) {
     }
 
     async function logoutUser() {
-    if (!sb) { showToast('Not connected', 'error'); return; }
-    try {
-        await Promise.race([
-            sb.auth.signOut({ scope: 'local' }),
-            new Promise(resolve => setTimeout(resolve, 2000))
-        ]);
-    } catch(e) {}
-    currentUser = null;
-    currentTier = 'free';
-    loadFavoritesFromLocal();
-    updateNavbarForUser(false);
-    renderAll();
-    hideAccountModal();
-    showToast('Logged out', 'info');
-}
+        if (!sb) { showToast('Not connected', 'error'); return; }
+        try {
+            await Promise.race([
+                sb.auth.signOut({ scope: 'local' }),
+                new Promise(resolve => setTimeout(resolve, 2000))
+            ]);
+        } catch(e) {}
+        currentUser = null;
+        currentTier = 'free';
+        loadFavoritesFromLocal();
+        updateNavbarForUser(false);
+        renderAll();
+        hideAccountModal();
+        showToast('Logged out', 'info');
+    }
 
-   function updateNavbarForUser(isLoggedIn) {
-    const btn = document.getElementById('login-btn');
-    btn.querySelector('i').className = isLoggedIn ? 'fa-solid fa-right-from-bracket' : 'fa-solid fa-user';
-    btn.querySelector('span').textContent = isLoggedIn ? 'Log Out' : 'Login / Sign Up';
-}
+    function updateNavbarForUser(isLoggedIn) {
+        const btn = document.getElementById('login-btn');
+        btn.querySelector('i').className = isLoggedIn ? 'fa-solid fa-right-from-bracket' : 'fa-solid fa-user';
+        btn.querySelector('span').textContent = isLoggedIn ? 'Log Out' : 'Login / Sign Up';
+    }
 
     // ─── ACCOUNT MODAL ───────────────────────────────────────────────────────────
     function showAccountModal() {
         document.getElementById('account-email').textContent = currentUser?.email || '';
-
         const badge = document.getElementById('account-tier-badge');
         const features = document.getElementById('tier-features');
         const upgradeCta = document.getElementById('upgrade-cta');
-
         if (isPro()) {
             badge.className = 'tier-badge tier-pro';
             badge.textContent = currentTier === 'pro_lifetime' ? 'Pro Lifetime' : 'Pro Monthly';
@@ -671,7 +634,6 @@ if (error) {
             features.innerHTML = '✓ Favorites sync across devices<br>✗ Bulk export (Pro only)<br>✗ Priority support';
             upgradeCta.style.display = 'block';
         }
-
         document.getElementById('account-modal').classList.add('open');
     }
 
@@ -681,7 +643,6 @@ if (error) {
 
     // ─── AUTH MODAL ──────────────────────────────────────────────────────────────
     function showAuthModal() {
-        console.log('[Auth] showAuthModal called');
         switchAuthTab('login');
         document.getElementById('auth-modal').classList.add('open');
     }
@@ -703,7 +664,6 @@ if (error) {
     function showProModal() { document.getElementById('pro-modal').classList.add('open'); }
     function hideProModal()  { document.getElementById('pro-modal').classList.remove('open'); }
 
-    // Close modals on backdrop click
     ['auth-modal','account-modal','pro-modal'].forEach(id => {
         document.getElementById(id).addEventListener('click', function(e) {
             if (e.target === this) this.classList.remove('open');
@@ -714,20 +674,14 @@ if (error) {
     function handleBulkExport() {
         if (!currentUser) { showAuthModal(); return; }
         if (!isPro()) { showProModal(); return; }
-
-        // Pro user — build and download
-        const favEmojis   = emojiData.filter(e => favorites.has(e.emoji));
-        const favIcons    = iconData.filter(i => favorites.has(i.class));
-        const favSymbols  = symbolData.filter(s => favorites.has(s.symbol));
+        const favEmojis  = emojiData.filter(e => favorites.has(e.emoji));
+        const favIcons   = iconData.filter(i => favorites.has(i.class));
+        const favSymbols = symbolData.filter(s => favorites.has(s.symbol));
         const total = favEmojis.length + favIcons.length + favSymbols.length;
-
         if (!total) { showToast('No favorites to export yet!', 'info'); return; }
-
-        // Build a text file with all favorites (ZIP requires a library; txt works natively)
         let content = `GetEmojicon — Favorites Export\n`;
         content += `Generated: ${new Date().toLocaleString()}\n`;
         content += `Total: ${total} items\n\n`;
-
         if (favEmojis.length) {
             content += `── EMOJIS (${favEmojis.length}) ──\n`;
             favEmojis.forEach(e => content += `${e.emoji}  ${e.name}\n`);
@@ -742,7 +696,6 @@ if (error) {
             content += `── SYMBOLS (${favSymbols.length}) ──\n`;
             favSymbols.forEach(s => content += `${s.symbol}  ${s.name}\n`);
         }
-
         const blob = new Blob([content], { type: 'text/plain' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -752,9 +705,7 @@ if (error) {
     }
 
     // ─── RENDER ──────────────────────────────────────────────────────────────────
-    function renderAll() {
-        renderEmojis(); renderIcons(); renderSymbols();
-    }
+    function renderAll() { renderEmojis(); renderIcons(); renderSymbols(); }
 
     function renderEmojis(filtered = null) {
         const container = document.getElementById('emojis-grid');
@@ -818,8 +769,8 @@ if (error) {
         const toast = document.getElementById('toast');
         const icon  = document.getElementById('toast-icon');
         document.getElementById('toast-text').textContent = message;
-        icon.className = type === 'error'   ? 'fa-solid fa-circle-exclamation text-red-400'
-                       : type === 'info'    ? 'fa-solid fa-circle-info text-blue-400'
+        icon.className = type === 'error' ? 'fa-solid fa-circle-exclamation text-red-400'
+                       : type === 'info'  ? 'fa-solid fa-circle-info text-blue-400'
                        : 'fa-solid fa-check-circle text-emerald-400';
         toast.style.display = 'flex';
         clearTimeout(toastTimer);
@@ -854,7 +805,6 @@ if (error) {
 
     // ─── INIT ────────────────────────────────────────────────────────────────────
     window.onload = function() {
-        // Capture and clean up payment redirect params before auth resolves
         const params = new URLSearchParams(window.location.search);
         if (params.get('payment') === 'success') {
             sessionStorage.setItem('paymentSuccess', '1');
@@ -862,7 +812,6 @@ if (error) {
         } else if (params.get('payment') === 'cancelled') {
             window.history.replaceState({}, '', '/');
         }
-
         initSupabase();
         loadFavoritesFromLocal();
         renderAll();
