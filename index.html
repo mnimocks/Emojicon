@@ -584,6 +584,8 @@ window._safeFetch = _fetch;
         let authResult = null;
 try {
     authResult = await sb.auth.signInWithPassword({ email, password });
+console.log('authResult:', JSON.stringify(authResult));
+} catch(e) {
 } catch(e) {
     btn.disabled = false; btn.textContent = 'Login';
     showToast(e.message, 'error');
