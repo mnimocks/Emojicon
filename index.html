@@ -583,17 +583,10 @@ window._safeFetch = _fetch;
 
         let authResult = null;
 try {
-    authResult = await Promise.race([
-        sb.auth.signInWithPassword({ email, password }),
-        new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 15000))
-    ]);
+    authResult = await sb.auth.signInWithPassword({ email, password });
 } catch(e) {
     btn.disabled = false; btn.textContent = 'Login';
-    if (e.message === 'timeout') {
-    document.getElementById('login-error-msg').style.display = 'block';
-} else {
     showToast(e.message, 'error');
-}
     return;
 }
 
