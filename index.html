@@ -546,30 +546,32 @@
         const btn = document.getElementById('login-submit');
         btn.disabled = true; btn.textContent = 'Logging in…';
 
-        let authResult = null;
-        try {
-            authResult = await sb.auth.signInWithPassword({ email, password });
-        } catch(e) {
-            btn.disabled = false; btn.textContent = 'Login';
-            showToast(e.message, 'error');
-            return;
-        }
+        let data = null, error = null;
+try {
+    const result = await sb.auth.signInWithPassword({ email, password });
+    data = result.data;
+    error = result.error;
+} catch(e) {
+    error = { message: e.message };
+}
 
-        btn.disabled = false; btn.textContent = 'Login';
-        const { data, error } = authResult;
-        if (error) {
-            showToast(error.message, 'error');
-        } else if (data?.user) {
-            currentUser = data.user;
-            await loadUserProfile();
-            await loadFavoritesFromCloud();
-            updateNavbarForUser(true);
-            renderAll();
-            hideAuthModal();
-            showToast('Welcome back! Favorites loaded.');
-        } else {
-            showToast('Login failed — please try again.', 'error');
-        }
+btn.disabled = false; btn.textContent = 'Login';
+
+if (error) {
+    showToast(error.message === 'Invalid login credentials'
+        ? 'Incorrect email or password. Please try again.'
+        : error.message, 'error');
+} else if (data?.user) {
+    currentUser = data.user;
+    await loadUserProfile();
+    await loadFavoritesFromCloud();
+    updateNavbarForUser(true);
+    renderAll();
+    hideAuthModal();
+    showToast('Welcome back! Favorites loaded.');
+} else {
+    showToast('Login failed — please try again.', 'error');
+}   
     }
 
     async function signupUser() {
