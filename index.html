@@ -585,7 +585,7 @@ window._safeFetch = _fetch;
 try {
     authResult = await Promise.race([
         sb.auth.signInWithPassword({ email, password }),
-        new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000))
+        new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 15000))
     ]);
 } catch(e) {
     btn.disabled = false; btn.textContent = 'Login';
