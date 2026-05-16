@@ -113,6 +113,11 @@
                         <input id="login-password" type="password" autocomplete="current-password" placeholder="Password" class="modal-input" style="margin-bottom:0; padding-right:2.75rem;">
                         <button type="button" onclick="togglePasswordVisibility('login-password', this)" style="position:absolute; right:1rem; top:50%; transform:translateY(-50%); background:none; border:none; color:#71717a; cursor:pointer; padding:0; line-height:1;"><i class="fa-solid fa-eye text-sm"></i></button>
                     </div>
+                    <div id="login-error-msg" style="display:none; background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); border-radius:0.75rem; padding:0.75rem; margin-bottom:1rem; font-size:12px; color:#fca5a5; line-height:1.6;">
+    ⚠️ Login blocked by a browser extension (e.g. MetaMask).<br>
+    Fix: <strong>disable MetaMask</strong> for this site, or use an 
+    <a href="#" onclick="window.open(window.location.href)" style="color:#818cf8;">incognito window</a>.
+</div>
                     <button type="submit" id="login-submit" class="modal-btn">Login</button>
                 </form>
             </div>
@@ -584,7 +589,11 @@ try {
     ]);
 } catch(e) {
     btn.disabled = false; btn.textContent = 'Login';
-    showToast(e.message === 'timeout' ? 'Login timed out — try incognito or disable MetaMask' : e.message, 'error');
+    if (e.message === 'timeout') {
+    document.getElementById('login-error-msg').style.display = 'block';
+} else {
+    showToast(e.message, 'error');
+}
     return;
 }
 
